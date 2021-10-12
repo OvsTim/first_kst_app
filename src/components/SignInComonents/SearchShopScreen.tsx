@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {
+  Button,
+  Image,
   Keyboard,
   StatusBar,
   StyleSheet,
@@ -14,17 +16,20 @@ import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {hScale, vScale, window} from '../../utils/scaling';
 import TextInputMask from 'react-native-text-input-mask';
 import {setAuthData} from '../../redux/UserDataSlice';
-
+import storage from '@react-native-firebase/storage';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'SearchShop'>;
 };
 
 export default function SearchShopScreen({}: Props) {
   const dispatch = useAppDispatch();
-
+  const reference = storage().ref('images/eggs.png');
   const [code, setCode] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(60);
+  const [url, setUrl] = useState<string>('');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -61,6 +66,31 @@ export default function SearchShopScreen({}: Props) {
       setError(false);
     }
   }, [code]);
+
+  useEffect(() => {
+    auth()
+      .signInAnonymously()
+      .then(() => {
+        console.log('User signed in anonymously');
+        reference.getDownloadURL().then(res => {
+          setUrl(res);
+        });
+        firestore()
+          .collection('contacts')
+          .doc('contact_data')
+          .get()
+          .then(res => {
+            console.log('result', res);
+          });
+      })
+      .catch(error => {
+        if (error.code === 'auth/operation-not-allowed') {
+          console.log('Enable anonymous in your firebase console.');
+        }
+
+        console.error(error);
+      });
+  }, []);
 
   //region handlers
   function decrementTime() {
@@ -114,6 +144,15 @@ export default function SearchShopScreen({}: Props) {
           barStyle="dark-content"
         />
         {renderInput()}
+        {url !== '' && (
+          <Image style={{width: 100, height: 100}} source={{uri: url}} />
+        )}
+        <Button
+          title={'Javascript Crash Now.'}
+          onPress={() => {
+            // undefinedVariable.notAFunction();
+          }}
+        />
       </View>
     );
   }
