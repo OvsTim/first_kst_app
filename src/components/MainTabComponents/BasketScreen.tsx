@@ -10,11 +10,6 @@ type Props = {
 export default function BasketScreen({}: Props) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <StatusBar
-        translucent={false}
-        backgroundColor={'rgba(0,0,0,0.1)'}
-        barStyle="dark-content"
-      />
       <Text>BasketScreen</Text>
     </View>
   );

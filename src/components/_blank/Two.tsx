@@ -14,16 +14,11 @@ type Props = {
 
 export default function TwoScreen({}: Props) {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.data.token);
+  const token = useSelector(state => state.data.token);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <StatusBar
-        translucent={false}
-        backgroundColor={'rgba(0,0,0,0.1)'}
-        barStyle="dark-content"
-      />
       <Text>Two Screen</Text>
       <ThrottledSearchInput
         onThrottledChange={(term: string) => {

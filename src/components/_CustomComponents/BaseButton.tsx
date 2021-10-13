@@ -1,10 +1,12 @@
 import React from 'react';
 import {StyleProp, TextStyle, View, ViewStyle} from 'react-native';
 import {StyledText as Text} from './StyledText';
-import {vScale, hScale} from '../../utils/scaling';
+import {vScale, hScale, window} from '../../utils/scaling';
 import {withPressable} from './HOC/withPressable';
+import {withFont} from './HOC/withFont';
 
 const Button = withPressable(View);
+const StyledText = withFont(Text);
 
 export type BaseButtonProps = {
   active?: boolean; //флаг активности - меняется поведение и стиль кнопки
@@ -33,8 +35,8 @@ export default function BaseButton({
           width: styleProps.width,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: active ? '#67b437' : '#D8D8D8',
-          borderWidth: vScale(1),
+          backgroundColor: '#28B3C6',
+          borderWidth: 1,
           borderColor: 'transparent',
           borderRadius: styleProps.borderRadius,
         },
@@ -46,18 +48,20 @@ export default function BaseButton({
           onPress();
         }
       }}>
-      <Text style={styleProps.textStyle}>{text}</Text>
+      <StyledText style={[styleProps.textStyle, {fontWeight: '700'}]}>
+        {text}
+      </StyledText>
     </Button>
   );
 }
 
 BaseButton.defaultProps = {
   active: true,
-  width: hScale(300),
-  height: vScale(42),
-  borderRadius: hScale(16),
+  width: window().width - 60,
+  height: 50,
+  borderRadius: 25,
   text: 'Кнопка',
-  textStyle: {color: 'white', fontSize: vScale(18)},
+  textStyle: {color: 'white', fontSize: 18},
   containerStyle: {},
   loading: false,
   onPress: () => {

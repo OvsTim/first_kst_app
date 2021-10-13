@@ -12,6 +12,11 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		184E8942AE82457B92D9516B /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E2AF943EA6C24849B18C1903 /* Poppins-SemiBold.ttf */; };
+		FA411BA5BFBD45BE82A1B887 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F0196611B1F4D0EA418F2E0 /* Roboto-Bold.ttf */; };
+		FCB1329624D94CF59CD386EE /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C489DA5DBB3F4E0884A1FBB4 /* Roboto-Regular.ttf */; };
+		1B6B4720384C4E02A71B0E76 /* SF-Pro-display.OTF in Resources */ = {isa = PBXBuildFile; fileRef = AB5563FA5E704F28A02510AF /* SF-Pro-display.OTF */; };
+		6EEB3D2CB586475CA643ABA9 /* SF-Pro-display-Medium.OTF in Resources */ = {isa = PBXBuildFile; fileRef = 716E616017734EDEAE7E2E16 /* SF-Pro-display-Medium.OTF */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +41,11 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = draft64/main.m; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = draft64/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		E2AF943EA6C24849B18C1903 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0F0196611B1F4D0EA418F2E0 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; name = "Roboto-Bold.ttf"; path = "../src/assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C489DA5DBB3F4E0884A1FBB4 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; name = "Roboto-Regular.ttf"; path = "../src/assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AB5563FA5E704F28A02510AF /* SF-Pro-display.OTF */ = {isa = PBXFileReference; name = "SF-Pro-display.OTF"; path = "../src/assets/fonts/SF-Pro-display.OTF"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		716E616017734EDEAE7E2E16 /* SF-Pro-display-Medium.OTF */ = {isa = PBXFileReference; name = "SF-Pro-display-Medium.OTF"; path = "../src/assets/fonts/SF-Pro-display-Medium.OTF"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +119,7 @@
 				00E356EF1AD99517003FC87E /* draft64Tests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				98032608FE3E48CCA54B456D /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -123,6 +134,19 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		98032608FE3E48CCA54B456D /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				E2AF943EA6C24849B18C1903 /* Poppins-SemiBold.ttf */,
+				0F0196611B1F4D0EA418F2E0 /* Roboto-Bold.ttf */,
+				C489DA5DBB3F4E0884A1FBB4 /* Roboto-Regular.ttf */,
+				AB5563FA5E704F28A02510AF /* SF-Pro-display.OTF */,
+				716E616017734EDEAE7E2E16 /* SF-Pro-display-Medium.OTF */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -214,6 +238,11 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				184E8942AE82457B92D9516B /* Poppins-SemiBold.ttf in Resources */,
+				FA411BA5BFBD45BE82A1B887 /* Roboto-Bold.ttf in Resources */,
+				FCB1329624D94CF59CD386EE /* Roboto-Regular.ttf in Resources */,
+				1B6B4720384C4E02A71B0E76 /* SF-Pro-display.OTF in Resources */,
+				6EEB3D2CB586475CA643ABA9 /* SF-Pro-display-Medium.OTF in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

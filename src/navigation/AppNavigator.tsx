@@ -11,6 +11,9 @@ import MenuScreen from '../components/MainTabComponents/MenuScreen';
 import ProfileScreen from '../components/MainTabComponents/ProfileScreen';
 import ContactsScreen from '../components/MainTabComponents/ContactsScreen';
 import BasketScreen from '../components/MainTabComponents/BasketScreen';
+import {Image, Text, View} from 'react-native';
+import {withFont} from '../components/_CustomComponents/HOC/withFont';
+import AboutScreen from '../components/AboutComponents/AboutScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -18,6 +21,7 @@ export type AppStackParamList = {
   Contacts: undefined;
   Menu: undefined;
   Profile: undefined;
+  About: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -29,15 +33,27 @@ const Tab = createBottomTabNavigator<AppStackParamList>();
 
 const options: StackNavigationOptions = {
   headerStyle: {
-    height: vScale(50),
-    backgroundColor: '#67b437',
+    height: 50,
+    backgroundColor: '#F2F2F2',
   },
+  headerPressColorAndroid: 'transparent',
   headerTitleAlign: 'center',
+  headerBackTitleVisible: true,
+  headerBackTitleStyle: {color: '#28B3C6', fontSize: 14, marginLeft: 4},
+  headerBackImage: _ => (
+    <Image
+      style={{width: 12, height: 21}}
+      source={require('../assets/back.png')}
+    />
+  ),
   headerTitleStyle: {
-    color: 'white',
-    fontSize: vScale(14),
+    color: 'black',
+    fontSize: 15,
+    fontWeight: '700',
+    fontFamily: 'Poppins-SemiBold',
   },
 };
+const StyledText = withFont(Text);
 
 function MenuTab() {
   return (
@@ -65,7 +81,12 @@ function ContactsTab() {
       <PoolsStack.Screen
         name="Contacts"
         component={ContactsScreen}
-        options={{}}
+        options={{headerShown: false}}
+      />
+      <PoolsStack.Screen
+        name="About"
+        component={AboutScreen}
+        options={{title: 'О приложении', headerBackTitle: 'Контакты'}}
       />
     </PoolsStack.Navigator>
   );
@@ -87,40 +108,149 @@ function Home() {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        activeTintColor: '#67b437',
         inactiveTintColor: 'gray',
-        labelStyle: {fontSize: 13},
         style: {
-          height: 60,
-          paddingBottom: 3,
+          height: 80,
         },
       }}>
       <Tab.Screen
         name="Menu"
         component={MenuTab}
         options={{
-          title: 'Меню',
+          tabBarLabel: ({}) => {
+            return (
+              <StyledText
+                style={{
+                  fontSize: 13,
+                  fontWeight: '600',
+                  color: 'rgba(0,0,0,0.5)',
+                  marginBottom: 18,
+                }}>
+                Меню
+              </StyledText>
+            );
+          },
+          tabBarIcon: ({focused, color, size}) => {
+            return (
+              <Image
+                style={{
+                  width: size,
+                  height: size,
+                  tintColor: focused ? '#28B3C6' : 'rgba(0,0,0,0.3)',
+                }}
+                source={require('../assets/menu_tab.png')}
+              />
+            );
+          },
         }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileTab}
         options={{
-          title: 'Скидки',
+          tabBarLabel: ({}) => {
+            return (
+              <StyledText
+                style={{
+                  fontSize: 13,
+                  fontWeight: '600',
+                  color: 'rgba(0,0,0,0.5)',
+                  marginBottom: 18,
+                }}>
+                Профиль
+              </StyledText>
+            );
+          },
+          tabBarIcon: ({focused, color, size}) => {
+            return (
+              <Image
+                style={{
+                  width: size,
+                  height: size,
+                  tintColor: focused ? '#28B3C6' : 'rgba(0,0,0,0.3)',
+                }}
+                source={require('../assets/Profile_tab.png')}
+              />
+            );
+          },
         }}
       />
       <Tab.Screen
         name="Contacts"
         component={ContactsTab}
         options={{
-          title: 'Контакты',
+          tabBarLabel: ({}) => {
+            return (
+              <StyledText
+                style={{
+                  fontSize: 13,
+                  fontWeight: '600',
+                  color: 'rgba(0,0,0,0.5)',
+                  marginBottom: 18,
+                }}>
+                Контакты
+              </StyledText>
+            );
+          },
+          tabBarIcon: ({focused, color, size}) => {
+            return (
+              <Image
+                style={{
+                  width: size,
+                  height: size,
+                  tintColor: focused ? '#28B3C6' : 'rgba(0,0,0,0.3)',
+                }}
+                source={require('../assets/Contact_tab.png')}
+              />
+            );
+          },
         }}
       />
       <Tab.Screen
         name="Basket"
         component={BasketTab}
         options={{
-          title: 'Корзина',
+          tabBarLabel: ({}) => {
+            return (
+              <StyledText
+                style={{
+                  fontSize: 13,
+                  fontWeight: '600',
+                  color: 'rgba(0,0,0,0.5)',
+                  marginBottom: 18,
+                }}>
+                Корзина
+              </StyledText>
+            );
+          },
+          tabBarIcon: ({focused, color, size}) => {
+            return (
+              <>
+                <Image
+                  style={{
+                    width: size,
+                    height: size,
+                    tintColor: focused ? '#28B3C6' : 'rgba(0,0,0,0.3)',
+                  }}
+                  source={require('../assets/Bag_tab.png')}
+                />
+                <View
+                  style={{
+                    right: 31,
+                    top: 5,
+                    position: 'absolute',
+                    width: 13,
+                    height: 13,
+                    backgroundColor: '#FF4545',
+                    borderRadius: 13 / 2,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={{fontSize: 7, color: 'white'}}>1</Text>
+                </View>
+              </>
+            );
+          },
         }}
       />
     </Tab.Navigator>

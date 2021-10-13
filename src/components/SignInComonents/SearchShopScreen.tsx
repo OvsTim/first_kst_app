@@ -25,7 +25,7 @@ type Props = {
 
 export default function SearchShopScreen({}: Props) {
   const dispatch = useAppDispatch();
-  const reference = storage().ref('images/eggs.png');
+  const reference = storage().ref('/images/eggs.png');
   const [code, setCode] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(60);
@@ -40,38 +40,19 @@ export default function SearchShopScreen({}: Props) {
   });
 
   useEffect(() => {
-    if (error) {
-      Vibration.vibrate(70);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (code.length === 4) {
-      Keyboard.dismiss();
-      if (code !== '1234') {
-        setError(true);
-      } else {
-        dispatch(
-          setAuthData({
-            token: 'new token kjhfkjdhgkdshf',
-            user_id: '123',
-            phone: '+789789494',
-            surname: 'Фомин',
-            name: 'Илья',
-            last_name: 'Вячеславович',
-          }),
-        );
-      }
-    } else {
-      setError(false);
-    }
-  }, [code]);
-
-  useEffect(() => {
     auth()
       .signInAnonymously()
       .then(() => {
         console.log('User signed in anonymously');
+        console.log('user', auth().currentUser);
+        // auth()
+        //   .signInWithPhoneNumber('+79610268213')
+        //   .then(res => {
+        //     console.log('result', res);
+        //   })
+        //   .catch(er => {
+        //     console.error(er);
+        //   });
         reference.getDownloadURL().then(res => {
           setUrl(res);
         });
@@ -104,46 +85,9 @@ export default function SearchShopScreen({}: Props) {
 
   //region jsx
 
-  function renderInput() {
-    return (
-      <View>
-        <Text
-          style={{
-            fontSize: vScale(12),
-            marginLeft: hScale(5),
-            marginBottom: vScale(4),
-          }}>
-          {'Код доступа'}
-        </Text>
-        <TextInputMask
-          keyboardType={'number-pad'}
-          style={[
-            styles.text_input_mask,
-            {borderColor: error ? 'red' : 'black'},
-          ]}
-          value={code}
-          placeholderTextColor={'gray'}
-          underlineColorAndroid={'rgba(0,0,0,0)'}
-          selectionColor={'black'}
-          mask={'[0000]'}
-          onChangeText={(formatted, extracted) => {
-            // @ts-ignore
-            setCode(extracted);
-          }}
-        />
-      </View>
-    );
-  }
-
   function renderContent() {
     return (
       <View style={styles.container}>
-        <StatusBar
-          translucent={false}
-          backgroundColor={'rgba(0,0,0,0.1)'}
-          barStyle="dark-content"
-        />
-        {renderInput()}
         {url !== '' && (
           <Image style={{width: 100, height: 100}} source={{uri: url}} />
         )}
@@ -151,6 +95,21 @@ export default function SearchShopScreen({}: Props) {
           title={'Javascript Crash Now.'}
           onPress={() => {
             // undefinedVariable.notAFunction();
+          }}
+        />
+        <Button
+          title={'Перейти в основную часть'}
+          onPress={() => {
+            dispatch(
+              setAuthData({
+                token: 'new token kjhfkjdhgkdshf',
+                user_id: '123',
+                phone: '+789789494',
+                surname: 'Фомин',
+                name: 'Илья',
+                last_name: 'Вячеславович',
+              }),
+            );
           }}
         />
       </View>

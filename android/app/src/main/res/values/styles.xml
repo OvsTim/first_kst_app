@@ -8,8 +8,9 @@
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="p">
             shortEdges <!-- default, shortEdges, never -->
         </item>
-        <item name="android:colorControlActivated">#FFA500</item>
-        <item name="android:textColorHighlight">#FFA500</item>
+        <item name="android:colorControlActivated">#000000</item>
+        <item name="android:textColorHighlight">#000000</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
 
@@ -17,6 +18,6 @@
         <item name="colorPrimaryDark">@color/status_bar_color</item>
     </style>
     <style name="DialogDatePicker.Theme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">#FFA500</item>
+        <item name="colorAccent">#299CA8</item>
     </style>
 </resources>

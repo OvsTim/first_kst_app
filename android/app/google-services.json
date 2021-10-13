@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "791496378729",
-    "firebase_url": "https://first-8a788-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "first-8a788",
-    "storage_bucket": "first-8a788.appspot.com"
+    "project_number": "164585661216",
+    "project_id": "firstkst",
+    "storage_bucket": "firstkst.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:791496378729:android:5a03a20322b079abfe95f8",
+        "mobilesdk_app_id": "1:164585661216:android:48d1b673486d7e1c302d45",
         "android_client_info": {
           "package_name": "first.kst"
         }
       },
       "oauth_client": [
         {
-          "client_id": "791496378729-nngoh65fk5ig98646gbe0mjc045diins.apps.googleusercontent.com",
+          "client_id": "164585661216-na7nq6lop7pqs59ps1jlfpsv41qb1j6v.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAkqXWi9Nq_4mmp9Xms_YMwl-xsDGrid2w"
+          "current_key": "AIzaSyApyoZSOS7Skk-AGKz8_gjSkHS-kvMJsEo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "791496378729-nngoh65fk5ig98646gbe0mjc045diins.apps.googleusercontent.com",
+              "client_id": "164585661216-na7nq6lop7pqs59ps1jlfpsv41qb1j6v.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

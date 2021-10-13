@@ -1,21 +1,23 @@
 import React from 'react';
-import {StatusBar, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
+import {withFont} from '../_CustomComponents/HOC/withFont';
+import BaseButton from '../_CustomComponents/BaseButton';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
-
+const StyledText = withFont(Text);
 export default function MenuScreen({}: Props) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <StatusBar
-        translucent={false}
-        backgroundColor={'rgba(0,0,0,0.1)'}
-        barStyle="dark-content"
+      <StyledText style={{fontWeight: '600'}}>MenuScreen</StyledText>
+      <BaseButton
+        text={'123'}
+        textStyle={{fontWeight: '700'}}
+        onPress={() => {}}
       />
-      <Text>MenuScreen</Text>
     </View>
   );
 }
