@@ -111,6 +111,7 @@ function Home() {
         inactiveTintColor: 'gray',
         style: {
           height: 80,
+          backgroundColor: '#F7F7F7',
         },
       }}>
       <Tab.Screen

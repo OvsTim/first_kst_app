@@ -194,6 +194,7 @@ export default function ContactsScreen({navigation}: Props) {
             />
           </View>
         </Pressable>
+        <View style={{height: 30}} />
       </>
     );
   }
