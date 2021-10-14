@@ -8,24 +8,24 @@ interface Props extends TextProps {
 function getFontName(fontWeight?: string): string {
   if (fontWeight === '700') {
     return Platform.select({
-      android: 'SF-Pro-display',
-      ios: 'SF-Pro-display',
-      default: 'Roboto',
-    });
-  } else if (fontWeight === '600') {
-    return Platform.select({
-      android: 'Poppins-SemiBold',
-      ios: 'Poppins SemiBold',
+      android: 'SFProDisplay-Bold',
+      ios: 'SFProDisplay-Bold',
       default: 'Roboto',
     });
   } else if (fontWeight === '500') {
     return Platform.select({
-      android: 'SF-Pro-display',
-      ios: 'SF-Pro-display',
+      android: 'SFProDisplay-Medium',
+      ios: 'SFProDisplay-Medium',
+      default: 'Roboto',
+    });
+  } else if (fontWeight === '400') {
+    return Platform.select({
+      android: 'SFProDisplay-Regular',
+      ios: 'SFProDisplay-Regular',
       default: 'Roboto',
     });
   } else {
-    return 'Montserrat Bold';
+    return 'Roboto';
   }
 }
 

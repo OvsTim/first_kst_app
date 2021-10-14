@@ -6,7 +6,6 @@ import {
 } from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {vScale} from '../utils/scaling';
 import MenuScreen from '../components/MainTabComponents/MenuScreen';
 import ProfileScreen from '../components/MainTabComponents/ProfileScreen';
 import ContactsScreen from '../components/MainTabComponents/ContactsScreen';
@@ -39,7 +38,12 @@ const options: StackNavigationOptions = {
   headerPressColorAndroid: 'transparent',
   headerTitleAlign: 'center',
   headerBackTitleVisible: true,
-  headerBackTitleStyle: {color: '#28B3C6', fontSize: 14, marginLeft: 4},
+  headerBackTitleStyle: {
+    color: '#28B3C6',
+    fontSize: 14,
+    marginLeft: 4,
+    fontFamily: 'SFProDisplay-Regular',
+  },
   headerBackImage: _ => (
     <Image
       style={{width: 12, height: 21}}
@@ -49,8 +53,7 @@ const options: StackNavigationOptions = {
   headerTitleStyle: {
     color: 'black',
     fontSize: 15,
-    fontWeight: '700',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'SFProDisplay-Bold',
   },
 };
 const StyledText = withFont(Text);
@@ -69,7 +72,7 @@ function ProfileTab() {
       <ProfileStack.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{}}
+        options={{title: 'Профиль', headerTitleStyle: {fontSize: 18}}}
       />
     </ProfileStack.Navigator>
   );
@@ -98,7 +101,7 @@ function BasketTab() {
       <BasketStack.Screen
         name="Basket"
         component={BasketScreen}
-        options={() => ({})}
+        options={() => ({title: 'Корзина'})}
       />
     </BasketStack.Navigator>
   );
@@ -131,7 +134,7 @@ function Home() {
               </StyledText>
             );
           },
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({focused, size}) => {
             return (
               <Image
                 style={{
@@ -162,7 +165,7 @@ function Home() {
               </StyledText>
             );
           },
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({focused, size}) => {
             return (
               <Image
                 style={{
@@ -193,7 +196,7 @@ function Home() {
               </StyledText>
             );
           },
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({focused, size}) => {
             return (
               <Image
                 style={{
@@ -224,7 +227,7 @@ function Home() {
               </StyledText>
             );
           },
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({focused, size}) => {
             return (
               <>
                 <Image
@@ -247,7 +250,10 @@ function Home() {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Text style={{fontSize: 7, color: 'white'}}>1</Text>
+                  <StyledText
+                    style={{fontSize: 7, color: 'white', fontWeight: '500'}}>
+                    1
+                  </StyledText>
                 </View>
               </>
             );
