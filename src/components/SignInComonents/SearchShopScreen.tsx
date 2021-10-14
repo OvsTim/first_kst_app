@@ -3,21 +3,20 @@ import {
   Button,
   Image,
   Keyboard,
-  StatusBar,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
-  Vibration,
   View,
 } from 'react-native';
 import {useAppDispatch} from '../../redux';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {hScale, vScale, window} from '../../utils/scaling';
-import TextInputMask from 'react-native-text-input-mask';
 import {setAuthData} from '../../redux/UserDataSlice';
 import storage from '@react-native-firebase/storage';
-import auth from '@react-native-firebase/auth';
+import auth, {
+  FirebaseAuthTypes,
+  ConfirmationResult,
+} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'SearchShop'>;
@@ -26,11 +25,10 @@ type Props = {
 export default function SearchShopScreen({}: Props) {
   const dispatch = useAppDispatch();
   const reference = storage().ref('/images/eggs.png');
-  const [code, setCode] = useState<string>('');
-  const [error, setError] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [url, setUrl] = useState<string>('');
-
+  // If null, no SMS has been sent
+  const [confirm, setConfirm] = useState<ConfirmationResult | null>(null);
   useEffect(() => {
     const timer = setTimeout(() => {
       decrementTime();
@@ -43,26 +41,19 @@ export default function SearchShopScreen({}: Props) {
     auth()
       .signInAnonymously()
       .then(() => {
-        console.log('User signed in anonymously');
-        console.log('user', auth().currentUser);
-        // auth()
-        //   .signInWithPhoneNumber('+79610268213')
-        //   .then(res => {
-        //     console.log('result', res);
-        //   })
-        //   .catch(er => {
-        //     console.error(er);
-        //   });
+        // console.log('User signed in anonymously');
+        // console.log('user', auth().currentUser);
+
         reference.getDownloadURL().then(res => {
           setUrl(res);
         });
-        firestore()
-          .collection('contacts')
-          .doc('contact_data')
-          .get()
-          .then(res => {
-            console.log('result', res);
-          });
+        // firestore()
+        //   .collection('contacts')
+        //   .doc('contact_data')
+        //   .get()
+        //   .then(res => {
+        //     console.log('result', res);
+        //   });
       })
       .catch(error => {
         if (error.code === 'auth/operation-not-allowed') {
@@ -81,6 +72,15 @@ export default function SearchShopScreen({}: Props) {
 
     setTimeLeft(timeLeft - 1);
   }
+
+  // Handle the button press
+  async function signInWithPhoneNumber(phoneNumber: string) {
+    const confirmation = await auth().signInWithPhoneNumber(phoneNumber, true);
+    console.log('confirmation', confirmation);
+    setConfirm(confirmation);
+    // const res = await confirmation.confirm('123456');
+    // console.log('resConfirm', res);
+  }
   //endregion handlers
 
   //region jsx
@@ -97,6 +97,7 @@ export default function SearchShopScreen({}: Props) {
             // undefinedVariable.notAFunction();
           }}
         />
+        <View style={{height: 50}} />
         <Button
           title={'Перейти в основную часть'}
           onPress={() => {
@@ -111,6 +112,12 @@ export default function SearchShopScreen({}: Props) {
               }),
             );
           }}
+        />
+        <View style={{height: 50}} />
+
+        <Button
+          title={'Войти по телефону(тест)'}
+          onPress={() => signInWithPhoneNumber('+79610268213')}
         />
       </View>
     );
