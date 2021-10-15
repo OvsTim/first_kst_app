@@ -170,7 +170,7 @@ export default function ProfileScreen({navigation}: Props) {
             borderBottomWidth: 1,
             borderBottomColor: '#F2F2F6',
           }}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('DeliveryList')}
           android_ripple={{color: 'gray', radius: 200}}>
           <View
             style={{
@@ -207,7 +207,7 @@ export default function ProfileScreen({navigation}: Props) {
             borderBottomWidth: 1,
             borderBottomColor: '#F2F2F6',
           }}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('History')}
           android_ripple={{color: 'gray', radius: 200}}>
           <View
             style={{

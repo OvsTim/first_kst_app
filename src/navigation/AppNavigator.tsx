@@ -13,6 +13,8 @@ import BasketScreen from '../components/MainTabComponents/BasketScreen';
 import {Image, Text, View} from 'react-native';
 import {withFont} from '../components/_CustomComponents/HOC/withFont';
 import AboutScreen from '../components/AboutComponents/AboutScreen';
+import HistoryScreen from '../components/HistoryComponents/HistoryScreen';
+import DeliveryListScreen from '../components/DeviveryComponents/DeliveryListScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -21,6 +23,8 @@ export type AppStackParamList = {
   Menu: undefined;
   Profile: undefined;
   About: undefined;
+  DeliveryList: undefined;
+  History: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -72,7 +76,17 @@ function ProfileTab() {
       <ProfileStack.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{title: 'Профиль', headerTitleStyle: {fontSize: 18}}}
+        options={{title: 'Профиль'}}
+      />
+      <ProfileStack.Screen
+        name="DeliveryList"
+        component={DeliveryListScreen}
+        options={{title: 'Адреса доставки', headerBackTitle: 'Профиль'}}
+      />
+      <ProfileStack.Screen
+        name="History"
+        component={HistoryScreen}
+        options={{title: 'История заказов', headerBackTitle: 'Профиль'}}
       />
     </ProfileStack.Navigator>
   );
