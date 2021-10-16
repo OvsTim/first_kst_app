@@ -198,24 +198,26 @@ export default function HistoryScreen({}: Props) {
               {'2 000 ₸'}
             </StyledText>
           </View>
-          <Button onPress={() => {}} containerStyle={{}}>
-            <View style={{flexDirection: 'row', marginVertical: 20}}>
-              <Image
-                style={{width: 16, height: 16}}
-                source={require('../../assets/restart.png')}
-              />
-              <StyledText
-                style={{
-                  marginLeft: 6,
-                  color: '#1FA7B5',
-                  fontWeight: '400',
-                  fontSize: 18,
-                  lineHeight: 21,
-                }}>
-                Повторить заказ
-              </StyledText>
-            </View>
-          </Button>
+          <View style={{borderRadius: 15, overflow: 'hidden'}}>
+            <Button onPress={() => {}} containerStyle={{}}>
+              <View style={{flexDirection: 'row', marginVertical: 20}}>
+                <Image
+                  style={{width: 16, height: 16}}
+                  source={require('../../assets/restart.png')}
+                />
+                <StyledText
+                  style={{
+                    marginLeft: 6,
+                    color: '#1FA7B5',
+                    fontWeight: '400',
+                    fontSize: 18,
+                    lineHeight: 21,
+                  }}>
+                  Повторить заказ
+                </StyledText>
+              </View>
+            </Button>
+          </View>
         </View>
       </DropShadow>
     );
