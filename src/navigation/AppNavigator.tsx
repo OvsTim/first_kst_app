@@ -16,6 +16,7 @@ import AboutScreen from '../components/AboutComponents/AboutScreen';
 import HistoryScreen from '../components/HistoryComponents/HistoryScreen';
 import DeliveryListScreen from '../components/DeviveryComponents/DeliveryListScreen';
 import MapScreen from '../components/MapComponents/MapScreen';
+import SettingsScreen from '../components/SettingsComponents/SettingsScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -27,12 +28,13 @@ export type AppStackParamList = {
   DeliveryList: undefined;
   History: undefined;
   Map: undefined;
+  Settings: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
 const MenuStack = createStackNavigator<AppStackParamList>();
 const ProfileStack = createStackNavigator<AppStackParamList>();
-const PoolsStack = createStackNavigator<AppStackParamList>();
+const ContactsStack = createStackNavigator<AppStackParamList>();
 const BasketStack = createStackNavigator<AppStackParamList>();
 const Tab = createBottomTabNavigator<AppStackParamList>();
 
@@ -90,29 +92,34 @@ function ProfileTab() {
         component={HistoryScreen}
         options={{title: 'История заказов', headerBackTitle: 'Профиль'}}
       />
+      <ProfileStack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{title: 'Настройки', headerBackTitle: 'Профиль'}}
+      />
     </ProfileStack.Navigator>
   );
 }
 
 function ContactsTab() {
   return (
-    <PoolsStack.Navigator screenOptions={options}>
-      <PoolsStack.Screen
+    <ContactsStack.Navigator screenOptions={options}>
+      <ContactsStack.Screen
         name="Contacts"
         component={ContactsScreen}
         options={{headerShown: false}}
       />
-      <PoolsStack.Screen
+      <ContactsStack.Screen
         name="About"
         component={AboutScreen}
         options={{title: 'О приложении', headerBackTitle: 'Контакты'}}
       />
-      <PoolsStack.Screen
+      <ContactsStack.Screen
         name="Map"
         component={MapScreen}
         options={{title: 'Рестораны на карте', headerBackTitle: 'Контакты'}}
       />
-    </PoolsStack.Navigator>
+    </ContactsStack.Navigator>
   );
 }
 
@@ -132,6 +139,7 @@ function Home() {
   return (
     <Tab.Navigator
       tabBarOptions={{
+        keyboardHidesTabBar: true,
         inactiveTintColor: 'gray',
         style: {
           height: 80,

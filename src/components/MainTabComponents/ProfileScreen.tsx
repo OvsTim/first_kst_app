@@ -122,7 +122,7 @@ export default function ProfileScreen({navigation}: Props) {
               right: 17,
             }}>
             <Button
-              onPress={() => {}}
+              onPress={() => navigation.navigate('Settings')}
               containerStyle={{
                 backgroundColor: '#F3F3F7',
                 width: 30,
