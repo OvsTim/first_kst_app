@@ -41,7 +41,7 @@ export default function DeliveryListScreen({}: Props) {
           textAlign: 'center',
           marginTop: 20,
         }}>
-        Здесь будут хранится адреса доставки, которые вы сохранили.
+        Здесь будут храниться адреса доставки, которые вы сохранили.
       </StyledText>
       <View style={{height: 42}} />
       <BaseButton

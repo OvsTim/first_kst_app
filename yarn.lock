@@ -5992,6 +5992,11 @@ react-native-text-input-mask@^3.1.3:
   resolved "https://registry.yarnpkg.com/react-native-text-input-mask/-/react-native-text-input-mask-3.1.4.tgz#9b09d97a910ce8c24024d6187256b07c73e173ac"
   integrity sha512-XhTPL1/Pv0kyuH8TMJGaxfnq5su9e+4G2PLngiismZ4xbP8+W/1ZEH4KQJQV+QkE2I5Oi+lPJXB2E47s60/OBA==
 
+react-native-yamap@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-yamap/-/react-native-yamap-4.0.0.tgz#85c0c38ea0748a1872207b4e4b88bb2ddcfb04b6"
+  integrity sha512-Cx9w+rBxAXFU1H2I/0XiKA0oF+994C7hE9I5Wszn5BvzRlNwyvG4dL0Ir1G4Qyn4T2IdNyxMbwXjECPSyPxi4w==
+
 react-native@0.64.0:
   version "0.64.0"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.64.0.tgz#c3bde5b638bf8bcf12bae6e094930d39cb942ab7"

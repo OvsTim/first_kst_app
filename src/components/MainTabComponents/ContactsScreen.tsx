@@ -34,7 +34,7 @@ export default function ContactsScreen({navigation}: Props) {
           <BaseButton
             containerStyle={{}}
             text={'Рестораны на карте'}
-            onPress={() => {}}
+            onPress={() => navigation.navigate('Map')}
           />
           <View style={{height: 19}} />
         </ImageBackground>

@@ -8,6 +8,7 @@ import SplashScreen from 'react-native-splash-screen';
 import {StatusBar} from 'react-native';
 import analytics from '@react-native-firebase/analytics';
 import messaging from '@react-native-firebase/messaging';
+import YaMap from 'react-native-yamap';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -24,6 +25,7 @@ export default function AppWithNavigationState() {
   useEffect(() => {
     console.log('useEffect splash');
     SplashScreen.hide();
+    YaMap.init('5f991160-3890-4d3c-acc4-59203f61edd3');
   }, []);
   const routeNameRef = React.useRef<string | undefined>('');
   const navigationRef = React.useRef<NavigationContainerRef>(null);

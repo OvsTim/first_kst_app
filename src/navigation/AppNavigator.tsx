@@ -15,6 +15,7 @@ import {withFont} from '../components/_CustomComponents/HOC/withFont';
 import AboutScreen from '../components/AboutComponents/AboutScreen';
 import HistoryScreen from '../components/HistoryComponents/HistoryScreen';
 import DeliveryListScreen from '../components/DeviveryComponents/DeliveryListScreen';
+import MapScreen from '../components/MapComponents/MapScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -25,6 +26,7 @@ export type AppStackParamList = {
   About: undefined;
   DeliveryList: undefined;
   History: undefined;
+  Map: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -104,6 +106,11 @@ function ContactsTab() {
         name="About"
         component={AboutScreen}
         options={{title: 'О приложении', headerBackTitle: 'Контакты'}}
+      />
+      <PoolsStack.Screen
+        name="Map"
+        component={MapScreen}
+        options={{title: 'Рестораны на карте', headerBackTitle: 'Контакты'}}
       />
     </PoolsStack.Navigator>
   );
