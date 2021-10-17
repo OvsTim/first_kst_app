@@ -87,9 +87,7 @@ export default function HistoryScreen({}: Props) {
             backgroundColor: 'white',
             borderRadius: 15,
           }}>
-          <Pressable
-            onPress={() => {}}
-            android_ripple={{color: 'gray', radius: 200}}>
+          <Pressable onPress={() => {}}>
             <StyledText
               style={{
                 color: '#00000080',
@@ -234,7 +232,7 @@ export default function HistoryScreen({}: Props) {
         />
         <FlatList
           contentContainerStyle={{width, alignItems: 'center'}}
-          data={[1, 2, 3]}
+          data={[1]}
           renderItem={() => renderItem()}
         />
       </View>

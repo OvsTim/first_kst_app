@@ -1,7 +1,5 @@
 import {combineReducers} from 'redux';
 import dataSlice from './UserDataSlice';
-import newsSlice from './NewsSlice';
-import poolsSlice from './PoolsSlice';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {persistReducer, createMigrate} from 'redux-persist';
 import {configureStore} from '@reduxjs/toolkit';
@@ -14,20 +12,8 @@ const dataPersistConfig = {
   storage: AsyncStorage,
 };
 
-const newsPersistConfig = {
-  key: 'news',
-  storage: AsyncStorage,
-};
-
-const poolsPersistConfig = {
-  key: 'pools',
-  storage: AsyncStorage,
-};
-
 const AppReducer = combineReducers({
   data: persistReducer(dataPersistConfig, dataSlice),
-  news: persistReducer(newsPersistConfig, newsSlice),
-  pools: persistReducer(poolsPersistConfig, poolsSlice),
 });
 
 const store = configureStore({

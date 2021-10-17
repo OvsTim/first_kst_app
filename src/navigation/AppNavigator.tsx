@@ -3,6 +3,7 @@ import * as React from 'react';
 import {
   createStackNavigator,
   StackNavigationOptions,
+  TransitionPresets,
 } from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -17,6 +18,7 @@ import HistoryScreen from '../components/HistoryComponents/HistoryScreen';
 import DeliveryListScreen from '../components/DeviveryComponents/DeliveryListScreen';
 import MapScreen from '../components/MapComponents/MapScreen';
 import SettingsScreen from '../components/SettingsComponents/SettingsScreen';
+import ProductScreen from '../components/ProductComponents/ProductScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -29,6 +31,7 @@ export type AppStackParamList = {
   History: undefined;
   Map: undefined;
   Settings: undefined;
+  Product: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -300,6 +303,14 @@ export default function AppNavigator() {
         name="Home"
         component={Home}
         options={{headerShown: false, headerBackTitleVisible: false}}
+      />
+      <Stack.Screen
+        name={'Product'}
+        component={ProductScreen}
+        options={{
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+          headerShown: false,
+        }}
       />
       {/*<Stack.Screen*/}
       {/*  name="EditProfile"*/}

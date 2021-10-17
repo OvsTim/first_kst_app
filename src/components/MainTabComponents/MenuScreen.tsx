@@ -9,14 +9,14 @@ type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
 const StyledText = withFont(Text);
-export default function MenuScreen({}: Props) {
+export default function MenuScreen({navigation}: Props) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <StyledText style={{fontWeight: '600'}}>MenuScreen</StyledText>
       <BaseButton
         text={'123'}
         textStyle={{fontWeight: '700'}}
-        onPress={() => {}}
+        onPress={() => navigation.navigate('Product')}
       />
     </View>
   );
