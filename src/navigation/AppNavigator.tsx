@@ -19,6 +19,7 @@ import DeliveryListScreen from '../components/DeviveryComponents/DeliveryListScr
 import MapScreen from '../components/MapComponents/MapScreen';
 import SettingsScreen from '../components/SettingsComponents/SettingsScreen';
 import ProductScreen from '../components/ProductComponents/ProductScreen';
+import OrderDeliveryScreen from '../components/OrderDeliveryComponents/OrderDeliveryScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -32,6 +33,7 @@ export type AppStackParamList = {
   Map: undefined;
   Settings: undefined;
   Product: undefined;
+  OrderDelivery: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -133,6 +135,11 @@ function BasketTab() {
         name="Basket"
         component={BasketScreen}
         options={() => ({title: 'Корзина'})}
+      />
+      <BasketStack.Screen
+        name={'OrderDelivery'}
+        component={OrderDeliveryScreen}
+        options={() => ({title: '', headerLeft: () => <View />})}
       />
     </BasketStack.Navigator>
   );
@@ -273,7 +280,7 @@ function Home() {
                 <View
                   style={{
                     right: 31,
-                    top: 5,
+                    top: 8,
                     position: 'absolute',
                     width: 13,
                     height: 13,

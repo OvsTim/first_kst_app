@@ -180,16 +180,16 @@ export default function HistoryScreen({}: Props) {
             <StyledText
               style={{
                 color: 'black',
-                fontSize: 12,
+                fontSize: 14,
                 lineHeight: 14,
-                fontWeight: '400',
+                fontWeight: '700',
               }}>
               Сумма
             </StyledText>
             <StyledText
               style={{
                 color: 'black',
-                fontSize: 12,
+                fontSize: 14,
                 lineHeight: 14,
                 fontWeight: '700',
               }}>

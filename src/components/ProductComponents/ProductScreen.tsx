@@ -12,14 +12,13 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
-import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import BaseButton from '../_CustomComponents/BaseButton';
+import Collapsible from 'react-native-collapsible';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Product'>;
 };
 const StyledText = withFont(Text);
-const Button = withPressable(View);
 export default function ProductScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const scrollViewRef = React.createRef<ScrollView>();
@@ -131,23 +130,34 @@ export default function ProductScreen({navigation}: Props) {
             marginHorizontal: 40,
             width: width - 80,
           }}>
-          <StyledText
-            numberOfLines={numberOfLines}
-            ellipsizeMode={'tail'}
-            style={{fontWeight: '400', fontSize: 20, color: '#000000B2'}}>
-            Блинчики с грибами это отличная закуска, которая не требует никакого
-            другого гарнира к грибам. Блинчики с грибами это отличная закуска,
-            которая не требует никакого другого гарнира к грибам. Блинчики с
-            грибами это отличная закуска, которая не требует никакого другого
-            гарнира к грибам. Блинчики с грибами это отличная закуска, которая
-            не требует никакого другого гарнира к грибам. Блинчики с грибами это
-            отличная закуска, которая не требует никакого другого гарнира к
-            грибам. Блинчики с грибами это отличная закуска, которая не требует
-            никакого другого гарнира к грибам. Блинчики с грибами это отличная
-            закуска, которая не требует никакого другого гарнира к грибам.
-            Блинчики с грибами это отличная закуска, которая не требует никакого
-            другого гарнира к грибам.
-          </StyledText>
+          <Pressable
+            onPress={() => {
+              if (numberOfLines) {
+                setNumberOfLines(undefined);
+              } else {
+                setNumberOfLines(3);
+              }
+            }}>
+            <Collapsible collapsed={numberOfLines === 3} collapsedHeight={70}>
+              <StyledText
+                numberOfLines={numberOfLines}
+                style={{fontWeight: '400', fontSize: 20, color: '#000000B2'}}>
+                Блинчики с грибами это отличная закуска, которая не требует
+                никакого другого гарнира к грибам. Блинчики с грибами это
+                отличная закуска, которая не требует никакого другого гарнира к
+                грибам. Блинчики с грибами это отличная закуска, которая не
+                требует никакого другого гарнира к грибам. Блинчики с грибами
+                это отличная закуска, которая не требует никакого другого
+                гарнира к грибам. Блинчики с грибами это отличная закуска,
+                которая не требует никакого другого гарнира к грибам. Блинчики с
+                грибами это отличная закуска, которая не требует никакого
+                другого гарнира к грибам. Блинчики с грибами это отличная
+                закуска, которая не требует никакого другого гарнира к грибам.
+                Блинчики с грибами это отличная закуска, которая не требует
+                никакого другого гарнира к грибам.
+              </StyledText>
+            </Collapsible>
+          </Pressable>
         </View>
         <View
           style={{
@@ -204,7 +214,10 @@ export default function ProductScreen({navigation}: Props) {
           borderBottomWidth: 1,
           borderBottomColor: '#DCDCEB',
         }}>
-        <StyledText>Количество</StyledText>
+        <StyledText
+          style={{fontWeight: '400', fontSize: 20, color: '#000000B2'}}>
+          Количество
+        </StyledText>
 
         <View
           style={{

@@ -9,7 +9,7 @@ type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
 };
 
-export default function BasketScreen({}: Props) {
+export default function BasketScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
   return (
@@ -48,7 +48,7 @@ export default function BasketScreen({}: Props) {
       <BaseButton
         width={width - 66 - 67}
         text={'Перейти в меню'}
-        onPress={() => {}}
+        onPress={() => navigation.navigate('OrderDelivery')}
       />
     </View>
   );
