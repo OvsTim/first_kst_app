@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import SearchShop from '../components/SignInComonents/SearchShopScreen';
 
 export type AuthStackParamList = {
@@ -15,7 +15,10 @@ export default function AuthNavigator() {
       <Stack.Screen
         name="SearchShop"
         component={SearchShop}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+        }}
       />
     </>
   );

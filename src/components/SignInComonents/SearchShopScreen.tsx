@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {
   Button,
-  Image,
   Keyboard,
   StyleSheet,
   TouchableWithoutFeedback,
@@ -12,30 +11,15 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {hScale, vScale, window} from '../../utils/scaling';
 import {setAuthData} from '../../redux/UserDataSlice';
-import storage from '@react-native-firebase/storage';
-import auth, {
-  FirebaseAuthTypes,
-  ConfirmationResult,
-} from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import auth, {ConfirmationResult} from '@react-native-firebase/auth';
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'SearchShop'>;
 };
 
 export default function SearchShopScreen({}: Props) {
   const dispatch = useAppDispatch();
-  const reference = storage().ref('/images/eggs.png');
-  const [timeLeft, setTimeLeft] = useState<number>(60);
-  const [url, setUrl] = useState<string>('');
   // If null, no SMS has been sent
   const [confirm, setConfirm] = useState<ConfirmationResult | null>(null);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      decrementTime();
-    }, 1000);
-    // Clear timeout if the component is unmounted
-    return () => clearTimeout(timer);
-  });
 
   useEffect(() => {
     auth()
@@ -43,10 +27,6 @@ export default function SearchShopScreen({}: Props) {
       .then(() => {
         // console.log('User signed in anonymously');
         // console.log('user', auth().currentUser);
-
-        reference.getDownloadURL().then(res => {
-          setUrl(res);
-        });
         // firestore()
         //   .collection('contacts')
         //   .doc('contact_data')
@@ -65,13 +45,6 @@ export default function SearchShopScreen({}: Props) {
   }, []);
 
   //region handlers
-  function decrementTime() {
-    if (timeLeft === 0) {
-      return;
-    }
-
-    setTimeLeft(timeLeft - 1);
-  }
 
   // Handle the button press
   async function signInWithPhoneNumber(phoneNumber: string) {
@@ -88,9 +61,6 @@ export default function SearchShopScreen({}: Props) {
   function renderContent() {
     return (
       <View style={styles.container}>
-        {url !== '' && (
-          <Image style={{width: 100, height: 100}} source={{uri: url}} />
-        )}
         <Button
           title={'Javascript Crash Now.'}
           onPress={() => {
@@ -136,7 +106,7 @@ export default function SearchShopScreen({}: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, alignItems: 'center'},
+  container: {flex: 1, alignItems: 'center', justifyContent: 'center'},
   text: {
     color: 'black',
     fontSize: hScale(15),

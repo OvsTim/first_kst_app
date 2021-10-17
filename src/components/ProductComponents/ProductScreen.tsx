@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   Pressable,
+  ScrollView,
   StatusBar,
   Text,
   useWindowDimensions,
@@ -21,6 +22,9 @@ const StyledText = withFont(Text);
 const Button = withPressable(View);
 export default function ProductScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
+  const scrollViewRef = React.createRef<ScrollView>();
+
+  const [numberOfLines, setNumberOfLines] = useState<number | undefined>(3);
 
   function renderTopImage() {
     return (
@@ -114,20 +118,74 @@ export default function ProductScreen({navigation}: Props) {
 
   function renderDescription() {
     return (
-      <View
-        style={{
-          marginTop: 14,
-          paddingBottom: 14,
-          borderBottomWidth: 1,
-          borderBottomColor: '#DCDCEB',
-          marginHorizontal: 40,
-        }}>
-        <StyledText
-          style={{fontWeight: '400', fontSize: 20, color: '#000000B2'}}>
-          Блинчики с грибами это отличная закуска, которая не требует никакого
-          другого гарнира к грибам.
-        </StyledText>
-      </View>
+      <>
+        <View
+          style={{
+            marginTop: 14,
+            paddingBottom: 14,
+            borderBottomWidth: 1,
+            borderBottomColor: '#DCDCEB',
+            marginHorizontal: 40,
+            width: width - 80,
+          }}>
+          <StyledText
+            numberOfLines={numberOfLines}
+            ellipsizeMode={'tail'}
+            style={{fontWeight: '400', fontSize: 20, color: '#000000B2'}}>
+            Блинчики с грибами это отличная закуска, которая не требует никакого
+            другого гарнира к грибам. Блинчики с грибами это отличная закуска,
+            которая не требует никакого другого гарнира к грибам. Блинчики с
+            грибами это отличная закуска, которая не требует никакого другого
+            гарнира к грибам. Блинчики с грибами это отличная закуска, которая
+            не требует никакого другого гарнира к грибам. Блинчики с грибами это
+            отличная закуска, которая не требует никакого другого гарнира к
+            грибам. Блинчики с грибами это отличная закуска, которая не требует
+            никакого другого гарнира к грибам. Блинчики с грибами это отличная
+            закуска, которая не требует никакого другого гарнира к грибам.
+            Блинчики с грибами это отличная закуска, которая не требует никакого
+            другого гарнира к грибам.
+          </StyledText>
+        </View>
+        <View
+          style={{
+            width: 20,
+            height: 20,
+            marginTop: -10,
+            overflow: 'hidden',
+            borderRadius: 10,
+            borderColor: '#F3F3F7',
+            borderWidth: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'white',
+          }}>
+          <Pressable
+            pressRetentionOffset={{top: 20, bottom: 20, left: 20, right: 20}}
+            onPress={() => {
+              if (numberOfLines) {
+                setNumberOfLines(undefined);
+              } else {
+                setNumberOfLines(3);
+              }
+            }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 20,
+              height: 20,
+            }}
+            android_ripple={{color: 'gray', radius: 200}}>
+            <Image
+              style={{
+                height: 5,
+                width: 10,
+                transform: [{rotate: numberOfLines ? '0deg' : '180deg'}],
+              }}
+              source={require('../../assets/droprdown.png')}
+            />
+          </Pressable>
+        </View>
+      </>
     );
   }
 
@@ -227,16 +285,25 @@ export default function ProductScreen({navigation}: Props) {
   }
 
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
-      <StatusBar
-        translucent={false}
-        barStyle={'dark-content'}
-        backgroundColor={'white'}
-      />
-      {renderTopImage()}
-      {renderCard()}
-      {renderDescription()}
-      {renderCount()}
+    <View style={{flex: 1}}>
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{
+          flexGrow: 0,
+          alignItems: 'center',
+          paddingBottom: 150,
+          justifyContent: 'flex-start',
+        }}>
+        <StatusBar
+          translucent={false}
+          barStyle={'dark-content'}
+          backgroundColor={'white'}
+        />
+        {renderTopImage()}
+        {renderCard()}
+        {renderDescription()}
+        {renderCount()}
+      </ScrollView>
       {renderBottomButton()}
     </View>
   );
