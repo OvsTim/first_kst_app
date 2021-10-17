@@ -51,12 +51,15 @@ export default function ProductScreen({navigation}: Props) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Button onPress={() => navigation.goBack()} containerStyle={{}}>
+          <Pressable
+            pressRetentionOffset={20}
+            onPress={() => navigation.goBack()}
+            android_ripple={{color: 'gray', radius: 200}}>
             <Image
               style={{width: 20, height: 20}}
               source={require('../../assets/product_close.png')}
             />
-          </Button>
+          </Pressable>
         </View>
       </>
     );

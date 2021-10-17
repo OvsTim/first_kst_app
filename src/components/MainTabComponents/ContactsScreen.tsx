@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ImageBackground,
+  Linking,
   Pressable,
   ScrollView,
   StatusBar,
@@ -13,12 +14,40 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {withFont} from '../_CustomComponents/HOC/withFont';
-
+import firestore from '@react-native-firebase/firestore';
+import {openWhatsApp} from '../../utils/linkingUtils';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Contacts'>;
 };
 const StyledText = withFont(Text);
 export default function ContactsScreen({navigation}: Props) {
+  const [contactsData, setContactsData] = useState<Record<string, string>>({});
+
+  React.useEffect(() => {
+    firestore()
+      .collection('contacts')
+      .doc('contact_data')
+      .get()
+      .then(res => {
+        if (res.exists) {
+          let data: Record<string, string> = {};
+          data.whatsapp = res.get<string>('whatsapp');
+          data.phone = res.get<string>('phone');
+
+          data.instagram = res.get<string>('instagram');
+          if (res.get<string>('vk') !== '') {
+            data.vk = res.get<string>('vk');
+          }
+
+          if (res.get<string>('youtube') !== '') {
+            data.youtube = res.get<string>('youtube');
+          }
+
+          setContactsData(data);
+        }
+      });
+  }, []);
+
   function renderImageAndButton() {
     return (
       <>
@@ -72,7 +101,11 @@ export default function ContactsScreen({navigation}: Props) {
               width: width / 2 - 13 - 34,
             }}
             text={'Позвонить'}
-            onPress={() => {}}
+            onPress={() => {
+              if (contactsData.phone) {
+                Linking.openURL('tel:' + contactsData.phone);
+              }
+            }}
           />
           <View style={{width: 13}} />
           <BaseButton
@@ -82,7 +115,11 @@ export default function ContactsScreen({navigation}: Props) {
               width: width / 2 - 13 - 34,
             }}
             text={'WhatsApp'}
-            onPress={() => {}}
+            onPress={() => {
+              if (contactsData.whatsapp) {
+                openWhatsApp(contactsData.whatsapp);
+              }
+            }}
           />
         </View>
       </>
@@ -95,44 +132,57 @@ export default function ContactsScreen({navigation}: Props) {
         style={{
           flexDirection: 'row',
           width,
+          height: 89 - 20,
           justifyContent: 'center',
           marginTop: 20,
           paddingBottom: 20,
           borderBottomWidth: 1,
           borderBottomColor: '#F2F2F6',
         }}>
-        <View style={{overflow: 'hidden', borderRadius: 24}}>
-          <Pressable
-            onPress={() => {}}
-            android_ripple={{color: 'gray', radius: 200}}>
-            <Image
-              style={{width: 48, height: 48}}
-              source={require('../../assets/inst.png')}
-            />
-          </Pressable>
-        </View>
-        <View style={{width: 20}} />
-        <View style={{overflow: 'hidden', borderRadius: 24}}>
-          <Pressable
-            onPress={() => {}}
-            android_ripple={{color: 'gray', radius: 200}}>
-            <Image
-              style={{width: 48, height: 48}}
-              source={require('../../assets/vk.png')}
-            />
-          </Pressable>
-        </View>
-        <View style={{width: 20}} />
-        <View style={{overflow: 'hidden', borderRadius: 24}}>
-          <Pressable
-            onPress={() => {}}
-            android_ripple={{color: 'gray', radius: 200}}>
-            <Image
-              style={{width: 48, height: 48}}
-              source={require('../../assets/youtube.png')}
-            />
-          </Pressable>
-        </View>
+        {contactsData.instagram && (
+          <View style={{overflow: 'hidden', borderRadius: 24}}>
+            <Pressable
+              onPress={() => {
+                Linking.openURL(contactsData.instagram);
+              }}
+              android_ripple={{color: 'gray', radius: 200}}>
+              <Image
+                style={{width: 48, height: 48}}
+                source={require('../../assets/inst.png')}
+              />
+            </Pressable>
+          </View>
+        )}
+        {contactsData.vk && (
+          <>
+            <View style={{width: 20}} />
+            <View style={{overflow: 'hidden', borderRadius: 24}}>
+              <Pressable
+                onPress={() => Linking.openURL(contactsData.vk)}
+                android_ripple={{color: 'gray', radius: 200}}>
+                <Image
+                  style={{width: 48, height: 48}}
+                  source={require('../../assets/vk.png')}
+                />
+              </Pressable>
+            </View>
+          </>
+        )}
+        {contactsData.youtube && (
+          <>
+            <View style={{width: 20}} />
+            <View style={{overflow: 'hidden', borderRadius: 24}}>
+              <Pressable
+                onPress={() => Linking.openURL(contactsData.youtube)}
+                android_ripple={{color: 'gray', radius: 200}}>
+                <Image
+                  style={{width: 48, height: 48}}
+                  source={require('../../assets/youtube.png')}
+                />
+              </Pressable>
+            </View>
+          </>
+        )}
       </View>
     );
   }
