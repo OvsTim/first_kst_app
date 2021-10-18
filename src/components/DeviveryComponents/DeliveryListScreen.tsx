@@ -25,7 +25,7 @@ export default function DeliveryListScreen({}: Props) {
       <StyledText
         style={{
           fontWeight: '700',
-          fontSize: 27,
+          fontSize: 30,
           color: 'black',
           marginTop: 20,
         }}>
@@ -35,15 +35,15 @@ export default function DeliveryListScreen({}: Props) {
         style={{
           fontWeight: '400',
           width: width - 50,
-          fontSize: 15,
+          fontSize: 17,
           lineHeight: 18,
           color: 'black',
           textAlign: 'center',
-          marginTop: 20,
+          marginTop: 8,
         }}>
         Здесь будут храниться адреса доставки, которые вы сохранили.
       </StyledText>
-      <View style={{height: 42}} />
+      <View style={{height: 27}} />
       <BaseButton
         width={width - 66 - 67}
         text={'Добавить адрес'}

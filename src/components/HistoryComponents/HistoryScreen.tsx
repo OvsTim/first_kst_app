@@ -39,7 +39,7 @@ export default function HistoryScreen({}: Props) {
         <StyledText
           style={{
             fontWeight: '700',
-            fontSize: 27,
+            fontSize: 30,
             color: 'black',
             marginTop: 20,
           }}>
@@ -49,16 +49,16 @@ export default function HistoryScreen({}: Props) {
           style={{
             fontWeight: '400',
             width: width - 50,
-            fontSize: 15,
+            fontSize: 17,
             lineHeight: 18,
             color: 'black',
             textAlign: 'center',
-            marginTop: 20,
+            marginTop: 8,
           }}>
           Здесь будем хранить все ваши заказы. Чтобы сделать первый, перейдите в
           меню.
         </StyledText>
-        <View style={{height: 42}} />
+        <View style={{height: 27}} />
         <BaseButton
           width={width - 66 - 67}
           text={'Перейти в меню'}
@@ -79,7 +79,7 @@ export default function HistoryScreen({}: Props) {
             height: 0,
           },
           shadowOpacity: 0.2,
-          shadowRadius: 10,
+          shadowRadius: 5,
         }}>
         <View
           style={{
@@ -103,7 +103,7 @@ export default function HistoryScreen({}: Props) {
               style={{
                 color: 'black',
                 fontWeight: '700',
-                fontSize: 20,
+                fontSize: 22,
                 lineHeight: 24,
                 marginHorizontal: 27,
                 marginTop: 17,
@@ -141,7 +141,7 @@ export default function HistoryScreen({}: Props) {
             </StyledText>
           </Pressable>
           <FlatList
-            style={{paddingLeft: 27}}
+            style={{paddingLeft: 27, marginVertical: 10}}
             data={[
               'gs://firstkst.appspot.com/images/eggs.png',
               'gs://firstkst.appspot.com/images/nabor.png',
@@ -153,16 +153,25 @@ export default function HistoryScreen({}: Props) {
             bounces={false}
             ListFooterComponent={() => <View style={{width: 50}} />}
             renderItem={({item}) => (
-              <FirebaseImage
-                innerUrl={item}
-                imageStyle={{
-                  width: 135,
-                  height: 82,
-                  borderRadius: 10,
-                  marginHorizontal: 5,
-                  marginVertical: 10,
-                }}
-              />
+              <>
+                <View
+                  style={{
+                    overflow: 'hidden',
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <FirebaseImage
+                    innerUrl={item}
+                    imageStyle={{
+                      resizeMode: 'cover',
+                      width: 135,
+                      height: 82,
+                    }}
+                  />
+                </View>
+                <View style={{width: 10}} />
+              </>
             )}
           />
           <View
@@ -196,6 +205,7 @@ export default function HistoryScreen({}: Props) {
               {'2 000 ₸'}
             </StyledText>
           </View>
+          <View style={{height: 10}} />
           <View style={{borderRadius: 15, overflow: 'hidden'}}>
             <Button onPress={() => {}} containerStyle={{}}>
               <View style={{flexDirection: 'row', marginVertical: 20}}>

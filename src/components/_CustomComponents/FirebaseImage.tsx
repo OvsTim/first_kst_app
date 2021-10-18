@@ -42,7 +42,6 @@ export default function FirebaseImage(props: Props) {
       style={[{height: 200, width: 200}, props.imageStyle]}
       visible={isFetched}>
       <Image
-        loadingIndicatorSource={require('../../assets/img_ph.png')}
         source={url !== '' ? {uri: url} : require('../../assets/img_ph.png')}
         style={[{height: 200, width: 200}, props.imageStyle]}
         onLoadEnd={() => setIsFetched(true)}

@@ -108,7 +108,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               onPress={() => setPaymentWay('cash')}
               android_ripple={{color: 'gray', radius: 200}}
               style={{
-                paddingVertical: 15,
+                paddingVertical: 12,
                 width: width - 68,
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -143,7 +143,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               onPress={() => setPaymentWay('card')}
               android_ripple={{color: 'gray', radius: 200}}
               style={{
-                paddingVertical: 15,
+                paddingVertical: 12,
                 width: width - 68,
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -172,7 +172,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               onPress={() => setPaymentWay('caspi')}
               android_ripple={{color: 'gray', radius: 200}}
               style={{
-                paddingVertical: 15,
+                paddingVertical: 12,
                 width: width - 68,
                 flexDirection: 'row',
                 alignItems: 'center',

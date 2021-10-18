@@ -61,7 +61,7 @@ export default function ContactsScreen({navigation}: Props) {
           }}
           source={require('../../assets/map.png')}>
           <BaseButton
-            containerStyle={{}}
+            containerStyle={{width: 250}}
             text={'Рестораны на карте'}
             onPress={() => navigation.navigate('Map')}
           />
@@ -95,7 +95,7 @@ export default function ContactsScreen({navigation}: Props) {
             borderBottomColor: '#F2F2F6',
           }}>
           <BaseButton
-            textStyle={{color: '#046674', fontSize: 15}}
+            textStyle={{color: '#046674', fontSize: 18}}
             containerStyle={{
               backgroundColor: '#BEE8EE',
               width: width / 2 - 13 - 34,
@@ -109,7 +109,7 @@ export default function ContactsScreen({navigation}: Props) {
           />
           <View style={{width: 13}} />
           <BaseButton
-            textStyle={{color: '#046674', fontSize: 15}}
+            textStyle={{color: '#046674', fontSize: 18}}
             containerStyle={{
               backgroundColor: '#BEE8EE',
               width: width / 2 - 13 - 34,
