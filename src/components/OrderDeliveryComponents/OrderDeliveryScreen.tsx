@@ -1,9 +1,14 @@
 import React, {useState} from 'react';
 import {
+  Dimensions,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
+  StatusBar,
   Text,
+  TextInput,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -12,6 +17,8 @@ import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import BaseButton from '../_CustomComponents/BaseButton';
 import * as Progress from 'react-native-progress';
+import Modal from 'react-native-modal';
+import AuthBaseInput from '../_CustomComponents/AuthBaseInput';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -22,6 +29,9 @@ export default function OrderDeliveryScreen({navigation}: Props) {
   const [paymentWay, setPaymentWay] = useState<'cash' | 'card' | 'caspi'>(
     'cash',
   );
+
+  const [isModalVisible, setModalVisible] = useState<boolean>(false);
+  const [sdacha, setSdacha] = useState<string>('');
   function renderHeaderAndAddress() {
     return (
       <>
@@ -310,7 +320,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           width={width - 68}
           containerStyle={{alignSelf: 'center'}}
           text={'Итого к оплате 2 000 ₸'}
-          onPress={() => {}}
+          onPress={() => setModalVisible(true)}
         />
         <View style={{height: 20}} />
       </View>
@@ -326,12 +336,93 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           justifyContent: 'flex-start',
           paddingBottom: 100,
         }}>
+        <StatusBar
+          translucent={false}
+          backgroundColor={'#f2f2f2'}
+          barStyle="dark-content"
+        />
         {renderHeaderAndAddress()}
         {renderPaymentWays()}
         {renderCostAndDelivery()}
         {renderFreeDeliveryAndMenu()}
       </ScrollView>
       {renderBottomButton()}
+      <Modal
+        swipeDirection={['down']}
+        isVisible={isModalVisible}
+        statusBarTranslucent={true}
+        onBackdropPress={() => setModalVisible(false)}
+        onBackButtonPress={() => setModalVisible(false)}
+        deviceHeight={Dimensions.get('screen').height}
+        style={{justifyContent: 'flex-end', margin: 0}}>
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          style={{
+            height: '90%',
+            width,
+            alignSelf: 'center',
+            backgroundColor: '#F5F5F8',
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
+          }}>
+          <View
+            style={{
+              height: '100%',
+              width,
+            }}>
+            <Pressable
+              android_ripple={{color: 'gray', radius: 200}}
+              style={{
+                width: 90,
+                height: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onPress={() => setModalVisible(false)}>
+              <StyledText
+                style={{fontWeight: '400', color: '#28B3C6', fontSize: 20}}>
+                Отмена
+              </StyledText>
+            </Pressable>
+            <StyledText
+              style={{
+                marginTop: 28,
+                marginHorizontal: 17,
+                fontWeight: '700',
+                fontSize: 22,
+                lineHeight: 26,
+                color: 'black',
+              }}>
+              {'Заказ на 2000 ₸. ' + '\nС какой суммы подготовить сдачу?'}
+            </StyledText>
+            <AuthBaseInput
+              value={sdacha}
+              onTextChanges={term => setSdacha(term)}
+              styleInput={{}}
+              styleContainer={{
+                width: width - 34,
+                backgroundColor: 'white',
+                marginTop: 27,
+              }}
+              editable={true}
+              placeholder={''}
+              inputProps={{keyboardType: 'number-pad', textContentType: 'none'}}
+            />
+            <View
+              style={{
+                width,
+                position: 'absolute',
+                bottom: 18,
+                alignItems: 'center',
+              }}>
+              <BaseButton
+                text={sdacha ? 'Продолжить' : 'У меня без сдачи'}
+                onPress={() => {}}
+              />
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }

@@ -5,6 +5,7 @@ import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
+import AuthBaseInput from '../_CustomComponents/AuthBaseInput';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
@@ -19,6 +20,7 @@ export default function MenuScreen({navigation}: Props) {
         barStyle="dark-content"
       />
       <StyledText style={{fontWeight: '600'}}>MenuScreen</StyledText>
+
       <BaseButton
         text={'123'}
         textStyle={{fontWeight: '700'}}

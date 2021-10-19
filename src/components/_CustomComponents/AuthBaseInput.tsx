@@ -18,37 +18,15 @@ type Props = {
   styleContainer: ViewStyle;
   editable: boolean;
   placeholder: string;
-  showLabel: boolean;
-  label: string;
   inputProps: TextInputProps;
-  labelStyle: TextProps;
 };
 
-export default function BaseInput(props: Props) {
+export default function AuthBaseInput(props: Props) {
   const [value, setValue] = useState<string>(props.value);
   const {width} = useWindowDimensions();
-  const StyledText = withFont(Text);
-  const StyledInput = withFontInput(TextInput);
   function handleInput(input: string) {
     props.onTextChanges(input);
     setValue(input);
-  }
-
-  function renderLabel() {
-    return (
-      <StyledText
-        style={[
-          {
-            paddingTop: 13,
-            alignSelf: 'flex-start',
-            fontWeight: '400',
-            color: '#5D626F',
-          },
-          props.labelStyle,
-        ]}>
-        {props.label}
-      </StyledText>
-    );
   }
 
   return (
@@ -59,19 +37,18 @@ export default function BaseInput(props: Props) {
           marginLeft: 19,
           alignItems: 'center',
           justifyContent: 'flex-start',
-          borderBottomWidth: 1,
-          borderBottomColor: '#F2F2F6',
+          borderRadius: 12,
+          borderWidth: 0.5,
+          borderColor: '#D3D5DD',
         },
         props.styleContainer,
       ]}>
-      {props.showLabel && renderLabel()}
-
       <TextInput
         style={[
           {
             width: '100%',
             paddingRight: 12,
-            paddingLeft: 0,
+            paddingLeft: 12,
             fontSize: 15,
             lineHeight: 18,
             fontWeight: '400',
@@ -93,15 +70,12 @@ export default function BaseInput(props: Props) {
   );
 }
 
-BaseInput.defaultProps = {
+AuthBaseInput.defaultProps = {
   value: '',
   onTextChanges: () => {},
   styleInput: {}, //стиль для поля ввода текста
   styleContainer: {}, // стиль для контейнера, в котором находится поле ввода
   editable: true,
-  placeholder: 'Текст',
-  showLabel: true,
-  label: 'Текст',
+  placeholder: '',
   inputProps: {},
-  labelStyle: {},
 };

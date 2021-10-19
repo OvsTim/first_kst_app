@@ -208,7 +208,7 @@ export default function ProductScreen({navigation}: Props) {
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          marginTop: 21,
+          marginTop: 12,
           paddingBottom: 21,
           width: width - 80,
           borderBottomWidth: 1,
