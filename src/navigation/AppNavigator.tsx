@@ -20,6 +20,7 @@ import MapScreen from '../components/MapComponents/MapScreen';
 import SettingsScreen from '../components/SettingsComponents/SettingsScreen';
 import ProductScreen from '../components/ProductComponents/ProductScreen';
 import OrderDeliveryScreen from '../components/OrderDeliveryComponents/OrderDeliveryScreen';
+import BonucesStocksScreen from '../components/BonucesStocksComponents/BonucesStocksScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -34,6 +35,7 @@ export type AppStackParamList = {
   Settings: undefined;
   Product: undefined;
   OrderDelivery: undefined;
+  BonucesStocks: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -101,6 +103,11 @@ function ProfileTab() {
         name="Settings"
         component={SettingsScreen}
         options={{title: 'Настройки', headerBackTitle: 'Профиль'}}
+      />
+      <ProfileStack.Screen
+        name="BonucesStocks"
+        component={BonucesStocksScreen}
+        options={{title: 'Бонусы и акции', headerBackTitle: 'Профиль'}}
       />
     </ProfileStack.Navigator>
   );

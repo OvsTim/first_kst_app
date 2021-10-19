@@ -16,6 +16,7 @@ import BaseButton from '../_CustomComponents/BaseButton';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import firestore from '@react-native-firebase/firestore';
 import {openWhatsApp} from '../../utils/linkingUtils';
+import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Contacts'>;
 };
@@ -257,7 +258,7 @@ export default function ContactsScreen({navigation}: Props) {
         alignItems: 'center',
         justifyContent: 'flex-start',
       }}>
-      <StatusBar
+      <FocusAwareStatusBar
         translucent={false}
         backgroundColor={'white'}
         barStyle="dark-content"

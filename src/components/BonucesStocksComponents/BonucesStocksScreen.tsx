@@ -1,28 +1,28 @@
-import React from 'react';
 import {Image, StatusBar, Text, useWindowDimensions, View} from 'react-native';
+import BaseButton from '../_CustomComponents/BaseButton';
+import React from 'react';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
-import BaseButton from '../_CustomComponents/BaseButton';
 import {withFont} from '../_CustomComponents/HOC/withFont';
-import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
 
 type Props = {
-  navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
+  navigation: StackNavigationProp<AppStackParamList, 'BonucesStocks'>;
 };
+const StyledText = withFont(Text);
 
-export default function BasketScreen({navigation}: Props) {
+export default function BonucesStocksScreen(props: Props) {
   const {width} = useWindowDimensions();
-  const StyledText = withFont(Text);
+
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <FocusAwareStatusBar
+      <StatusBar
         translucent={false}
         backgroundColor={'#f2f2f2'}
         barStyle="dark-content"
       />
       <Image
-        style={{width: width - 30, height: 300}}
-        source={require('../../assets/ph_basket.png')}
+        style={{width, height: 300}}
+        source={require('../../assets/ph_stocks.png')}
       />
       <StyledText
         style={{
@@ -31,7 +31,7 @@ export default function BasketScreen({navigation}: Props) {
           color: 'black',
           marginTop: 20,
         }}>
-        Ой, корзина пуста
+        Бонусы и акции
       </StyledText>
       <StyledText
         style={{
@@ -43,13 +43,14 @@ export default function BasketScreen({navigation}: Props) {
           textAlign: 'center',
           marginTop: 8,
         }}>
-        Ваша корзина пуста, откройте “Меню” и выберите понравившийся товар.
+        Пока нет никаких акций и бонусов для Вас, но как только они появятся, мы
+        сразу же сообщим Вам.
       </StyledText>
       <View style={{height: 27}} />
       <BaseButton
         width={width - 66 - 67}
         text={'Перейти в меню'}
-        onPress={() => navigation.navigate('OrderDelivery')}
+        onPress={() => {}}
       />
     </View>
   );

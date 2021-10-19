@@ -19,7 +19,8 @@ export default function AboutScreen({}: Props) {
         barStyle="dark-content"
       />
       <Image
-        style={{width: width - 120, height: 130}}
+        resizeMode={'contain'}
+        style={{width: width - 147, height: 130}}
         source={require('../../assets/logo_about.png')}
       />
       <StyledText style={{fontSize: 10, color: 'black', fontWeight: '400'}}>

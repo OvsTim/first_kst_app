@@ -12,6 +12,7 @@ import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
+import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
@@ -26,7 +27,7 @@ export default function ProfileScreen({navigation}: Props) {
   function renderUnauthorized() {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <StatusBar
+        <FocusAwareStatusBar
           translucent={false}
           backgroundColor={'#f2f2f2'}
           barStyle="dark-content"
@@ -143,7 +144,7 @@ export default function ProfileScreen({navigation}: Props) {
             borderBottomWidth: 1,
             borderBottomColor: '#F2F2F6',
           }}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('BonucesStocks')}
           android_ripple={{color: 'gray', radius: 200}}>
           <View
             style={{
