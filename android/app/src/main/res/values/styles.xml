@@ -11,6 +11,8 @@
         <item name="android:colorControlActivated">#000000</item>
         <item name="android:textColorHighlight">#000000</item>
         <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
 

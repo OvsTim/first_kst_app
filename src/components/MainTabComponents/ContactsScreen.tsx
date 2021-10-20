@@ -5,7 +5,6 @@ import {
   Linking,
   Pressable,
   ScrollView,
-  StatusBar,
   Text,
   useWindowDimensions,
   View,
@@ -26,8 +25,8 @@ export default function ContactsScreen({navigation}: Props) {
 
   React.useEffect(() => {
     firestore()
-      .collection('contacts')
-      .doc('contact_data')
+      .collection('Контакты')
+      .doc('Данные')
       .get()
       .then(res => {
         if (res.exists) {
