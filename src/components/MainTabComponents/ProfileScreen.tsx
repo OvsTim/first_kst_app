@@ -1,28 +1,69 @@
-import React, {useState} from 'react';
-import {
-  Image,
-  Pressable,
-  StatusBar,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, Pressable, Text, useWindowDimensions, View} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
+import ActiveOrderCard from './ActiveOrderCard';
+import firestore from '@react-native-firebase/firestore';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
+};
+
+type Address = {
+  street: string;
+  house: string;
+  name: string;
+  flat: string;
+
+  entrance?: string;
+  floor?: string;
+  code?: string;
+  commentary?: string;
 };
 const Button = withPressable(View);
 export default function ProfileScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
 
-  const [auth, setAuth] = useState<boolean>(false);
+  const [authorized, setAuthorized] = useState<boolean>(false);
+  const [addressLength, setAddressLength] = useState<number>(0);
+
+  useEffect(() => {
+    firestore()
+      .collection('Пользователи')
+      //todo:user_id
+      .doc('xlmoN94j09tWcC8mN9qQ')
+      .collection('Адреса')
+      .get()
+      .then(res => {
+        setAddressLength(res.size);
+        res.docs.forEach(doc => {
+          let newAddress: Address = {
+            name: doc.id,
+            street: doc.get<string>('Улица'),
+            house: doc.get<string>('Дом'),
+            flat: doc.get<string>('Квартира'),
+            code: doc.get<string>('КодДомофона')
+              ? doc.get<string>('КодДомофона')
+              : '',
+            commentary: doc.get<string>('Комментарий')
+              ? doc.get<string>('Комментарий')
+              : '',
+            entrance: doc.get<string>('Подъезд')
+              ? doc.get<string>('Подъезд')
+              : '',
+            floor: doc.get<string>('Этаж') ? doc.get<string>('Этаж') : '',
+          };
+          console.log('NEW', newAddress);
+        });
+      })
+      .catch(er => console.log('er', er));
+    // console.log('auth', auth().currentUser);
+  }, []);
 
   function renderUnauthorized() {
     return (
@@ -64,7 +105,7 @@ export default function ProfileScreen({navigation}: Props) {
           text={'Указать телефон'}
           onPress={() => {
             navigation.setOptions({headerShown: false});
-            setAuth(true);
+            setAuthorized(true);
           }}
         />
       </View>
@@ -79,6 +120,11 @@ export default function ProfileScreen({navigation}: Props) {
           alignItems: 'flex-start',
           justifyContent: 'flex-start',
         }}>
+        <FocusAwareStatusBar
+          translucent={false}
+          backgroundColor={'white'}
+          barStyle="dark-content"
+        />
         <View style={{height: 25}} />
         <View style={{flexDirection: 'row'}}>
           <View style={{width: 18}} />
@@ -93,7 +139,12 @@ export default function ProfileScreen({navigation}: Props) {
                 ТРЦ Костанай Плаза
               </StyledText>
               <Image
-                style={{width: 12.5, height: 7.12, marginLeft: 9}}
+                style={{
+                  width: 14,
+                  height: 7,
+                  marginLeft: 9,
+                  tintColor: 'black',
+                }}
                 source={require('../../assets/droprdown.png')}
               />
             </View>
@@ -184,16 +235,18 @@ export default function ProfileScreen({navigation}: Props) {
             <StyledText style={{fontSize: 20, fontWeight: '500'}}>
               Адреса доставки
             </StyledText>
-            <StyledText
-              style={{
-                position: 'absolute',
-                right: 24,
-                fontWeight: '500',
-                fontSize: 15,
-                color: '#0000004D',
-              }}>
-              2
-            </StyledText>
+            {addressLength > 0 && (
+              <StyledText
+                style={{
+                  position: 'absolute',
+                  right: 24,
+                  fontWeight: '500',
+                  fontSize: 15,
+                  color: '#0000004D',
+                }}>
+                {addressLength.toString()}
+              </StyledText>
+            )}
             <Image
               style={{width: 7, height: 12}}
               source={require('../../assets/arrow_forward.png')}
@@ -227,9 +280,14 @@ export default function ProfileScreen({navigation}: Props) {
             />
           </View>
         </Pressable>
+        <ActiveOrderCard
+          orderNumber={'2032'}
+          totalProgressLength={5}
+          index={1}
+        />
       </View>
     );
   }
 
-  return auth ? renderAuthorized() : renderUnauthorized();
+  return authorized ? renderAuthorized() : renderUnauthorized();
 }

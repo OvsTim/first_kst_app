@@ -4,12 +4,8 @@ import {
   TextInput,
   ViewStyle,
   TextInputProps,
-  TextProps,
-  Text,
   useWindowDimensions,
 } from 'react-native';
-import {withFont} from './HOC/withFont';
-import {withFontInput} from './HOC/withFontInput';
 
 type Props = {
   value: string;
@@ -22,11 +18,9 @@ type Props = {
 };
 
 export default function AuthBaseInput(props: Props) {
-  const [value, setValue] = useState<string>(props.value);
   const {width} = useWindowDimensions();
   function handleInput(input: string) {
     props.onTextChanges(input);
-    setValue(input);
   }
 
   return (
@@ -61,7 +55,7 @@ export default function AuthBaseInput(props: Props) {
           handleInput(terms);
         }}
         {...props.inputProps}
-        value={value}
+        value={props.value}
         editable={props.editable}
         placeholder={props.placeholder}
         underlineColorAndroid={'rgba(0,0,0,0)'}

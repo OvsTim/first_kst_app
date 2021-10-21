@@ -348,6 +348,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
       </ScrollView>
       {renderBottomButton()}
       <Modal
+        onSwipeComplete={() => setModalVisible(false)}
         swipeDirection={['down']}
         isVisible={isModalVisible}
         statusBarTranslucent={true}
@@ -397,7 +398,18 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             </StyledText>
             <AuthBaseInput
               value={sdacha}
-              onTextChanges={term => setSdacha(term)}
+              onTextChanges={term => {
+                if (term.replace(/[^0-9]/g, '')) {
+                  let num: number = parseInt(term.replace(/[^0-9]/g, ''));
+                  if (num <= 20000) {
+                    setSdacha(num.toString());
+                  } else {
+                    setSdacha('20000');
+                  }
+                } else {
+                  setSdacha('');
+                }
+              }}
               styleInput={{}}
               styleContainer={{
                 width: width - 34,
@@ -406,7 +418,11 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               }}
               editable={true}
               placeholder={''}
-              inputProps={{keyboardType: 'number-pad', textContentType: 'none'}}
+              inputProps={{
+                keyboardType: 'number-pad',
+                textContentType: 'none',
+                maxLength: 5,
+              }}
             />
             <View
               style={{
