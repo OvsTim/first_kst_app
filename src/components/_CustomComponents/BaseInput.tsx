@@ -7,6 +7,7 @@ import {
   TextProps,
   Text,
   useWindowDimensions,
+  TextStyle,
 } from 'react-native';
 import {withFont} from './HOC/withFont';
 import {withFontInput} from './HOC/withFontInput';
@@ -21,17 +22,14 @@ type Props = {
   showLabel: boolean;
   label: string;
   inputProps: TextInputProps;
-  labelStyle: TextProps;
+  labelStyle: TextStyle;
 };
 
 export default function BaseInput(props: Props) {
-  const [value, setValue] = useState<string>(props.value);
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
-  const StyledInput = withFontInput(TextInput);
   function handleInput(input: string) {
     props.onTextChanges(input);
-    setValue(input);
   }
 
   function renderLabel() {
@@ -43,6 +41,7 @@ export default function BaseInput(props: Props) {
             alignSelf: 'flex-start',
             fontWeight: '400',
             color: '#5D626F',
+            fontSize: 12,
           },
           props.labelStyle,
         ]}>
@@ -84,7 +83,7 @@ export default function BaseInput(props: Props) {
           handleInput(terms);
         }}
         {...props.inputProps}
-        value={value}
+        value={props.value}
         editable={props.editable}
         placeholder={props.placeholder}
         underlineColorAndroid={'rgba(0,0,0,0)'}

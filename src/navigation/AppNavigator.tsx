@@ -21,6 +21,8 @@ import SettingsScreen from '../components/SettingsComponents/SettingsScreen';
 import ProductScreen from '../components/ProductComponents/ProductScreen';
 import OrderDeliveryScreen from '../components/OrderDeliveryComponents/OrderDeliveryScreen';
 import BonucesStocksScreen from '../components/BonucesStocksComponents/BonucesStocksScreen';
+import {Address} from '../API';
+import AddEditAddressScreen from '../components/AddEditAddressComponents/AddEditAddressScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -36,6 +38,10 @@ export type AppStackParamList = {
   Product: undefined;
   OrderDelivery: undefined;
   BonucesStocks: undefined;
+  AddEditAddress: {
+    type: 'add' | 'edit';
+    address?: Address;
+  };
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -108,6 +114,11 @@ function ProfileTab() {
         name="BonucesStocks"
         component={BonucesStocksScreen}
         options={{title: 'Бонусы и акции', headerBackTitle: 'Профиль'}}
+      />
+      <ProfileStack.Screen
+        name="AddEditAddress"
+        component={AddEditAddressScreen}
+        options={{title: 'Адрес доставки', headerBackTitle: 'Назад'}}
       />
     </ProfileStack.Navigator>
   );

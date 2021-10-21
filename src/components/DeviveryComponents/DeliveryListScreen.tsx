@@ -21,7 +21,7 @@ type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'DeliveryList'>;
 };
 const StyledText = withFont(Text);
-export default function DeliveryListScreen({}: Props) {
+export default function DeliveryListScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
 
@@ -157,8 +157,10 @@ export default function DeliveryListScreen({}: Props) {
         barStyle="dark-content"
       />
       <SwipeListView
+        contentContainerStyle={{alignItems: 'center', justifyContent: 'center'}}
         ListEmptyComponent={() => renderEmpty()}
         data={addressList}
+        showsVerticalScrollIndicator={false}
         scrollEnabled={false}
         bounces={false}
         renderHiddenItem={(data, rowMap) => (
@@ -186,12 +188,16 @@ export default function DeliveryListScreen({}: Props) {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => renderAddress(item)}
       />
-      <BaseButton
-        containerStyle={{width: width - 150}}
-        text={'Добавить адрес'}
-        onPress={() => {}}
-      />
-      <View style={{height: 60}} />
+      {addressList.length > 0 && (
+        <>
+          <BaseButton
+            containerStyle={{width: width - 150}}
+            text={'Добавить адрес'}
+            onPress={() => navigation.navigate('AddEditAddress', {type: 'add'})}
+          />
+          <View style={{height: 60}} />
+        </>
+      )}
     </View>
   );
 }
