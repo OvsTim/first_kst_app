@@ -5,7 +5,17 @@ export interface Image {
   author: string;
   url: string;
 }
+export interface Address {
+  street: string;
+  house: string;
+  name: string;
+  flat: string;
 
+  entrance?: string;
+  floor?: string;
+  code?: string;
+  commentary?: string;
+}
 export function getImages(url: string) {
   return axios.get<Image[]>(url, {
     headers: {

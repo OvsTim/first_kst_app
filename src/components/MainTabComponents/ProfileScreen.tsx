@@ -8,22 +8,12 @@ import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
 import ActiveOrderCard from './ActiveOrderCard';
 import firestore from '@react-native-firebase/firestore';
+import {Address} from '../../API';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
 };
 
-type Address = {
-  street: string;
-  house: string;
-  name: string;
-  flat: string;
-
-  entrance?: string;
-  floor?: string;
-  code?: string;
-  commentary?: string;
-};
 const Button = withPressable(View);
 export default function ProfileScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
@@ -41,25 +31,24 @@ export default function ProfileScreen({navigation}: Props) {
       .get()
       .then(res => {
         setAddressLength(res.size);
-        res.docs.forEach(doc => {
-          let newAddress: Address = {
-            name: doc.id,
-            street: doc.get<string>('Улица'),
-            house: doc.get<string>('Дом'),
-            flat: doc.get<string>('Квартира'),
-            code: doc.get<string>('КодДомофона')
-              ? doc.get<string>('КодДомофона')
-              : '',
-            commentary: doc.get<string>('Комментарий')
-              ? doc.get<string>('Комментарий')
-              : '',
-            entrance: doc.get<string>('Подъезд')
-              ? doc.get<string>('Подъезд')
-              : '',
-            floor: doc.get<string>('Этаж') ? doc.get<string>('Этаж') : '',
-          };
-          console.log('NEW', newAddress);
-        });
+        // res.docs.forEach(doc => {
+        //   let newAddress: Address = {
+        //     name: doc.id,
+        //     street: doc.get<string>('Улица'),
+        //     house: doc.get<string>('Дом'),
+        //     flat: doc.get<string>('Квартира'),
+        //     code: doc.get<string>('КодДомофона')
+        //       ? doc.get<string>('КодДомофона')
+        //       : '',
+        //     commentary: doc.get<string>('Комментарий')
+        //       ? doc.get<string>('Комментарий')
+        //       : '',
+        //     entrance: doc.get<string>('Подъезд')
+        //       ? doc.get<string>('Подъезд')
+        //       : '',
+        //     floor: doc.get<string>('Этаж') ? doc.get<string>('Этаж') : '',
+        //   };
+        // });
       })
       .catch(er => console.log('er', er));
     // console.log('auth', auth().currentUser);
