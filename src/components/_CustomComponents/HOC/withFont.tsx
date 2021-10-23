@@ -5,7 +5,7 @@ interface Props extends TextProps {
   children?: React.ReactNode;
 }
 
-function getFontName(fontWeight?: string): string {
+export function getFontName(fontWeight?: string): string {
   if (fontWeight === '700') {
     return Platform.select({
       android: 'SFProDisplay-Bold',

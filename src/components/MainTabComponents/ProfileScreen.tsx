@@ -76,8 +76,9 @@ export default function ProfileScreen({navigation}: Props) {
           width={width - 66 - 67}
           text={'Указать телефон'}
           onPress={() => {
-            navigation.setOptions({headerShown: false});
-            setAuthorized(true);
+            // navigation.setOptions({headerShown: false});
+            // setAuthorized(true);
+            navigation.navigate('EnterPhone');
           }}
         />
       </View>

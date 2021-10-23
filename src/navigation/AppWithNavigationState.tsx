@@ -9,6 +9,8 @@ import {StatusBar} from 'react-native';
 import analytics from '@react-native-firebase/analytics';
 import messaging from '@react-native-firebase/messaging';
 import YaMap from 'react-native-yamap';
+import {useAppDispatch} from '../redux';
+import {setFirebaseToken} from '../redux/UserDataSlice';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -22,6 +24,7 @@ async function requestUserPermission() {
 }
 
 export default function AppWithNavigationState() {
+  const dispatch = useAppDispatch();
   useEffect(() => {
     console.log('useEffect splash');
     SplashScreen.hide();
@@ -36,7 +39,7 @@ export default function AppWithNavigationState() {
         .getToken()
         .then(fcm_token => {
           console.log('TOKEN', fcm_token);
-          // dispatch(setFirebaseToken(fcm_token));
+          dispatch(setFirebaseToken(fcm_token));
           // sendTokenToServer(fcm_token, token);
         });
     });

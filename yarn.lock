@@ -733,6 +733,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@eabdullazyanov/react-native-sms-user-consent@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@eabdullazyanov/react-native-sms-user-consent/-/react-native-sms-user-consent-1.0.10.tgz#98d237df799fc651c2a0dc332b8d6b5b8ba1fb7f"
+  integrity sha512-2z/rVmKERVIbeJucxACKTjgfuPfrHfZS48sxIMCsn1I3yO5FMzUNi+zJhK7rYW+Acj8XNIXQ4KQ79+vulhM10Q==
+
 "@egjs/hammerjs@^2.0.17":
   version "2.0.17"
   resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
@@ -1166,6 +1171,13 @@
     strip-ansi "^5.2.0"
     sudo-prompt "^9.0.0"
     wcwidth "^1.0.1"
+
+"@react-native-community/datetimepicker@^3.5.2":
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-3.5.2.tgz#8e6feb30f2620e5abdf565d5fe74c0c04edcf6ae"
+  integrity sha512-TWRuAtr/DnrEcRewqvXMLea2oB+YF+SbtuYLHguALLxNJQLl/RFB7aTNZeF+OoH75zKFqtXECXV1/uxQUpA+sg==
+  dependencies:
+    invariant "^2.2.4"
 
 "@react-native-community/eslint-config@^2.0.0":
   version "2.0.0"
@@ -2606,6 +2618,11 @@ data-urls@^2.0.0:
     abab "^2.0.3"
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
+
+dayjs@^1.10.7:
+  version "1.10.7"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
+  integrity sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==
 
 dayjs@^1.8.15:
   version "1.10.4"
@@ -6044,6 +6061,13 @@ react-native-localize@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-2.0.2.tgz#b0df6a88cf9947489deaa828c4c29246681fde16"
   integrity sha512-4Ii7lqiD9iL0LxTWifAiEsDcDPpvos/29fEVkHxgEDD7J5f+NROMkFSFomKgz1Cab1TmN5mau3o8yFmYrPFcnw==
+
+react-native-modal-datetime-picker@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-modal-datetime-picker/-/react-native-modal-datetime-picker-12.0.0.tgz#e098eaff62f2b33bc38c7cda1483cb46316c156c"
+  integrity sha512-FzEXTcclTtnRLHDZS3lr4vKGqK0y1ZTjvHDowJmUiyxzwPLCiZaiQGHwYNa01EMwbRclEtO0p3fxLAZZX63L9A==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-modal@^11.7.0:
   version "11.7.0"

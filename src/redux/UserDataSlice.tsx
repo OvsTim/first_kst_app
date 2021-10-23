@@ -8,11 +8,12 @@ interface UserState {
   name: string;
   last_name: string;
   images: ImageMap;
+  firebase_token: string;
 }
 
 export type ImageMap = Record<string, string>;
 
-const initialState = {token: '', images: {}} as UserState;
+const initialState = {token: '', images: {}, firebase_token: ''} as UserState;
 
 const dataSlice = createSlice({
   name: 'data',
@@ -37,9 +38,9 @@ const dataSlice = createSlice({
     setImageUrl(state, action: PayloadAction<{ref: string; url: string}>) {
       state.images[action.payload.ref] = action.payload.url;
     },
-    // setToken(state, action: PayloadAction<Pick<UserState, 'token'>>) {
-    //   state.token = action.payload.token || '';
-    // },
+    setFirebaseToken(state, action: PayloadAction<string>) {
+      state.firebase_token = action.payload || '';
+    },
     // setData(
     //   state,
     //   action: PayloadAction<Pick<UserState, 'surname' | 'name' | 'last_name'>>,
@@ -59,5 +60,10 @@ const dataSlice = createSlice({
   },
 });
 
-export const {setAuthData, resetAction, setImageUrl} = dataSlice.actions;
+export const {
+  setAuthData,
+  resetAction,
+  setImageUrl,
+  setFirebaseToken,
+} = dataSlice.actions;
 export default dataSlice.reducer;

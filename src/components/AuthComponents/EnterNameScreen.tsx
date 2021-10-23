@@ -1,0 +1,68 @@
+import React, {useState} from 'react';
+import {
+  StatusBar,
+  Text,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {AppStackParamList} from '../../navigation/AppNavigator';
+import {getFontName, withFont} from '../_CustomComponents/HOC/withFont';
+import BaseButton from '../_CustomComponents/BaseButton';
+import auth from '@react-native-firebase/auth';
+
+type Props = {
+  navigation: StackNavigationProp<AppStackParamList, 'EnterName'>;
+};
+const StyledText = withFont(Text);
+export default function EnterNameScreen({navigation}: Props) {
+  const {width} = useWindowDimensions();
+
+  const [name, setName] = useState<string>('');
+  return (
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
+      <StatusBar
+        translucent={false}
+        backgroundColor={'white'}
+        barStyle="dark-content"
+      />
+      <StyledText style={{fontWeight: '700', color: 'black', fontSize: 24}}>
+        Как Вас зовут?
+      </StyledText>
+      <TextInput
+        autoFocus={true}
+        value={name}
+        style={{
+          borderColor: '#00000026',
+          borderWidth: 1,
+          borderRadius: 10,
+          width: width - 90,
+          paddingHorizontal: 16,
+          fontSize: 24,
+          marginTop: 30,
+          marginBottom: 50,
+          fontFamily: getFontName('400'),
+        }}
+        keyboardType={'default'}
+        textContentType={'name'}
+        onChangeText={text => {
+          setName(text);
+        }}
+        placeholder={''}
+      />
+
+      <BaseButton
+        containerStyle={{
+          backgroundColor: name.length < 2 ? '#00000026' : '#28B3C6',
+        }}
+        active={name.length >= 2}
+        text={'Продолжить'}
+        onPress={() => {
+          auth().currentUser?.updateProfile({displayName: name});
+          navigation.navigate('EnterBirthday');
+        }}
+      />
+    </View>
+  );
+}

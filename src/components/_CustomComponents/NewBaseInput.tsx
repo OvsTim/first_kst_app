@@ -1,7 +1,6 @@
 import React, {
   forwardRef,
   ForwardRefRenderFunction,
-  Ref,
   useImperativeHandle,
   useRef,
   useState,
@@ -42,7 +41,6 @@ type Props = {
   secondLabel?: string;
   inputProps: TextInputProps;
   labelStyle: TextStyle;
-  inputRef?: Ref<TextInput>;
 };
 
 export interface InputRefType {
@@ -57,7 +55,6 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
     value,
     keyboardType,
     returnKeyType,
-    onKeyPress,
     blurOnSubmit,
     multiline,
     maxLength,
@@ -69,7 +66,6 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
     secondLabel,
     showLabel,
     styleContainer,
-    type,
   }: Props,
   ref,
 ) => {
@@ -157,11 +153,6 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
         keyboardType={keyboardType || 'default'}
         returnKeyType={returnKeyType || 'next'}
         blurOnSubmit={blurOnSubmit || false}
-        // onSubmitEditing={() => {
-        //   if (onKeyPress) {
-        //     onKeyPress();
-        //   }
-        // }}
       />
     </View>
   );

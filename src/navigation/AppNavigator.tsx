@@ -23,6 +23,12 @@ import OrderDeliveryScreen from '../components/OrderDeliveryComponents/OrderDeli
 import BonucesStocksScreen from '../components/BonucesStocksComponents/BonucesStocksScreen';
 import {Address} from '../API';
 import AddEditAddressScreen from '../components/AddEditAddressComponents/AddEditAddressScreen';
+// @ts-ignore
+import {ConfirmationResult} from '@react-native-firebase/auth';
+import EnterPhoneScreen from '../components/AuthComponents/EnterPhoneScreen';
+import EnterCodeScreen from '../components/AuthComponents/EnterCodeScreen';
+import EnterNameScreen from '../components/AuthComponents/EnterNameScreen';
+import EnterBirthdayScreen from '../components/AuthComponents/EnterBirthdayScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -38,6 +44,10 @@ export type AppStackParamList = {
   Product: undefined;
   OrderDelivery: undefined;
   BonucesStocks: undefined;
+  EnterPhone: undefined;
+  EnterCode: {phone: string; formattedPhone: string};
+  EnterName: undefined;
+  EnterBirthday: undefined;
   AddEditAddress: {
     type: 'add' | 'edit';
     address?: Address;
@@ -335,6 +345,86 @@ export default function AppNavigator() {
         options={{
           ...TransitionPresets.ModalSlideFromBottomIOS,
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'EnterPhone'}
+        component={EnterPhoneScreen}
+        options={{
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+          headerBackTitleVisible: false,
+          headerTitle: '',
+          headerStyle: {backgroundColor: 'white'},
+        }}
+      />
+      <Stack.Screen
+        name={'EnterCode'}
+        component={EnterCodeScreen}
+        options={{
+          headerBackImage: _ => (
+            <Image
+              style={{width: 12, height: 21, marginRight: 8}}
+              source={require('../assets/back.png')}
+            />
+          ),
+          headerPressColorAndroid: 'transparent',
+          headerTitleAlign: 'center',
+          headerBackTitleVisible: true,
+          headerBackTitleStyle: {
+            color: '#28B3C6',
+            fontSize: 14,
+            marginLeft: 4,
+            fontFamily: 'SFProDisplay-Regular',
+          },
+          headerBackTitle: 'Телефон',
+          headerTitle: '',
+          headerStyle: {backgroundColor: 'white'},
+        }}
+      />
+      <Stack.Screen
+        name={'EnterName'}
+        component={EnterNameScreen}
+        options={{
+          headerBackImage: _ => (
+            <Image
+              style={{width: 12, height: 21, marginRight: 8}}
+              source={require('../assets/back.png')}
+            />
+          ),
+          headerPressColorAndroid: 'transparent',
+          headerTitleAlign: 'center',
+          headerBackTitleVisible: false,
+          headerBackTitleStyle: {
+            color: '#28B3C6',
+            fontSize: 14,
+            marginLeft: 4,
+            fontFamily: 'SFProDisplay-Regular',
+          },
+          headerTitle: '',
+          headerStyle: {backgroundColor: 'white'},
+        }}
+      />
+      <Stack.Screen
+        name={'EnterBirthday'}
+        component={EnterBirthdayScreen}
+        options={{
+          headerBackImage: _ => (
+            <Image
+              style={{width: 12, height: 21, marginRight: 8}}
+              source={require('../assets/back.png')}
+            />
+          ),
+          headerPressColorAndroid: 'transparent',
+          headerTitleAlign: 'center',
+          headerBackTitleVisible: false,
+          headerBackTitleStyle: {
+            color: '#28B3C6',
+            fontSize: 14,
+            marginLeft: 4,
+            fontFamily: 'SFProDisplay-Regular',
+          },
+          headerTitle: '',
+          headerStyle: {backgroundColor: 'white'},
         }}
       />
       {/*<Stack.Screen*/}

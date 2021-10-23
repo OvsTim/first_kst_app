@@ -206,7 +206,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
             returnKeyType: 'next',
             onSubmitEditing: () => {
               console.log('onSubmitEditing');
-              homeRef.current?.focus();
+              homeRef.current?.focus;
             },
           }}
         />
@@ -375,7 +375,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           }}
           styleContainer={{}}
           editable={true}
-          placeholder={'Например, “Домофон не работет”'}
+          placeholder={'Например, “Домофон не работает”'}
           showLabel={true}
           secondLabel={'(не обязательно)'}
           label={'Комментарий к заказу '}
