@@ -10,10 +10,9 @@ import {
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
-import BaseButton from '../_CustomComponents/BaseButton';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
-import BaseInput from '../_CustomComponents/BaseInput';
 import Switch from 'react-native-switch-pro';
+import NewBaseInput from '../_CustomComponents/NewBaseInput';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Settings'>;
@@ -44,9 +43,8 @@ export default function SettingsScreen({navigation}: Props) {
   function renderInputs() {
     return (
       <>
-        <BaseInput
+        <NewBaseInput
           value={'Александр'}
-          onTextChanges={() => {}}
           styleInput={{}}
           styleContainer={{}}
           editable={true}
@@ -60,9 +58,8 @@ export default function SettingsScreen({navigation}: Props) {
           }}
           labelStyle={{}}
         />
-        <BaseInput
+        <NewBaseInput
           value={'+7 705 303 13 51'}
-          onTextChanges={() => {}}
           styleInput={{}}
           styleContainer={{}}
           editable={false}
@@ -72,9 +69,8 @@ export default function SettingsScreen({navigation}: Props) {
           inputProps={{}}
           labelStyle={{}}
         />
-        <BaseInput
+        <NewBaseInput
           value={'mrantonyarafb@gmail.com'}
-          onTextChanges={() => {}}
           styleInput={{}}
           styleContainer={{}}
           editable={true}
@@ -87,9 +83,8 @@ export default function SettingsScreen({navigation}: Props) {
           }}
           labelStyle={{}}
         />
-        <BaseInput
+        <NewBaseInput
           value={'9 июля'}
-          onTextChanges={() => {}}
           styleInput={{}}
           styleContainer={{}}
           editable={false}

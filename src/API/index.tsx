@@ -6,6 +6,7 @@ export interface Image {
   url: string;
 }
 export interface Address {
+  id: string;
   street: string;
   house: string;
   name: string;

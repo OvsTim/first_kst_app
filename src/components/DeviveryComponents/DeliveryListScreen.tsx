@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
-  FlatList,
   Image,
-  InteractionManager,
   Pressable,
   StatusBar,
   Text,
@@ -17,54 +15,80 @@ import firestore from '@react-native-firebase/firestore';
 import {Address} from '../../API';
 import {useFocusEffect} from '@react-navigation/native';
 import {SwipeListView} from 'react-native-swipe-list-view';
+import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+import LinearGradient from 'react-native-linear-gradient';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'DeliveryList'>;
 };
-const StyledText = withFont(Text);
 export default function DeliveryListScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
+  const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
-  const [addressList, setAddressList] = useState<Array<Address>>([]);
+  const [addressList, setAddressList] = useState<Array<Address>>(
+    Array(5).fill({
+      id: '',
+      name: '',
+      street: '',
+      house: '',
+      flat: '',
+      code: '',
+      commentary: '',
+      entrance: '',
+      floor: '',
+    }),
+  );
 
   useFocusEffect(
     React.useCallback(() => {
-      const task = InteractionManager.runAfterInteractions(() => {
-        firestore()
-          .collection('Пользователи')
-          //todo:user_id
-          .doc('xlmoN94j09tWcC8mN9qQ')
-          .collection('Адреса')
-          .get()
-          .then(res => {
-            let list: Array<Address> = [];
-            res.docs.forEach(doc => {
-              let newAddress: Address = {
-                name: doc.id,
-                street: doc.get<string>('Улица'),
-                house: doc.get<string>('Дом'),
-                flat: doc.get<string>('Квартира'),
-                code: doc.get<string>('КодДомофона')
-                  ? doc.get<string>('КодДомофона')
-                  : '',
-                commentary: doc.get<string>('Комментарий')
-                  ? doc.get<string>('Комментарий')
-                  : '',
-                entrance: doc.get<string>('Подъезд')
-                  ? doc.get<string>('Подъезд')
-                  : '',
-                floor: doc.get<string>('Этаж') ? doc.get<string>('Этаж') : '',
-              };
-              list.push(newAddress);
-            });
-            setAddressList(list);
-          })
-          .catch(er => console.log('er', er));
-      });
-
-      return () => task.cancel();
+      firestore()
+        .collection('Пользователи')
+        //todo:user_id
+        .doc('xlmoN94j09tWcC8mN9qQ')
+        .collection('Адреса')
+        .get()
+        .then(res => {
+          let list: Array<Address> = [];
+          res.docs.forEach(doc => {
+            let newAddress: Address = {
+              id: doc.id,
+              name: doc.get<string>('Название'),
+              street: doc.get<string>('Улица'),
+              house: doc.get<string>('Дом'),
+              flat: doc.get<string>('Квартира'),
+              code: doc.get<string>('КодДомофона')
+                ? doc.get<string>('КодДомофона')
+                : '',
+              commentary: doc.get<string>('Комментарий')
+                ? doc.get<string>('Комментарий')
+                : '',
+              entrance: doc.get<string>('Подъезд')
+                ? doc.get<string>('Подъезд')
+                : '',
+              floor: doc.get<string>('Этаж') ? doc.get<string>('Этаж') : '',
+            };
+            list.push(newAddress);
+          });
+          setAddressList(list);
+        })
+        .catch(er => console.log('er', er));
     }, []),
   );
+
+  function deleteAddress(id: string) {
+    firestore()
+      .collection('Пользователи')
+      //todo:user_id
+      .doc('xlmoN94j09tWcC8mN9qQ')
+      .collection('Адреса')
+      .doc(id)
+      .delete()
+      .then(res => {
+        console.log('res', res);
+        setAddressList(prevState => prevState.filter(it => it.id !== id));
+      })
+      .catch(er => console.log('er', er));
+  }
 
   function renderEmpty() {
     return (
@@ -115,31 +139,51 @@ export default function DeliveryListScreen({navigation}: Props) {
           alignItems: 'center',
           backgroundColor: 'white',
         }}
+        disabled={item.name === '' ? true : null}
+        onPress={() =>
+          navigation.navigate('AddEditAddress', {address: item, type: 'edit'})
+        }
         android_ripple={{color: 'gray', radius: 200}}>
-        <StyledText style={{fontWeight: '400', fontSize: 15, color: 'black'}}>
-          {item.street + ' ' + item.house + ', ' + item.flat}
-        </StyledText>
-        <View style={{position: 'absolute', right: 0, flexDirection: 'row'}}>
-          <View
+        <ShimmerPlaceHolder
+          style={{width: width - 120}}
+          visible={item.name !== ''}>
+          <StyledText
+            numberOfLines={1}
+            ellipsizeMode={'tail'}
             style={{
-              width: 60,
-              borderRadius: 5,
-              paddingVertical: 5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#28B3C6',
+              fontWeight: '400',
+              fontSize: 15,
+              color: 'black',
+              width: width - 120,
             }}>
-            <StyledText
+            {item.street + ' ' + item.house + ', ' + item.flat}
+          </StyledText>
+        </ShimmerPlaceHolder>
+
+        <View style={{position: 'absolute', right: 0, flexDirection: 'row'}}>
+          <ShimmerPlaceHolder style={{width: 60}} visible={item.name !== ''}>
+            <View
               style={{
-                fontSize: 10,
-                color: 'white',
-                fontWeight: '700',
                 width: 60,
-                textAlign: 'center',
+                borderRadius: 5,
+                paddingVertical: 5,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#28B3C6',
               }}>
-              {item.name}
-            </StyledText>
-          </View>
+              <StyledText
+                style={{
+                  fontSize: 10,
+                  color: 'white',
+                  fontWeight: '700',
+                  width: 60,
+                  textAlign: 'center',
+                }}>
+                {item.name}
+              </StyledText>
+            </View>
+          </ShimmerPlaceHolder>
+
           <Image
             style={{width: 8, height: 14, marginHorizontal: 14}}
             source={require('../../assets/arrow_forward.png')}
@@ -162,12 +206,16 @@ export default function DeliveryListScreen({navigation}: Props) {
         data={addressList}
         showsVerticalScrollIndicator={false}
         scrollEnabled={false}
+        closeOnRowOpen={true}
+        closeOnRowPress={true}
         bounces={false}
         renderHiddenItem={(data, rowMap) => (
           <Pressable
+            disabled={data.item.name === '' ? true : null}
             android_ripple={{color: 'gray', radius: 200}}
             onPress={() => {
               rowMap[addressList.indexOf(data.item)].closeRow();
+              deleteAddress(data.item.id);
             }}
             style={{
               backgroundColor: 'red',
@@ -186,7 +234,7 @@ export default function DeliveryListScreen({navigation}: Props) {
         )}
         rightOpenValue={-70}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item, index}) => renderAddress(item)}
+        renderItem={({item}) => renderAddress(item)}
       />
       {addressList.length > 0 && (
         <>

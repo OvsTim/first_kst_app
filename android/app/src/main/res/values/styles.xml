@@ -8,8 +8,8 @@
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="p">
             shortEdges <!-- default, shortEdges, never -->
         </item>
-        <item name="android:colorControlActivated">#000000</item>
-        <item name="android:textColorHighlight">#000000</item>
+        <item name="android:colorControlActivated">#d3d3d3</item>
+        <item name="android:textColorHighlight">#d3d3d3</item>
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowFullscreen">true</item>
         <item name="windowActionBar">false</item>

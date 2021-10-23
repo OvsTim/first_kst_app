@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Image, Pressable, Text, useWindowDimensions, View} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
@@ -8,7 +8,7 @@ import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
 import ActiveOrderCard from './ActiveOrderCard';
 import firestore from '@react-native-firebase/firestore';
-import {Address} from '../../API';
+import {useFocusEffect} from '@react-navigation/native';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
@@ -22,37 +22,20 @@ export default function ProfileScreen({navigation}: Props) {
   const [authorized, setAuthorized] = useState<boolean>(false);
   const [addressLength, setAddressLength] = useState<number>(0);
 
-  useEffect(() => {
-    firestore()
-      .collection('Пользователи')
-      //todo:user_id
-      .doc('xlmoN94j09tWcC8mN9qQ')
-      .collection('Адреса')
-      .get()
-      .then(res => {
-        setAddressLength(res.size);
-        // res.docs.forEach(doc => {
-        //   let newAddress: Address = {
-        //     name: doc.id,
-        //     street: doc.get<string>('Улица'),
-        //     house: doc.get<string>('Дом'),
-        //     flat: doc.get<string>('Квартира'),
-        //     code: doc.get<string>('КодДомофона')
-        //       ? doc.get<string>('КодДомофона')
-        //       : '',
-        //     commentary: doc.get<string>('Комментарий')
-        //       ? doc.get<string>('Комментарий')
-        //       : '',
-        //     entrance: doc.get<string>('Подъезд')
-        //       ? doc.get<string>('Подъезд')
-        //       : '',
-        //     floor: doc.get<string>('Этаж') ? doc.get<string>('Этаж') : '',
-        //   };
-        // });
-      })
-      .catch(er => console.log('er', er));
-    // console.log('auth', auth().currentUser);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      firestore()
+        .collection('Пользователи')
+        //todo:user_id
+        .doc('xlmoN94j09tWcC8mN9qQ')
+        .collection('Адреса')
+        .get()
+        .then(res => {
+          setAddressLength(res.size);
+        })
+        .catch(er => console.log('er', er));
+    }, []),
+  );
 
   function renderUnauthorized() {
     return (

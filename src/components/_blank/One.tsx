@@ -9,7 +9,6 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {hScale, vScale} from '../../utils/scaling';
 import {useTranslation} from 'react-i18next';
-import BaseInput from '../_CustomComponents/BaseInput';
 import {fetchImages} from '../../redux/thunks';
 
 type Props = {
@@ -107,7 +106,6 @@ export default function OneScreen({navigation}: Props) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>One Screen</Text>
-      <BaseInput />
       <Text>{token}</Text>
       <Text>{'counter  ' + counter}</Text>
       <Text>{t('localization_sample')}</Text>
