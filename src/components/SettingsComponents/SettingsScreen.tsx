@@ -31,6 +31,7 @@ export default function SettingsScreen({navigation}: Props) {
   const emailRef = useRef<InputRefType>(null);
   const [loadingToolbar, setLoadingToolbar] = useState<boolean>(false);
   const [oldEmail, setOldEmail] = useState<string>('');
+  const [name, setName] = useState<string>('');
 
   useEffect(() => {
     dayjs.locale('ru');
@@ -159,6 +160,12 @@ export default function SettingsScreen({navigation}: Props) {
           placeholder={'Имя'}
           showLabel={true}
           label={'Имя'}
+          onChangeText={text => {
+            setName(text.replace(/[^A-Za-zА-Яа-я-\s!?]/g, ''));
+            nameRef.current?.setValue(
+              text.replace(/[^A-Za-zА-Яа-я-\s!?]/g, ''),
+            );
+          }}
           inputProps={{
             keyboardType: 'default',
             textContentType: 'name',

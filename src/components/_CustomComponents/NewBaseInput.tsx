@@ -33,7 +33,7 @@ type Props = {
   multiline?: boolean;
   maxLength?: number;
   error?: boolean;
-  onChangeText?: () => void;
+  onChangeText?: (text: string) => void;
   styleInput: ViewStyle;
   styleContainer: ViewStyle;
   showLabel: boolean;
@@ -41,6 +41,35 @@ type Props = {
   secondLabel?: string;
   inputProps: TextInputProps;
   labelStyle: TextStyle;
+  textContentType?:
+    | 'none'
+    | 'URL'
+    | 'addressCity'
+    | 'addressCityAndState'
+    | 'addressState'
+    | 'countryName'
+    | 'creditCardNumber'
+    | 'emailAddress'
+    | 'familyName'
+    | 'fullStreetAddress'
+    | 'givenName'
+    | 'jobTitle'
+    | 'location'
+    | 'middleName'
+    | 'name'
+    | 'namePrefix'
+    | 'nameSuffix'
+    | 'nickname'
+    | 'organizationName'
+    | 'postalCode'
+    | 'streetAddressLine1'
+    | 'streetAddressLine2'
+    | 'sublocality'
+    | 'telephoneNumber'
+    | 'username'
+    | 'password'
+    | 'newPassword'
+    | 'oneTimeCode';
 };
 
 export interface InputRefType {
@@ -66,6 +95,7 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
     secondLabel,
     showLabel,
     styleContainer,
+    textContentType,
   }: Props,
   ref,
 ) => {
@@ -135,18 +165,21 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
           },
           styleInput,
         ]}
+        textContentType={textContentType}
         multiline={multiline || false}
         placeholderTextColor={'#A0A0A0'}
         placeholder={placeholder}
         value={text}
         onChangeText={it => {
-          if (keyboardType === 'number-pad') {
+          if (textContentType === 'name') {
+            setText(it.replace(/[^A-Za-z-\s!?]/g, ''));
+          } else if (keyboardType === 'number-pad') {
             setText(it.replace(/[^0-9.]/g, ''));
           } else {
             setText(it);
           }
 
-          onChangeText && onChangeText();
+          onChangeText && onChangeText(it);
         }}
         {...inputProps}
         maxLength={maxLength}

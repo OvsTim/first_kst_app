@@ -146,6 +146,7 @@ export default function EnterBirthdayScreen({navigation}: Props) {
         }}
       />
       <DateTimePickerModal
+        date={new Date(1990, 1, 1)}
         display={'spinner'}
         confirmTextIOS={'Выбрать'}
         cancelTextIOS={'Отменить'}

@@ -49,7 +49,7 @@ export default function EnterNameScreen({navigation}: Props) {
         keyboardType={'default'}
         textContentType={'name'}
         onChangeText={text => {
-          setName(text);
+          setName(text.replace(/[^A-Za-zА-Яа-я-\s!?]/g, ''));
         }}
         placeholder={''}
       />
