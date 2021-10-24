@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
   ScrollView,
@@ -12,8 +12,13 @@ import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import Switch from 'react-native-switch-pro';
-import NewBaseInput from '../_CustomComponents/NewBaseInput';
-
+import NewBaseInput, {InputRefType} from '../_CustomComponents/NewBaseInput';
+import auth, {firebase} from '@react-native-firebase/auth';
+// @ts-ignore
+import firestore, {Timestamp} from '@react-native-firebase/firestore';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import * as Progress from 'react-native-progress';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Settings'>;
 };
@@ -21,30 +26,133 @@ const StyledText = withFont(Text);
 const Button = withPressable(View);
 export default function SettingsScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
+  const dateRef = useRef<InputRefType>(null);
+  const nameRef = useRef<InputRefType>(null);
+  const emailRef = useRef<InputRefType>(null);
+  const [loadingToolbar, setLoadingToolbar] = useState<boolean>(false);
+  const [oldEmail, setOldEmail] = useState<string>('');
+
+  useEffect(() => {
+    dayjs.locale('ru');
+  }, []);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Button onPress={() => {}} containerStyle={{width: 81, height: 24}}>
-          <StyledText
-            style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
-            Готово
-          </StyledText>
-        </Button>
-      ),
+      headerRight: () =>
+        loadingToolbar ? (
+          <Progress.CircleSnail
+            style={{marginRight: 24}}
+            size={24}
+            color={['gray', '#28B3C6']}
+          />
+        ) : (
+          <Button
+            onPress={() => changeMailAndName()}
+            containerStyle={{width: 81, height: 24}}>
+            <StyledText
+              style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
+              Готово
+            </StyledText>
+          </Button>
+        ),
     });
-  }, [navigation]);
+  }, [navigation, loadingToolbar]);
+
+  useEffect(() => {
+    firestore()
+      .collection('Пользователи')
+      .doc(auth().currentUser?.uid)
+
+      .get()
+      .then(res => {
+        console.log(
+          "res.get('ДеньРождения')",
+          res.get<Timestamp>('ДеньРождения').seconds.toString(),
+        );
+        dateRef.current?.setValue(
+          dayjs(res.get<Timestamp>('ДеньРождения').seconds * 1000).format(
+            'D MMMM',
+          ),
+        );
+        emailRef.current?.setValue(res.get<string>('Почта'));
+        setOldEmail(res.get<string>('Почта'));
+      })
+      .catch(er => {
+        Alert.alert(
+          'Ошибка',
+          'Произошла ошибка с кодом ' + er.code + ', повторите попытку позже',
+        );
+      });
+  }, []);
 
   function validateEmail(email: string): boolean {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
   }
 
+  function changeMailAndName() {
+    if (
+      emailRef.current?.getValue() &&
+      !validateEmail(emailRef.current?.getValue())
+    ) {
+      Alert.alert('Ошибка', 'Почта имеет невалидный формат');
+      return;
+    }
+
+    if (nameRef.current?.getValue() && nameRef.current?.getValue().length < 2) {
+      Alert.alert('Ошибка', 'Недопустимое имя');
+      return;
+    }
+
+    setLoadingToolbar(true);
+
+    auth()
+      .currentUser?.updateProfile({displayName: nameRef.current?.getValue()})
+      .then(_ => {
+        if (emailRef.current?.getValue() !== oldEmail) {
+          firestore()
+            .collection('Пользователи')
+            .doc(auth().currentUser?.uid)
+            .update({
+              Почта: emailRef.current?.getValue(),
+            })
+            .then(_ => {
+              setLoadingToolbar(false);
+
+              navigation.goBack();
+            })
+            .catch(er => {
+              setLoadingToolbar(false);
+
+              Alert.alert(
+                'Ошибка',
+                'Произошла ошибка с кодом ' +
+                  er.code +
+                  ', повторите попытку позже',
+              );
+            });
+        } else {
+          setLoadingToolbar(false);
+
+          navigation.goBack();
+        }
+      })
+      .catch(er => {
+        setLoadingToolbar(false);
+        console.log('erupdateProfile', er);
+        Alert.alert(
+          'Ошибка',
+          'Произошла ошибка с кодом ' + er.code + ', повторите попытку позже',
+        );
+      });
+  }
+
   function renderInputs() {
     return (
       <>
         <NewBaseInput
-          value={'Александр'}
+          ref={nameRef}
+          value={auth().currentUser?.displayName || ''}
           styleInput={{}}
           styleContainer={{}}
           editable={true}
@@ -59,7 +167,7 @@ export default function SettingsScreen({navigation}: Props) {
           labelStyle={{}}
         />
         <NewBaseInput
-          value={'+7 705 303 13 51'}
+          value={auth().currentUser?.phoneNumber || ''}
           styleInput={{}}
           styleContainer={{}}
           editable={false}
@@ -70,21 +178,22 @@ export default function SettingsScreen({navigation}: Props) {
           labelStyle={{}}
         />
         <NewBaseInput
-          value={'mrantonyarafb@gmail.com'}
+          ref={emailRef}
           styleInput={{}}
           styleContainer={{}}
           editable={true}
-          placeholder={'Email'}
+          placeholder={'Не указано'}
           showLabel={true}
           label={'Email'}
+          keyboardType={'email-address'}
           inputProps={{
-            keyboardType: 'email-address',
             textContentType: 'emailAddress',
           }}
           labelStyle={{}}
         />
         <NewBaseInput
-          value={'9 июля'}
+          ref={dateRef}
+          value={''}
           styleInput={{}}
           styleContainer={{}}
           editable={false}
@@ -164,7 +273,31 @@ export default function SettingsScreen({navigation}: Props) {
           marginTop: 26,
           width: width - 19,
         }}>
-        <Button onPress={() => {}} containerStyle={{}}>
+        <Button
+          onPress={() => {
+            Alert.alert('Выход из аккаунта', 'Вы уверены?', [
+              {style: 'default', text: 'Нет'},
+              {
+                style: 'destructive',
+                text: 'Да',
+                onPress: () => {
+                  auth()
+                    .signOut()
+                    .then(_ => {
+                      auth()
+                        .signInAnonymously()
+                        .then(_ => {
+                          navigation.goBack();
+                        });
+                    })
+                    .catch(er => {
+                      console.log('er', er);
+                    });
+                },
+              },
+            ]);
+          }}
+          containerStyle={{}}>
           <StyledText
             style={{
               color: '#28B3C6',
@@ -215,9 +348,10 @@ export default function SettingsScreen({navigation}: Props) {
   return (
     <ScrollView
       contentContainerStyle={{
-        flex: 1,
+        flexGrow: 0,
         alignItems: 'center',
         justifyContent: 'flex-start',
+        paddingBottom: 150,
       }}>
       <StatusBar
         translucent={false}

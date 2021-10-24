@@ -35,10 +35,30 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   const [code, setCode] = useState<string>('');
   const shakeAnimation = new Animated.Value(0);
   const [confirm, setConfirm] = useState<ConfirmationResult>(null);
-
+  const [isActive, setIsActive] = useState<boolean>(true);
+  const [getLoading, setGetLoading] = useState<boolean>(false);
+  const count = 60;
   const codeRef: RefObject<TextInput> = createRef();
   const {width} = useWindowDimensions();
   const retrievedCode = useSmsUserConsent();
+  const [counter, setCounter] = useState(count);
+
+  useEffect(() => {
+    let intervalId: any;
+
+    if (isActive) {
+      intervalId = setInterval(() => {
+        setCounter(c => c - 1);
+      }, 1000);
+    }
+
+    if (counter === 0) {
+      setIsActive(false);
+      setCounter(60);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [isActive, counter]);
 
   useEffect(() => {
     async function signInWithPhoneNumber() {
@@ -48,7 +68,10 @@ export default function EnterCodeScreen({navigation, route}: Props) {
           setConfirm(confirmation);
         })
         .catch(er => {
-          console.log('er', er);
+          Alert.alert(
+            'Ошибка',
+            'Произошла ошибка с кодом ' + er.code + ', повторите попытку позже',
+          );
         });
     }
 
@@ -89,16 +112,20 @@ export default function EnterCodeScreen({navigation, route}: Props) {
           //   navigation.popToTop();
           // }
         })
-        .catch(er => {
-          console.log('er', er.code);
-          startShake();
-          if (er.code === 'auth/invalid-verification-codе') {
-            //todo:тряска
+        .catch((er: {code: any}) => {
+          if (er.code === 'auth/invalid-verification-code') {
             startShake();
           } else if (er.code === 'auth/too-many-requests') {
             Alert.alert(
               'Ошибка',
               'Превышено количество запросов, повторите попытку позже',
+            );
+          } else {
+            Alert.alert(
+              'Ошибка',
+              'Произошла ошибка с кодом ' +
+                er.code +
+                ', повторите попытку позже',
             );
           }
         });
@@ -106,7 +133,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   }, [code, confirm]);
 
   function startShake() {
-    Vibration.vibrate(70);
+    Vibration.vibrate(400);
     Animated.loop(
       Animated.sequence([
         Animated.timing(shakeAnimation, {
@@ -194,6 +221,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 width: 5,
                 height: 5,
+                borderRadius: 2.5,
                 backgroundColor: '#C4C4C4',
                 position: 'absolute',
                 left: 40,
@@ -216,6 +244,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 width: 5,
                 height: 5,
+                borderRadius: 2.5,
+
                 backgroundColor: '#C4C4C4',
                 position: 'absolute',
                 left: 80,
@@ -238,6 +268,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 width: 5,
                 height: 5,
+                borderRadius: 2.5,
+
                 backgroundColor: '#C4C4C4',
                 position: 'absolute',
                 left: 120,
@@ -260,6 +292,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 width: 5,
                 height: 5,
+                borderRadius: 2.5,
+
                 backgroundColor: '#C4C4C4',
                 position: 'absolute',
                 left: 160,
@@ -282,6 +316,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 width: 5,
                 height: 5,
+                borderRadius: 2.5,
+
                 backgroundColor: '#C4C4C4',
                 position: 'absolute',
                 left: 200,
@@ -304,6 +340,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 width: 5,
                 height: 5,
+                borderRadius: 2.5,
                 backgroundColor: '#C4C4C4',
                 position: 'absolute',
                 left: 240,
@@ -322,6 +359,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
         onChangeText={text => setCode(text)}
       />
       <StyledText
+        numberOfLines={2}
         style={{
           marginTop: 30,
           color: '#00000066',
@@ -331,15 +369,41 @@ export default function EnterCodeScreen({navigation, route}: Props) {
           textAlign: 'center',
           marginBottom: 10,
         }}>
-        Если код не придет, можно получить новый через 29 сек
+        {counter !== 60
+          ? 'Если код не придет, можно получить новый через ' + counter + ' сек'
+          : ''}
       </StyledText>
       <BaseButton
         containerStyle={{
-          backgroundColor: code.length < 6 ? '#00000026' : '#28B3C6',
+          backgroundColor: isActive ? '#00000026' : '#28B3C6',
         }}
-        active={code.length === 6}
+        active={!isActive}
         text={'Получить новый код'}
-        onPress={() => {}}
+        loading={getLoading}
+        onPress={() => {
+          if (isActive || getLoading) {
+            return;
+          }
+
+          setGetLoading(true);
+          auth()
+            .signInWithPhoneNumber(route.params.phone, true)
+            .then(confirmation => {
+              setConfirm(confirmation);
+              setIsActive(true);
+              setGetLoading(false);
+            })
+            .catch(er => {
+              setGetLoading(false);
+
+              Alert.alert(
+                'Ошибка',
+                'Произошла ошибка с кодом ' +
+                  er.code +
+                  ', повторите попытку позже',
+              );
+            });
+        }}
       />
     </View>
   );

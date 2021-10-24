@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   Pressable,
   StatusBar,
   Text,
@@ -29,6 +30,7 @@ export default function EnterBirthdayScreen({navigation}: Props) {
     false,
   );
   const [date, setDate] = useState<Date | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -38,7 +40,7 @@ export default function EnterBirthdayScreen({navigation}: Props) {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = date => {
+  const handleConfirm = (date: any) => {
     if (date) {
       setDate(date);
     }
@@ -86,8 +88,10 @@ export default function EnterBirthdayScreen({navigation}: Props) {
         }}
         active={date !== null}
         text={'Продолжить'}
+        loading={loading}
         onPress={() => {
           if (date) {
+            setLoading(true);
             firestore()
               .collection('Пользователи')
               .doc(auth().currentUser?.uid)
@@ -98,14 +102,54 @@ export default function EnterBirthdayScreen({navigation}: Props) {
                 ),
                 ИД: auth().currentUser?.uid,
                 Токен: firebase_token,
+                Почта: '',
               })
               .then(_ => {
-                navigation.popToTop();
+                firestore()
+                  .collection('Пользователи')
+                  .doc(auth().currentUser?.uid)
+                  .collection('Адреса')
+                  .add({
+                    Название: '',
+                    Дом: '',
+                    Квартира: '',
+                    КодДомофона: '',
+                    Комментарий: '',
+                    Подъезд: '',
+                    Улица: '',
+                    Этаж: '',
+                  })
+                  .then(_ => {
+                    setLoading(false);
+                    navigation.popToTop();
+                  })
+                  .catch(er => {
+                    setLoading(false);
+                    Alert.alert(
+                      'Ошибка',
+                      'Произошла ошибка с кодом ' +
+                        er.code +
+                        ', повторите попытку позже',
+                    );
+                  });
+              })
+              .catch(er => {
+                setLoading(false);
+                Alert.alert(
+                  'Ошибка',
+                  'Произошла ошибка с кодом ' +
+                    er.code +
+                    ', повторите попытку позже',
+                );
               });
           }
         }}
       />
       <DateTimePickerModal
+        display={'spinner'}
+        confirmTextIOS={'Выбрать'}
+        cancelTextIOS={'Отменить'}
+        maximumDate={new Date()}
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}

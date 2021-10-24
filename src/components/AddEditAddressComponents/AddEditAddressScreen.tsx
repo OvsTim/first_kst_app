@@ -8,6 +8,7 @@ import {withFont} from '../_CustomComponents/HOC/withFont';
 import firestore from '@react-native-firebase/firestore';
 import * as Progress from 'react-native-progress';
 import NewBaseInput, {InputRefType} from '../_CustomComponents/NewBaseInput';
+import auth from '@react-native-firebase/auth';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'AddEditAddress'>;
@@ -81,8 +82,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
     setLoadingToolbar(true);
     firestore()
       .collection('Пользователи')
-      //todo:user_id
-      .doc('xlmoN94j09tWcC8mN9qQ')
+      .doc(auth().currentUser?.uid)
       .collection('Адреса')
       .doc(nameRef.current?.getValue())
       .set({
@@ -124,8 +124,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
 
     firestore()
       .collection('Пользователи')
-      //todo:user_id
-      .doc('xlmoN94j09tWcC8mN9qQ')
+      .doc(auth().currentUser?.uid)
       .collection('Адреса')
       .doc(route.params.address?.id)
       .update({
@@ -157,8 +156,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
     setLoadingToolbar(true);
     firestore()
       .collection('Пользователи')
-      //todo:user_id
-      .doc('xlmoN94j09tWcC8mN9qQ')
+      .doc(auth().currentUser?.uid)
       .collection('Адреса')
       .doc(route.params.address?.id)
       .delete()
@@ -389,7 +387,16 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
         />
         {route.params.type === 'edit' && (
           <Pressable
-            onPress={() => deleteAddress()}
+            onPress={() =>
+              Alert.alert('Сообщение', 'Вы уверены?', [
+                {style: 'default', text: 'Нет'},
+                {
+                  style: 'destructive',
+                  text: 'Да',
+                  onPress: () => deleteAddress(),
+                },
+              ])
+            }
             android_ripple={{color: 'gray', radius: 200}}
             style={{
               width: 80,

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   StatusBar,
   Text,
   TextInput,
@@ -20,6 +21,7 @@ export default function EnterNameScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
 
   const [name, setName] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
       <StatusBar
@@ -54,13 +56,31 @@ export default function EnterNameScreen({navigation}: Props) {
 
       <BaseButton
         containerStyle={{
-          backgroundColor: name.length < 2 ? '#00000026' : '#28B3C6',
+          backgroundColor: name.trim().length < 2 ? '#00000026' : '#28B3C6',
         }}
-        active={name.length >= 2}
+        active={name.trim().length >= 2}
         text={'Продолжить'}
+        loading={loading}
         onPress={() => {
-          auth().currentUser?.updateProfile({displayName: name});
-          navigation.navigate('EnterBirthday');
+          if (name.trim().length >= 2) {
+            setLoading(true);
+            auth()
+              .currentUser?.updateProfile({displayName: name.trim()})
+              .then(_ => {
+                setLoading(false);
+                navigation.navigate('EnterBirthday');
+              })
+              .catch(er => {
+                setLoading(false);
+
+                Alert.alert(
+                  'Ошибка',
+                  'Произошла ошибка с кодом ' +
+                    er.code +
+                    ', повторите попытку позже',
+                );
+              });
+          }
         }}
       />
     </View>

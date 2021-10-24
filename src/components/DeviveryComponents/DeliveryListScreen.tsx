@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   Image,
   Pressable,
   StatusBar,
@@ -17,6 +18,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
+import auth from '@react-native-firebase/auth';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'DeliveryList'>;
 };
@@ -43,9 +45,9 @@ export default function DeliveryListScreen({navigation}: Props) {
     React.useCallback(() => {
       firestore()
         .collection('Пользователи')
-        //todo:user_id
-        .doc('xlmoN94j09tWcC8mN9qQ')
+        .doc(auth().currentUser?.uid)
         .collection('Адреса')
+        .where('Название', '!=', '')
         .get()
         .then(res => {
           let list: Array<Address> = [];
@@ -78,8 +80,7 @@ export default function DeliveryListScreen({navigation}: Props) {
   function deleteAddress(id: string) {
     firestore()
       .collection('Пользователи')
-      //todo:user_id
-      .doc('xlmoN94j09tWcC8mN9qQ')
+      .doc(auth().currentUser?.uid)
       .collection('Адреса')
       .doc(id)
       .delete()
@@ -122,7 +123,7 @@ export default function DeliveryListScreen({navigation}: Props) {
         <BaseButton
           width={width - 66 - 67}
           text={'Добавить адрес'}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('AddEditAddress', {type: 'add'})}
         />
       </>
     );
@@ -185,7 +186,12 @@ export default function DeliveryListScreen({navigation}: Props) {
           </ShimmerPlaceHolder>
 
           <Image
-            style={{width: 8, height: 14, marginHorizontal: 14}}
+            style={{
+              width: 8,
+              height: 14,
+              marginHorizontal: 14,
+              alignSelf: 'center',
+            }}
             source={require('../../assets/arrow_forward.png')}
           />
         </View>
@@ -214,8 +220,17 @@ export default function DeliveryListScreen({navigation}: Props) {
             disabled={data.item.name === '' ? true : null}
             android_ripple={{color: 'gray', radius: 200}}
             onPress={() => {
-              rowMap[addressList.indexOf(data.item)].closeRow();
-              deleteAddress(data.item.id);
+              Alert.alert('Сообщение', 'Вы уверены?', [
+                {style: 'default', text: 'Нет'},
+                {
+                  style: 'destructive',
+                  text: 'Да',
+                  onPress: () => {
+                    rowMap[addressList.indexOf(data.item)].closeRow();
+                    deleteAddress(data.item.id);
+                  },
+                },
+              ]);
             }}
             style={{
               backgroundColor: 'red',

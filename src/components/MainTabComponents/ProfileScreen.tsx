@@ -9,6 +9,7 @@ import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
 import ActiveOrderCard from './ActiveOrderCard';
 import firestore from '@react-native-firebase/firestore';
 import {useFocusEffect} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
@@ -21,20 +22,28 @@ export default function ProfileScreen({navigation}: Props) {
 
   const [authorized, setAuthorized] = useState<boolean>(false);
   const [addressLength, setAddressLength] = useState<number>(0);
+  const [userName, setUserName] = useState<string>(
+    auth().currentUser?.displayName || '',
+  );
 
   useFocusEffect(
     React.useCallback(() => {
+      setAuthorized(auth().currentUser?.displayName !== null);
+      navigation.setOptions({
+        headerShown: auth().currentUser?.displayName === null,
+      });
+      setUserName(auth().currentUser?.displayName || '');
       firestore()
         .collection('Пользователи')
-        //todo:user_id
-        .doc('xlmoN94j09tWcC8mN9qQ')
+        .doc(auth().currentUser?.uid)
         .collection('Адреса')
+        .where('Название', '!=', '')
         .get()
         .then(res => {
           setAddressLength(res.size);
         })
         .catch(er => console.log('er', er));
-    }, []),
+    }, [navigation]),
   );
 
   function renderUnauthorized() {
@@ -137,7 +146,7 @@ export default function ProfileScreen({navigation}: Props) {
               color: 'black',
               marginLeft: 18,
             }}>
-            Александр
+            {userName}
           </StyledText>
           <View
             style={{
