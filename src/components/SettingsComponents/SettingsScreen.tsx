@@ -160,16 +160,13 @@ export default function SettingsScreen({navigation}: Props) {
           placeholder={'Имя'}
           showLabel={true}
           label={'Имя'}
+          maxLength={30}
+          textContentType={'name'}
           onChangeText={text => {
             setName(text.replace(/[^A-Za-zА-Яа-я-\s!?]/g, ''));
             nameRef.current?.setValue(
               text.replace(/[^A-Za-zА-Яа-я-\s!?]/g, ''),
             );
-          }}
-          inputProps={{
-            keyboardType: 'default',
-            textContentType: 'name',
-            maxLength: 30,
           }}
           labelStyle={{}}
         />
@@ -181,7 +178,6 @@ export default function SettingsScreen({navigation}: Props) {
           placeholder={'Телефон'}
           showLabel={true}
           label={'Телефон'}
-          inputProps={{}}
           labelStyle={{}}
         />
         <NewBaseInput
@@ -193,9 +189,7 @@ export default function SettingsScreen({navigation}: Props) {
           showLabel={true}
           label={'Email'}
           keyboardType={'email-address'}
-          inputProps={{
-            textContentType: 'emailAddress',
-          }}
+          textContentType={'emailAddress'}
           labelStyle={{}}
         />
         <NewBaseInput
@@ -207,7 +201,6 @@ export default function SettingsScreen({navigation}: Props) {
           placeholder={'День рождения'}
           showLabel={true}
           label={'День рождения'}
-          inputProps={{}}
           labelStyle={{}}
         />
       </>

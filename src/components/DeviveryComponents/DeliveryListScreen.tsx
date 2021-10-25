@@ -47,14 +47,16 @@ export default function DeliveryListScreen({navigation}: Props) {
         .collection('Пользователи')
         .doc(auth().currentUser?.uid)
         .collection('Адреса')
-        .where('Название', '!=', '')
+        .where('Улица', '!=', '')
         .get()
         .then(res => {
           let list: Array<Address> = [];
           res.docs.forEach(doc => {
             let newAddress: Address = {
               id: doc.id,
-              name: doc.get<string>('Название'),
+              name: doc.get<string>('Название')
+                ? doc.get<string>('Название')
+                : '',
               street: doc.get<string>('Улица'),
               house: doc.get<string>('Дом'),
               flat: doc.get<string>('Квартира'),
@@ -140,14 +142,14 @@ export default function DeliveryListScreen({navigation}: Props) {
           alignItems: 'center',
           backgroundColor: 'white',
         }}
-        disabled={item.name === '' ? true : null}
+        disabled={item.street === '' ? true : null}
         onPress={() =>
           navigation.navigate('AddEditAddress', {address: item, type: 'edit'})
         }
         android_ripple={{color: 'gray', radius: 200}}>
         <ShimmerPlaceHolder
           style={{width: width - 120}}
-          visible={item.name !== ''}>
+          visible={item.street !== ''}>
           <StyledText
             numberOfLines={1}
             ellipsizeMode={'tail'}
@@ -162,27 +164,31 @@ export default function DeliveryListScreen({navigation}: Props) {
         </ShimmerPlaceHolder>
 
         <View style={{position: 'absolute', right: 0, flexDirection: 'row'}}>
-          <ShimmerPlaceHolder style={{width: 60}} visible={item.name !== ''}>
-            <View
-              style={{
-                width: 60,
-                borderRadius: 5,
-                paddingVertical: 5,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#28B3C6',
-              }}>
-              <StyledText
+          <ShimmerPlaceHolder style={{width: 60}} visible={item.street !== ''}>
+            {item.name !== '' ? (
+              <View
                 style={{
-                  fontSize: 10,
-                  color: 'white',
-                  fontWeight: '700',
                   width: 60,
-                  textAlign: 'center',
+                  borderRadius: 5,
+                  paddingVertical: 5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#28B3C6',
                 }}>
-                {item.name}
-              </StyledText>
-            </View>
+                <StyledText
+                  style={{
+                    fontSize: 10,
+                    color: 'white',
+                    fontWeight: '700',
+                    width: 60,
+                    textAlign: 'center',
+                  }}>
+                  {item.name}
+                </StyledText>
+              </View>
+            ) : (
+              <View />
+            )}
           </ShimmerPlaceHolder>
 
           <Image
@@ -217,7 +223,7 @@ export default function DeliveryListScreen({navigation}: Props) {
         bounces={false}
         renderHiddenItem={(data, rowMap) => (
           <Pressable
-            disabled={data.item.name === '' ? true : null}
+            disabled={data.item.street === '' ? true : null}
             android_ripple={{color: 'gray', radius: 200}}
             onPress={() => {
               Alert.alert('Сообщение', 'Вы уверены?', [

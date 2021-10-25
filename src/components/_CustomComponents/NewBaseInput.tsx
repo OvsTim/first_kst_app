@@ -33,13 +33,14 @@ type Props = {
   multiline?: boolean;
   maxLength?: number;
   error?: boolean;
+  placeholderTextColor?: string;
   onChangeText?: (text: string) => void;
+  onSubmitEditing?: () => void;
   styleInput: ViewStyle;
   styleContainer: ViewStyle;
   showLabel: boolean;
   label: string;
   secondLabel?: string;
-  inputProps: TextInputProps;
   labelStyle: TextStyle;
   textContentType?:
     | 'none'
@@ -89,13 +90,14 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
     maxLength,
     onChangeText,
     label,
-    inputProps,
     labelStyle,
     styleInput,
     secondLabel,
     showLabel,
     styleContainer,
     textContentType,
+    onSubmitEditing,
+    placeholderTextColor,
   }: Props,
   ref,
 ) => {
@@ -167,7 +169,9 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
         ]}
         textContentType={textContentType}
         multiline={multiline || false}
-        placeholderTextColor={'#A0A0A0'}
+        placeholderTextColor={
+          placeholderTextColor ? placeholderTextColor : '#A0A0A0'
+        }
         placeholder={placeholder}
         value={text}
         onChangeText={it => {
@@ -181,11 +185,11 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
 
           onChangeText && onChangeText(it);
         }}
-        {...inputProps}
         maxLength={maxLength}
         keyboardType={keyboardType || 'default'}
         returnKeyType={returnKeyType || 'next'}
         blurOnSubmit={blurOnSubmit || false}
+        onSubmitEditing={() => onSubmitEditing && onSubmitEditing()}
       />
     </View>
   );

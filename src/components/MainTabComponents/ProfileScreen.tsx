@@ -37,7 +37,7 @@ export default function ProfileScreen({navigation}: Props) {
         .collection('Пользователи')
         .doc(auth().currentUser?.uid)
         .collection('Адреса')
-        .where('Название', '!=', '')
+        .where('Улица', '!=', '')
         .get()
         .then(res => {
           setAddressLength(res.size);

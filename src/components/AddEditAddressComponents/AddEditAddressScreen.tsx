@@ -1,7 +1,14 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import {AppStackParamList} from '../../navigation/AppNavigator';
-import {Alert, Pressable, Text, useWindowDimensions, View} from 'react-native';
+import {
+  Alert,
+  Keyboard,
+  Pressable,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {withFont} from '../_CustomComponents/HOC/withFont';
@@ -67,14 +74,13 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
 
   function addAddress() {
     if (
-      !nameRef.current?.getValue() ||
       !homeRef.current?.getValue() ||
       !flatRef.current?.getValue() ||
       !streetRef.current?.getValue()
     ) {
       Alert.alert(
         'Ошибка',
-        'Заполните обязательные поля (название, дом, квартира, улица)',
+        'Заполните обязательные поля (дом, квартира, улица)',
       );
       return;
     }
@@ -84,8 +90,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
       .collection('Пользователи')
       .doc(auth().currentUser?.uid)
       .collection('Адреса')
-      .doc(nameRef.current?.getValue())
-      .set({
+      .add({
         Название: nameRef.current?.getValue(),
         Дом: homeRef.current?.getValue(),
         Квартира: flatRef.current?.getValue(),
@@ -108,14 +113,13 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
 
   function updateAddress() {
     if (
-      !nameRef.current?.getValue() ||
       !homeRef.current?.getValue() ||
       !flatRef.current?.getValue() ||
       !streetRef.current?.getValue()
     ) {
       Alert.alert(
         'Ошибка',
-        'Заполните обязательные поля (название, дом, квартира, улица)',
+        'Заполните обязательные поля (дом, квартира, улица)',
       );
       return;
     }
@@ -197,15 +201,12 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           editable={true}
           placeholder={''}
           label={'Улица'}
-          inputProps={{
-            textContentType: 'streetAddressLine1',
-            keyboardType: 'default',
-            maxLength: 30,
-            returnKeyType: 'next',
-            onSubmitEditing: () => {
-              console.log('onSubmitEditing');
-              homeRef.current?.focus;
-            },
+          maxLength={30}
+          textContentType={'streetAddressLine1'}
+          keyboardType={'default'}
+          onSubmitEditing={() => {
+            console.log('onSubmitEditing');
+            homeRef.current?.focus();
           }}
         />
         <NewBaseInput
@@ -223,15 +224,12 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           placeholder={''}
           showLabel={true}
           label={'Дом (корпус, строение)'}
-          inputProps={{
-            textContentType: 'streetAddressLine2',
-            keyboardType: 'default',
-            maxLength: 4,
-            returnKeyType: 'next',
-            onSubmitEditing: () => {
-              flatRef.current?.focus();
-            },
+          textContentType={'streetAddressLine2'}
+          keyboardType={'default'}
+          onSubmitEditing={() => {
+            flatRef.current?.focus();
           }}
+          maxLength={4}
         />
         <NewBaseInput
           ref={flatRef}
@@ -247,15 +245,11 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           editable={true}
           placeholder={''}
           showLabel={true}
+          maxLength={4}
           label={'Квартира'}
-          inputProps={{
-            textContentType: 'none',
-            keyboardType: 'default',
-            maxLength: 4,
-            returnKeyType: 'next',
-            onSubmitEditing: () => {
-              entranceRef.current?.focus();
-            },
+          textContentType={'none'}
+          onSubmitEditing={() => {
+            entranceRef.current?.focus();
           }}
         />
         <NewBaseInput
@@ -273,15 +267,11 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           placeholder={''}
           showLabel={true}
           label={'Подъезд '}
+          maxLength={2}
           secondLabel={'(не обязательно)'}
-          inputProps={{
-            textContentType: 'none',
-            keyboardType: 'default',
-            maxLength: 2,
-            returnKeyType: 'next',
-            onSubmitEditing: () => {
-              floorRef.current?.focus();
-            },
+          textContentType={'none'}
+          onSubmitEditing={() => {
+            floorRef.current?.focus();
           }}
         />
         <NewBaseInput
@@ -298,16 +288,12 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           editable={true}
           placeholder={''}
           showLabel={true}
+          maxLength={2}
           label={'Этаж '}
           secondLabel={'(не обязательно)'}
-          inputProps={{
-            textContentType: 'none',
-            keyboardType: 'default',
-            maxLength: 2,
-            returnKeyType: 'next',
-            onSubmitEditing: () => {
-              codeRef.current?.focus();
-            },
+          textContentType={'none'}
+          onSubmitEditing={() => {
+            codeRef.current?.focus();
           }}
         />
         <NewBaseInput
@@ -325,15 +311,10 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           placeholder={''}
           showLabel={true}
           label={'Код домофона '}
+          maxLength={4}
           secondLabel={'(не обязательно)'}
-          inputProps={{
-            textContentType: 'none',
-            keyboardType: 'default',
-            maxLength: 4,
-            returnKeyType: 'next',
-            onSubmitEditing: () => {
-              nameRef.current?.focus();
-            },
+          onSubmitEditing={() => {
+            nameRef.current?.focus();
           }}
         />
         <NewBaseInput
@@ -350,15 +331,11 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           editable={true}
           placeholder={''}
           showLabel={true}
+          maxLength={10}
+          returnKeyType={'next'}
           label={'Название (дом, работа, друзья)'}
-          inputProps={{
-            textContentType: 'none',
-            keyboardType: 'default',
-            maxLength: 10,
-            returnKeyType: 'next',
-            onSubmitEditing: () => {
-              commentaryRef.current?.focus();
-            },
+          onSubmitEditing={() => {
+            commentaryRef.current?.focus();
           }}
         />
         <NewBaseInput
@@ -377,13 +354,14 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           showLabel={true}
           secondLabel={'(не обязательно)'}
           label={'Комментарий к заказу '}
-          inputProps={{
-            textContentType: 'none',
-            keyboardType: 'default',
-            placeholderTextColor: '#00000033',
-            maxLength: 30,
-            returnKeyType: 'done',
+          maxLength={30}
+          keyboardType={'default'}
+          textContentType={'none'}
+          returnKeyType={'done'}
+          onSubmitEditing={() => {
+            Keyboard.dismiss();
           }}
+          placeholderTextColor={'#00000033'}
         />
         {route.params.type === 'edit' && (
           <Pressable
@@ -410,7 +388,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
               style={{
                 fontSize: 18,
                 fontWeight: '500',
-                color: '#28B3C6',
+                color: '#FF0000',
               }}>
               Удалить
             </StyledText>

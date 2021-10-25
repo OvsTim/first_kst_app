@@ -9,9 +9,9 @@ export interface Address {
   id: string;
   street: string;
   house: string;
-  name: string;
   flat: string;
 
+  name?: string;
   entrance?: string;
   floor?: string;
   code?: string;
