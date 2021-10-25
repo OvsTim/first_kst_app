@@ -1,4 +1,6 @@
 import axios from 'axios';
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import DocumentReference = FirebaseFirestoreTypes.DocumentReference;
 
 export interface Image {
   id: number;
@@ -16,6 +18,18 @@ export interface Address {
   floor?: string;
   code?: string;
   commentary?: string;
+}
+
+export interface Restaraunt {
+  id: string;
+  address: string;
+  phone: string;
+  name: string;
+  delivery: Record<string, string>;
+  workHours: Record<string, string>;
+  recommendations: Array<any>;
+  outOfStock: Array<DocumentReference>;
+  coords: {lat: number; lan: number};
 }
 export function getImages(url: string) {
   return axios.get<Image[]>(url, {
