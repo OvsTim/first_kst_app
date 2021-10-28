@@ -329,11 +329,13 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           }}
           styleContainer={{}}
           editable={true}
-          placeholder={''}
+          placeholder={'Дом, работа, друзья'}
+          placeholderTextColor={'#00000033'}
           showLabel={true}
           maxLength={10}
           returnKeyType={'next'}
-          label={'Название (дом, работа, друзья)'}
+          label={'Название '}
+          secondLabel={'(не обязательно)'}
           onSubmitEditing={() => {
             commentaryRef.current?.focus();
           }}

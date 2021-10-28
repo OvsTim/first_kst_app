@@ -27,8 +27,8 @@ export interface Restaraunt {
   name: string;
   delivery: Record<string, string>;
   workHours: Record<string, string>;
-  recommendations: Array<any>;
-  outOfStock: Array<DocumentReference>;
+  recommendations: Array<string>;
+  outOfStock: Array<string>;
   coords: {lat: number; lan: number};
 }
 export function getImages(url: string) {

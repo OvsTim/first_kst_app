@@ -4,23 +4,21 @@ import {
   Dimensions,
   FlatList,
   Image,
-  Keyboard,
+  Linking,
   PermissionsAndroid,
   Platform,
   Pressable,
   StatusBar,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
 } from 'react-native';
-import {useAppDispatch} from '../../redux';
+import {useAppDispatch, useSelector} from '../../redux';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {hScale, vScale, window} from '../../utils/scaling';
 import {setAuthData} from '../../redux/UserDataSlice';
-import auth from '@react-native-firebase/auth';
 import {getFontName, withFont} from '../_CustomComponents/HOC/withFont';
 // @ts-ignore
 import TabSelectorAnimation from 'react-native-tab-selector';
@@ -33,6 +31,12 @@ import {getDistance} from 'geolib';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 import YaMap, {Marker} from 'react-native-yamap';
+import {Modalize} from 'react-native-modalize';
+import {
+  getTodayWorkingHour,
+  getWorkHoursStringByMap,
+  getWorkingNow,
+} from '../../utils/workHourUtils';
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'SearchShop'>;
 };
@@ -40,94 +44,35 @@ type Props = {
 export default function SelectShopScreen({}: Props) {
   const StyledText = withFont(Text);
   const mapref = useRef<YaMap>(null);
-
+  const modalizeRef = useRef<Modalize>(null);
   const dispatch = useAppDispatch();
   const {width} = useWindowDimensions();
-  // If null, no SMS has been sent
   const [indexTab, setIndexTab] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [shopIndex, setShopIndex] = useState<number>(-1);
+  const [loading, setLoading] = useState<boolean>(true);
   const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
+  const list: Array<Restaraunt> = useSelector(state => state.data.shops);
 
-  const [list, setList] = useState<Array<Restaraunt>>(
-    Array(5).fill({
-      id: '',
-      address: '',
-      phone: '',
-      name: '',
-      delivery: {},
-      workHours: {},
-      recommendations: [],
-      outOfStock: [],
-      coords: {lat: 0, lan: 0},
-    }),
-  );
   const [location, setLocation] = useState<{lat: number; lng: number}>({
     lat: 0,
     lng: 0,
   });
   const DATA = [{title: 'Списком'}, {title: 'На карте'}];
-  const array = [
-    {lat: 50, lon: 50},
-    {lat: 50.234, lon: 50.234},
-    {lat: 50.345, lon: 50.345},
-  ];
-  useEffect(() => {
-    setLoading(true);
-    auth()
-      .signInAnonymously()
-      .then(() => {
-        firestore()
-          .collection('Рестораны')
-          .get()
-          .then(res => {
-            let newList: Array<Restaraunt> = [];
-            res.docs.forEach(rest => {
-              let newRest: Restaraunt = {
-                address: rest.get<string>('Адрес')
-                  ? rest.get<string>('Адрес')
-                  : '',
-                id: rest.id,
-                name: rest.get<string>('Имя') ? rest.get<string>('Имя') : '',
-                phone: rest.get<string>('Телефон')
-                  ? rest.get<string>('Телефон')
-                  : '',
-                // @ts-ignore
-                coords: rest.get<firestore.GeoPoint>('Координаты')
-                  ? {
-                      // @ts-ignore
-                      lat: rest.get<firestore.GeoPoint>('Координаты').latitude,
-                      // @ts-ignore
-                      lan: rest.get<firestore.GeoPoint>('Координаты').longitude,
-                    }
-                  : {lan: 0, lat: 0},
-                outOfStock: rest.get<Array<DocumentReference>>('Отсутствует'),
-                recommendations: rest.get<Array<DocumentReference>>(
-                  'Рекомендации',
-                ),
-                delivery: rest.get<Record<string, string>>('Доставка'),
-                workHours: rest.get<Record<string, string>>('РежимРаботы'),
-              };
-              newList.push(newRest);
-            });
-            console.log('newList', newList);
-            setList(newList);
-            setLoading(false);
-          });
-      })
-      .catch(error => {
-        if (error.code === 'auth/operation-not-allowed') {
-          console.log('Enable anonymous in your firebase console.');
-        }
-
-        console.error(error);
-      });
-  }, []);
 
   useEffect(() => {
     if (indexTab === 1) {
       mapref.current?.fitAllMarkers();
+      setShopIndex(-1);
     }
   }, [indexTab]);
+
+  useEffect(() => {
+    if (list[0] && list[0].name) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [list]);
 
   //region handlers
   function getPermissions() {
@@ -236,7 +181,7 @@ export default function SelectShopScreen({}: Props) {
                   fontSize: 15,
                   color: '#696E79',
                 }}>
-                C 10:00 до 20:00
+                {getTodayWorkingHour(item.workHours)}
               </StyledText>
               {location.lng !== 0 && (
                 <>
@@ -293,27 +238,166 @@ export default function SelectShopScreen({}: Props) {
         </>
       )}
       {indexTab === 1 && (
-        <YaMap
-          style={{
-            width,
-            height: Dimensions.get('window').height - 100,
-          }}
-          ref={mapref}
-          onMapPress={() => console.log('onMapPress')}>
-          {list.map((rest, index) => (
-            <Marker
-              key={index}
-              point={{lat: rest.coords.lat, lon: rest.coords.lan}}
-              onPress={() => {
-                Alert.alert('123');
-              }}
-              source={require('../../assets/marker.png')}
-            />
-          ))}
-        </YaMap>
+        <>
+          <YaMap
+            style={{
+              width,
+              height: Dimensions.get('window').height - 100,
+            }}
+            ref={mapref}
+            onMapPress={() => console.log('onMapPress')}>
+            {list.map((rest, index) => (
+              <Marker
+                key={index}
+                point={{lat: rest.coords.lat, lon: rest.coords.lan}}
+                onPress={() => {
+                  mapref.current?.getCameraPosition(position => {
+                    mapref.current?.setCenter({
+                      lat: rest.coords.lat - 0.015,
+                      lon: rest.coords.lan,
+                      zoom: position.zoom,
+                    });
+                    setShopIndex(index);
+                  });
+                }}
+                source={require('../../assets/marker.png')}
+              />
+            ))}
+          </YaMap>
+
+          <Modalize
+            // withHandle={false}
+            ref={modalizeRef}
+            rootStyle={{zIndex: 900}}
+            modalStyle={{borderRadius: 15}}
+            alwaysOpen={shopIndex === -1 ? 0 : 350}
+            handlePosition="inside">
+            {shopIndex !== -1 && (
+              <View style={{paddingTop: 50, paddingHorizontal: 18}}>
+                <StyledText
+                  style={{
+                    width: width - 36,
+                    fontWeight: '700',
+                    fontSize: 18,
+                    color: 'black',
+                  }}>
+                  {list[shopIndex].name}
+                </StyledText>
+                <StyledText
+                  style={{
+                    width: width - 36,
+                    fontWeight: '500',
+                    fontSize: 18,
+                    marginTop: 7,
+                    color: 'black',
+                  }}>
+                  {list[shopIndex].address}
+                </StyledText>
+                <StyledText
+                  style={{
+                    width: width - 36,
+                    fontWeight: '500',
+                    fontSize: 18,
+                    marginTop: 7,
+                    color: '#28B3C6',
+                  }}>
+                  {getWorkingNow(list[shopIndex].workHours)}
+                </StyledText>
+                <View
+                  style={{
+                    marginTop: 25,
+
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <StyledText
+                    style={{fontWeight: '400', color: 'black', fontSize: 18}}>
+                    Доставка
+                  </StyledText>
+                  <StyledText
+                    style={{
+                      fontWeight: '500',
+                      width: width / 2,
+                      textAlign: 'right',
+
+                      color: '#696E79',
+                      fontSize: 18,
+                    }}>
+                    {getWorkHoursStringByMap(list[shopIndex].delivery)}
+                  </StyledText>
+                </View>
+
+                <View
+                  style={{
+                    marginTop: 25,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <StyledText
+                    style={{fontWeight: '400', color: 'black', fontSize: 18}}>
+                    Ресторан
+                  </StyledText>
+                  <StyledText
+                    style={{
+                      fontWeight: '500',
+                      width: width / 2,
+                      textAlign: 'right',
+                      color: '#696E79',
+                      fontSize: 18,
+                    }}>
+                    {getWorkHoursStringByMap(list[shopIndex].workHours)}
+                  </StyledText>
+                </View>
+
+                <View
+                  style={{
+                    marginTop: 25,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <StyledText
+                    style={{fontWeight: '400', color: 'black', fontSize: 18}}>
+                    Телефон
+                  </StyledText>
+                  <Pressable
+                    android_ripple={{color: 'gray', radius: 200}}
+                    onPress={() =>
+                      Linking.openURL('tel:' + list[shopIndex].phone)
+                    }>
+                    <StyledText
+                      style={{
+                        fontWeight: '500',
+                        color: '#28B3C6',
+                        fontSize: 18,
+                      }}>
+                      {list[shopIndex].phone}
+                    </StyledText>
+                  </Pressable>
+                </View>
+              </View>
+            )}
+          </Modalize>
+          {shopIndex !== -1 && (
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 100,
+                zIndex: 999,
+                width,
+                height: 90,
+                backgroundColor: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <BaseButton text={'Забрать здесь'} onPress={() => {}} />
+            </View>
+          )}
+        </>
       )}
+
       <View
         style={{
+          zIndex: 999,
           height: 100,
           position: 'absolute',
           bottom: 0,
@@ -325,7 +409,7 @@ export default function SelectShopScreen({}: Props) {
           alignItems: 'center',
         }}>
         <TabSelectorAnimation
-          style={{width: width - 22, borderRadius: 9}}
+          style={{width: width - 22, borderRadius: 9, zIndex: 999}}
           styleTab={{borderRadius: 9}}
           backgroundColor={'#7676801F'}
           onChangeTab={setIndexTab}

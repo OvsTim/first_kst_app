@@ -1,4 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {Restaraunt} from '../API';
 
 interface UserState {
   token: string;
@@ -9,11 +10,32 @@ interface UserState {
   last_name: string;
   images: ImageMap;
   firebase_token: string;
+  shops: Array<Restaraunt>;
 }
 
 export type ImageMap = Record<string, string>;
 
-const initialState = {token: '', images: {}, firebase_token: ''} as UserState;
+const initialState = {
+  name: '',
+  phone: '',
+  last_name: '',
+  surname: '',
+  user_id: '',
+  token: '',
+  images: {},
+  firebase_token: '',
+  shops: Array(5).fill({
+    id: '',
+    address: '',
+    phone: '',
+    name: '',
+    delivery: {},
+    workHours: {},
+    recommendations: [],
+    outOfStock: [],
+    coords: {lat: 0, lan: 0},
+  }),
+} as UserState;
 
 const dataSlice = createSlice({
   name: 'data',
@@ -41,6 +63,9 @@ const dataSlice = createSlice({
     setFirebaseToken(state, action: PayloadAction<string>) {
       state.firebase_token = action.payload || '';
     },
+    setShops(state, action: PayloadAction<Array<Restaraunt>>) {
+      state.shops = action.payload;
+    },
     // setData(
     //   state,
     //   action: PayloadAction<Pick<UserState, 'surname' | 'name' | 'last_name'>>,
@@ -65,5 +90,6 @@ export const {
   resetAction,
   setImageUrl,
   setFirebaseToken,
+  setShops,
 } = dataSlice.actions;
 export default dataSlice.reducer;
