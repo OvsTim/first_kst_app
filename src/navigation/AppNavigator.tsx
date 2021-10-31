@@ -29,6 +29,7 @@ import EnterPhoneScreen from '../components/AuthComponents/EnterPhoneScreen';
 import EnterCodeScreen from '../components/AuthComponents/EnterCodeScreen';
 import EnterNameScreen from '../components/AuthComponents/EnterNameScreen';
 import EnterBirthdayScreen from '../components/AuthComponents/EnterBirthdayScreen';
+import SelectShopScreen from '../components/SignInComonents/SelectShopScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -48,6 +49,7 @@ export type AppStackParamList = {
   EnterCode: {phone: string; formattedPhone: string};
   EnterName: undefined;
   EnterBirthday: undefined;
+  ChangeRestaraunt: undefined;
   AddEditAddress: {
     type: 'add' | 'edit';
     address?: Address;
@@ -92,7 +94,11 @@ const StyledText = withFont(Text);
 function MenuTab() {
   return (
     <MenuStack.Navigator screenOptions={options}>
-      <MenuStack.Screen name="Menu" component={MenuScreen} options={{}} />
+      <MenuStack.Screen
+        name="Menu"
+        component={MenuScreen}
+        options={{headerShown: false}}
+      />
     </MenuStack.Navigator>
   );
 }
@@ -345,6 +351,26 @@ export default function AppNavigator() {
         options={{
           ...TransitionPresets.ModalSlideFromBottomIOS,
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'ChangeRestaraunt'}
+        component={SelectShopScreen}
+        options={{
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+          headerPressColorAndroid: 'transparent',
+          headerTitleAlign: 'center',
+          headerBackTitleStyle: {
+            color: '#28B3C6',
+            fontSize: 14,
+            marginLeft: 4,
+            fontFamily: 'SFProDisplay-Regular',
+          },
+          headerBackTitle: 'Отмена',
+          headerBackTitleVisible: true,
+          headerBackImage: _ => <View />,
+          headerTitle: 'Рестораны',
+          headerStyle: {backgroundColor: '#F7F7F7'},
         }}
       />
       <Stack.Screen

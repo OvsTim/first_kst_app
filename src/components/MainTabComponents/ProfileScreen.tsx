@@ -10,6 +10,9 @@ import ActiveOrderCard from './ActiveOrderCard';
 import firestore from '@react-native-firebase/firestore';
 import {useFocusEffect} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux';
+import {Restaraunt} from '../../API';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
@@ -19,7 +22,26 @@ const Button = withPressable(View);
 export default function ProfileScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
-
+  const active: string = useSelector(
+    (state: RootState) => state.data.activeShop,
+  );
+  const shops: Array<Restaraunt> = useSelector(
+    (state: RootState) => state.data.shops,
+  );
+  const activeShop: Restaraunt =
+    shops.filter(value => value.id === active).length > 0
+      ? shops.filter(value => value.id === active)[0]
+      : {
+          id: '',
+          phone: '',
+          name: '',
+          address: '',
+          coords: {lat: 0, lan: 0},
+          outOfStock: [],
+          workHours: {},
+          recommendations: [],
+          delivery: {},
+        };
   const [authorized, setAuthorized] = useState<boolean>(false);
   const [addressLength, setAddressLength] = useState<number>(0);
   const [userName, setUserName] = useState<string>(
@@ -118,7 +140,7 @@ export default function ProfileScreen({navigation}: Props) {
               }}>
               <StyledText
                 style={{fontWeight: '500', fontSize: 15, color: 'black'}}>
-                ТРЦ Костанай Плаза
+                {activeShop.name}
               </StyledText>
               <Image
                 style={{

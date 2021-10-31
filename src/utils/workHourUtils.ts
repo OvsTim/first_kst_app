@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, {Dayjs} from 'dayjs';
 import 'dayjs/plugin/customParseFormat';
 import 'dayjs/plugin/isBetween';
 
@@ -29,27 +29,52 @@ export function getWorkHoursStringByMap(map: Record<string, string>) {
     res = res + key + ' - ' + typedHours[key] + '\n';
   }
 
-  return res;
+  return res.slice(0, -1);
 }
 
 export function getWorkingNow(map: Record<string, string>) {
   //берем сегодняшнее время день и часы работы
-  let todayDay = dayjs().day(new Date().getDay()).format('dd');
+  let todayDay;
   let todayTime = dayjs(
     new Date().getHours() + '.' + new Date().getMinutes(),
     'HH.mm',
   );
-  let todayHours = map[todayDay[0].toUpperCase() + todayDay[1]];
+  let todayHours;
+  let isNight: boolean = false;
+  //если сейчас ночь то берем вчерашний режим работы
+  if (todayTime.isBefore(dayjs(new Date()).startOf('day').add(5, 'hours'))) {
+    isNight = true;
+    todayDay = dayjs().day(new Date().getDay()).add(-1, 'day').format('dd');
+    todayHours = map[todayDay[0].toUpperCase() + todayDay[1]];
+  } else {
+    //иначе сегодняшний
+    todayDay = dayjs().day(new Date().getDay()).format('dd');
+    todayHours = map[todayDay[0].toUpperCase() + todayDay[1]];
+  }
 
   if (todayHours.toLowerCase() === 'выходной') {
     return 'Закрыто';
   } else {
     //вытаскиваем начальный и конечный час
-    let startHour = dayjs(todayHours.substr(0, 5), 'HH.mm');
-    let endHour = dayjs(todayHours.substr(6, todayHours.length - 1), 'HH.mm');
+    let startHour;
+    let endHour;
+    //если ночь, для коррекции вычислений добавляем минус один день
+    if (isNight) {
+      startHour = dayjs(todayHours.substr(0, 5), 'HH.mm').add(-1, 'day');
+      endHour = dayjs(todayHours.substr(6, todayHours.length - 1), 'HH.mm').add(
+        -1,
+        'day',
+      );
+    } else {
+      startHour = dayjs(todayHours.substr(0, 5), 'HH.mm');
+      endHour = dayjs(todayHours.substr(6, todayHours.length - 1), 'HH.mm');
+    }
 
-    // let formattedCurrent = todayTime.format('HH:mm');
-    // let formattedStart = startHour.format('HH:mm');
+    //если конечный меньше, прибавляем день
+    if (endHour < startHour) {
+      endHour = endHour.add(1, 'day');
+    }
+
     let formattedEnd = endHour.format('HH:mm');
     if (
       dayjs(todayTime).isAfter(startHour) &&
@@ -63,7 +88,20 @@ export function getWorkingNow(map: Record<string, string>) {
 }
 
 export function getTodayWorkingHour(map: Record<string, string>) {
-  let todayDay = dayjs().day(new Date().getDay()).format('dd');
+  let todayDay;
+  let todayTime = dayjs(
+    new Date().getHours() + '.' + new Date().getMinutes(),
+    'HH.mm',
+  );
+  //если сейчас ночь то берем вчерашний режим работы
+  if (todayTime.isBefore(dayjs(new Date()).startOf('day').add(5, 'hours'))) {
+    todayDay = dayjs().day(new Date().getDay()).add(-1, 'day').format('dd');
 
-  return map[todayDay[0].toUpperCase() + todayDay[1]];
+    return map[todayDay[0].toUpperCase() + todayDay[1]];
+  } else {
+    //иначе сегодняшний
+    todayDay = dayjs().day(new Date().getDay()).format('dd');
+
+    return map[todayDay[0].toUpperCase() + todayDay[1]];
+  }
 }

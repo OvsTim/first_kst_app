@@ -11,6 +11,7 @@ interface UserState {
   images: ImageMap;
   firebase_token: string;
   shops: Array<Restaraunt>;
+  activeShop: string;
 }
 
 export type ImageMap = Record<string, string>;
@@ -24,6 +25,7 @@ const initialState = {
   token: '',
   images: {},
   firebase_token: '',
+  activeShop: '',
   shops: Array(5).fill({
     id: '',
     address: '',
@@ -57,6 +59,10 @@ const dataSlice = createSlice({
       state.name = name;
       state.last_name = last_name;
     },
+    setActiveShop(state, action: PayloadAction<string>) {
+      state.activeShop = action.payload;
+    },
+
     setImageUrl(state, action: PayloadAction<{ref: string; url: string}>) {
       state.images[action.payload.ref] = action.payload.url;
     },
@@ -86,6 +92,7 @@ const dataSlice = createSlice({
 });
 
 export const {
+  setActiveShop,
   setAuthData,
   resetAction,
   setImageUrl,

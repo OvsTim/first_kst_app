@@ -25,11 +25,10 @@ const options: StackNavigationOptions = {
 };
 
 export default function MainNavigator() {
-  const token = useSelector((state: RootState) => state.data.token);
-  console.log('token', token);
+  const activeShop = useSelector((state: RootState) => state.data.activeShop);
   return (
     <Stack.Navigator screenOptions={options}>
-      {!token || token === '' ? AuthNavigator() : AppNavigator()}
+      {!activeShop || activeShop === '' ? AuthNavigator() : AppNavigator()}
     </Stack.Navigator>
   );
 }

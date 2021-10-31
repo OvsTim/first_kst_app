@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
-  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -18,12 +17,10 @@ import {useAppDispatch, useSelector} from '../../redux';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {hScale, vScale, window} from '../../utils/scaling';
-import {setAuthData} from '../../redux/UserDataSlice';
+import {setActiveShop} from '../../redux/UserDataSlice';
 import {getFontName, withFont} from '../_CustomComponents/HOC/withFont';
 // @ts-ignore
 import TabSelectorAnimation from 'react-native-tab-selector';
-// @ts-ignore
-import firestore, {DocumentReference} from '@react-native-firebase/firestore';
 import {Restaraunt} from '../../API';
 import BaseButton from '../_CustomComponents/BaseButton';
 import Geolocation from 'react-native-geolocation-service';
@@ -41,7 +38,7 @@ type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'SearchShop'>;
 };
 
-export default function SelectShopScreen({}: Props) {
+export default function SelectShopScreen({navigation}: Props) {
   const StyledText = withFont(Text);
   const mapref = useRef<YaMap>(null);
   const modalizeRef = useRef<Modalize>(null);
@@ -57,7 +54,6 @@ export default function SelectShopScreen({}: Props) {
     lat: 0,
     lng: 0,
   });
-  const DATA = [{title: 'Списком'}, {title: 'На карте'}];
 
   useEffect(() => {
     if (indexTab === 1) {
@@ -131,16 +127,10 @@ export default function SelectShopScreen({}: Props) {
           paddingLeft: 18,
         }}
         onPress={() => {
-          dispatch(
-            setAuthData({
-              token: 'new token kjhfkjdhgkdshf',
-              user_id: '123',
-              phone: '+789789494',
-              surname: 'Фомин',
-              name: 'Илья',
-              last_name: 'Вячеславович',
-            }),
-          );
+          dispatch(setActiveShop(item.id));
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          }
         }}
         android_ripple={{color: 'gray', radius: 200}}>
         <View
@@ -389,7 +379,15 @@ export default function SelectShopScreen({}: Props) {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <BaseButton text={'Забрать здесь'} onPress={() => {}} />
+              <BaseButton
+                text={'Забрать здесь'}
+                onPress={() => {
+                  dispatch(setActiveShop(list[shopIndex].id));
+                  if (navigation.canGoBack()) {
+                    navigation.goBack();
+                  }
+                }}
+              />
             </View>
           )}
         </>
@@ -414,7 +412,7 @@ export default function SelectShopScreen({}: Props) {
           backgroundColor={'#7676801F'}
           onChangeTab={setIndexTab}
           styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}
-          tabs={DATA}
+          tabs={[{title: 'Списком'}, {title: 'На карте'}]}
         />
       </View>
     </View>
