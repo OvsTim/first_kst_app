@@ -26,6 +26,7 @@ import {setStocks} from '../../redux/UserDataSlice';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import Modal from 'react-native-modal';
 import BaseButton from '../_CustomComponents/BaseButton';
+import {Category, setCategories} from '../../redux/ProductsDataSlice';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
@@ -35,6 +36,16 @@ const Button = withPressable(View);
 export default function MenuScreen({navigation}: Props) {
   const HEADER_EXPANDED_HEIGHT = 350;
   const HEADER_COLLAPSED_HEIGHT = 60;
+
+  const onViewRef = useRef(({viewableItems}: any) => {
+    console.log('viewableItems', viewableItems);
+  });
+
+  const viewConfigRef = useRef({
+    itemVisiblePercentThreshold: 75,
+    minimumViewTime: 250,
+    waitForInteraction: true,
+  });
   const {width} = useWindowDimensions();
   const dispatch = useAppDispatch();
   const flatlistref = useRef<FlatList>(null);
@@ -47,6 +58,13 @@ export default function MenuScreen({navigation}: Props) {
   const scrollY = new Animated.Value(0);
   const stocks: Array<Stock> = useSelector(
     (state: RootState) => state.data.stocks,
+  );
+
+  const categoriesMap: Record<string, Category> = useSelector(
+    (state: RootState) => state.products.categories,
+  );
+  const categories: Array<Category> = useSelector((state: RootState) =>
+    state.products.categoryIds.map(it => categoriesMap[it]),
   );
   const headerHeight = scrollY.interpolate({
     inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
@@ -62,6 +80,7 @@ export default function MenuScreen({navigation}: Props) {
     description: '',
   });
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [activeCategory, setActiveCategory] = useState<number>(0);
 
   const activeShop: Restaraunt =
     shops.filter(value => value.id === active).length > 0
@@ -88,24 +107,47 @@ export default function MenuScreen({navigation}: Props) {
           res.docs.forEach(doc => {
             stockList.push({
               id: doc.id,
-              name: doc.get<string>('Заголовок'),
-              description: doc.get<string>('Описание'),
-              image: doc.get<string>('Картинка'),
+              name: doc.get<string>('Заголовок')
+                ? doc.get<string>('Заголовок')
+                : '',
+              description: doc.get<string>('Описание')
+                ? doc.get<string>('Описание')
+                : '',
+              image: doc.get<string>('Картинка')
+                ? doc.get<string>('Картинка')
+                : '',
               productId: doc.get<DocumentReference>('Продукт').path,
             });
           });
           dispatch(setStocks(stockList));
         })
         .catch(er => console.log('er', er));
+      firestore()
+        .collection('Категории')
+        .orderBy('Порядок', 'asc')
+        .get()
+        .then(res => {
+          let catList: Array<Category> = [];
+          res.docs.forEach(doc => {
+            catList.push({
+              id: doc.id,
+              name: doc.get<string>('Название')
+                ? doc.get<string>('Название')
+                : '',
+              fire:
+                doc.get<boolean>('Огонь') && doc.get<boolean>('Огонь') === true
+                  ? true
+                  : false,
+              order: doc.get<number>('Порядок')
+                ? doc.get<number>('Порядок')
+                : 0,
+            });
+          });
+          dispatch(setCategories(catList));
+        })
+        .catch(er => console.log('er', er));
     }, []),
   );
-
-  useEffect(() => {
-    setTimeout(() => {
-      console.log('scrollToOffset!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      // flatlistref.current?.scrollToEnd({animated: true});
-    }, 3000);
-  }, []);
 
   function renderToolbar() {
     return (
@@ -145,7 +187,7 @@ export default function MenuScreen({navigation}: Props) {
           <View
             style={{
               position: 'absolute',
-              right: 27,
+              right: 20,
               borderRadius: 15,
               overflow: 'hidden',
             }}>
@@ -228,6 +270,78 @@ export default function MenuScreen({navigation}: Props) {
     );
   }
 
+  function getRandomData() {
+    return new Array(100).fill('').map((item, index) => {
+      return {title: 'Title ' + (index + 1)};
+    });
+  }
+
+  function renderCategoryItem(item: Category, index: number) {
+    return (
+      <>
+        <View
+          style={{
+            marginRight: 9,
+            overflow: 'hidden',
+            borderRadius: 15,
+            height: 30,
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Pressable
+            onPress={() => {
+              setActiveCategory(index);
+              flatlistref.current?.scrollToIndex({
+                index: index * 10,
+                animated: true,
+              });
+            }}
+            android_ripple={{color: 'gray', radius: 200}}
+            style={{
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: 18,
+              backgroundColor:
+                index === activeCategory && item.fire
+                  ? '#FFD0D0'
+                  : index === activeCategory && !item.fire
+                  ? '#BEE8EE'
+                  : '#F3F3F7',
+            }}>
+            <StyledText
+              style={{
+                color:
+                  index === activeCategory && item.fire
+                    ? '#850000'
+                    : index === activeCategory && !item.fire
+                    ? '#046674'
+                    : '#606572',
+                fontSize: 12,
+                fontWeight: '700',
+              }}>
+              {item.name}
+            </StyledText>
+          </Pressable>
+        </View>
+        {item.fire && (
+          <Image
+            style={{
+              width: 14,
+              height: 14,
+              position: 'absolute',
+              right: 12,
+              top: 10,
+              tintColor: index === activeCategory ? '#850000' : '#606572',
+            }}
+            source={require('../../assets/Fire.png')}
+          />
+        )}
+      </>
+    );
+  }
+
   function renderModal() {
     return (
       <Modal
@@ -290,22 +404,6 @@ export default function MenuScreen({navigation}: Props) {
     );
   }
 
-  function getRandomData() {
-    return new Array(100).fill('').map((item, index) => {
-      return {title: 'Title ' + (index + 1)};
-    });
-  }
-
-  const onViewRef = useRef(({viewableItems}: any) => {
-    console.log('viewableItems', viewableItems);
-  });
-
-  const viewConfigRef = useRef({
-    itemVisiblePercentThreshold: 75,
-    minimumViewTime: 250,
-    waitForInteraction: true,
-  });
-
   return (
     <>
       <FocusAwareStatusBar
@@ -364,16 +462,29 @@ export default function MenuScreen({navigation}: Props) {
             </Pressable>
           )}
         />
-        <StyledText
+
+        <View
           style={{
             width,
             height: HEADER_COLLAPSED_HEIGHT,
-            backgroundColor: 'red',
+            backgroundColor: 'white',
             position: 'absolute',
             bottom: 0,
+            alignItems: 'center',
           }}>
-          Здесь будет список категорий
-        </StyledText>
+          <FlatList
+            contentContainerStyle={{
+              backgroundColor: 'white',
+              alignSelf: 'center',
+              paddingLeft: 18,
+              height: HEADER_COLLAPSED_HEIGHT,
+            }}
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            data={categories}
+            renderItem={({item, index}) => renderCategoryItem(item, index)}
+          />
+        </View>
       </Animated.View>
 
       <FlatList
