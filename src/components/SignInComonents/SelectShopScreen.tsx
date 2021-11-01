@@ -127,6 +127,10 @@ export default function SelectShopScreen({navigation}: Props) {
           paddingLeft: 18,
         }}
         onPress={() => {
+          if (!item.id) {
+            return;
+          }
+
           dispatch(setActiveShop(item.id));
           if (navigation.canGoBack()) {
             navigation.goBack();

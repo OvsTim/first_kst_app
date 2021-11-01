@@ -146,10 +146,10 @@ export default function AppWithNavigationState() {
                 : {lan: 0, lat: 0},
               outOfStock: rest
                 .get<Array<DocumentReference>>('Отсутствует')
-                .map(it => it.id),
+                .map(it => it.path),
               recommendations: rest
                 .get<Array<DocumentReference>>('Рекомендации')
-                .map(it => it.id),
+                .map(it => it.path),
               delivery: rest.get<Record<string, string>>('Доставка'),
               workHours: rest.get<Record<string, string>>('РежимРаботы'),
             };

@@ -1,4 +1,4 @@
-import {Image, ImageStyle} from 'react-native';
+import {Image, ImageResizeMode, ImageStyle} from 'react-native';
 import storage from '@react-native-firebase/storage';
 import {useEffect, useState} from 'react';
 import React from 'react';
@@ -13,6 +13,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 type Props = {
   innerUrl: string;
   imageStyle: ImageStyle;
+  resizeMode?: ImageResizeMode;
 };
 
 export default function FirebaseImage(props: Props) {
@@ -24,6 +25,12 @@ export default function FirebaseImage(props: Props) {
   const [isFetched, setIsFetched] = useState<boolean>(false);
   const imageRef = React.createRef<ShimmerPlaceholder>();
   useEffect(() => {
+    if (!props.innerUrl) {
+      return;
+    }
+
+    setIsFetched(false);
+
     if (url === '') {
       const reference = storage().refFromURL(props.innerUrl);
       reference
@@ -34,7 +41,7 @@ export default function FirebaseImage(props: Props) {
         })
         .catch(er => console.log('er', er));
     }
-  }, [url]);
+  }, [props.innerUrl, url]);
 
   return (
     <ShimmerPlaceHolder
@@ -42,9 +49,13 @@ export default function FirebaseImage(props: Props) {
       style={[{height: 200, width: 200}, props.imageStyle]}
       visible={isFetched}>
       <Image
+        resizeMode={props.resizeMode}
         source={url !== '' ? {uri: url} : require('../../assets/img_ph.png')}
         style={[{height: 200, width: 200}, props.imageStyle]}
-        onLoadEnd={() => setIsFetched(true)}
+        onLoadEnd={() => {
+          // console.log('onLoadEnd', url, props.innerUrl);
+          setIsFetched(true);
+        }}
       />
     </ShimmerPlaceHolder>
   );

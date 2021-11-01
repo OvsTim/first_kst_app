@@ -31,6 +31,15 @@ export interface Restaraunt {
   outOfStock: Array<string>;
   coords: {lat: number; lan: number};
 }
+
+export interface Stock {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+  productId: string;
+}
+
 export function getImages(url: string) {
   return axios.get<Image[]>(url, {
     headers: {
