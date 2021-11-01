@@ -1,11 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
   FlatList,
   Image,
   Pressable,
-  ScrollView,
   Text,
   useWindowDimensions,
   View,
@@ -38,6 +37,7 @@ export default function MenuScreen({navigation}: Props) {
   const HEADER_COLLAPSED_HEIGHT = 60;
   const {width} = useWindowDimensions();
   const dispatch = useAppDispatch();
+  const flatlistref = useRef<FlatList>(null);
   const active: string = useSelector(
     (state: RootState) => state.data.activeShop,
   );
@@ -99,6 +99,13 @@ export default function MenuScreen({navigation}: Props) {
         .catch(er => console.log('er', er));
     }, []),
   );
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('scrollToOffset!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      // flatlistref.current?.scrollToEnd({animated: true});
+    }, 3000);
+  }, []);
 
   function renderToolbar() {
     return (
@@ -283,8 +290,24 @@ export default function MenuScreen({navigation}: Props) {
     );
   }
 
+  function getRandomData() {
+    return new Array(100).fill('').map((item, index) => {
+      return {title: 'Title ' + (index + 1)};
+    });
+  }
+
+  const onViewRef = useRef(({viewableItems}: any) => {
+    console.log('viewableItems', viewableItems);
+  });
+
+  const viewConfigRef = useRef({
+    itemVisiblePercentThreshold: 75,
+    minimumViewTime: 250,
+    waitForInteraction: true,
+  });
+
   return (
-    <View style={{flex: 1}}>
+    <>
       <FocusAwareStatusBar
         translucent={false}
         backgroundColor={'white'}
@@ -353,7 +376,7 @@ export default function MenuScreen({navigation}: Props) {
         </StyledText>
       </Animated.View>
 
-      <ScrollView
+      <FlatList
         contentContainerStyle={{
           paddingTop: HEADER_EXPANDED_HEIGHT,
         }}
@@ -369,75 +392,22 @@ export default function MenuScreen({navigation}: Props) {
           ],
           {useNativeDriver: false},
         )}
-        scrollEventThrottle={16}>
-        <Text style={{backgroundColor: 'white'}}>This is Title</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-        <Text style={{backgroundColor: 'white'}}>1213132123123132123132</Text>
-      </ScrollView>
+        onViewableItemsChanged={onViewRef.current}
+        viewabilityConfig={viewConfigRef.current}
+        scrollEventThrottle={16}
+        ref={flatlistref}
+        data={getRandomData()}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <Text style={{height: 150, borderColor: 'red'}}>{item.title}</Text>
+        )}
+      />
       {renderModal()}
       {/*<BaseButton*/}
       {/*  text={'123'}*/}
       {/*  textStyle={{fontWeight: '700'}}*/}
       {/*  onPress={() => navigation.navigate('Product')}*/}
       {/*/>*/}
-    </View>
+    </>
   );
 }
