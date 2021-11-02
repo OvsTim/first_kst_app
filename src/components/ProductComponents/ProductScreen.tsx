@@ -15,22 +15,56 @@ import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import BaseButton from '../_CustomComponents/BaseButton';
 import Collapsible from 'react-native-collapsible';
 import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
+import {RouteProp} from '@react-navigation/native';
+import {Product} from '../../redux/ProductsDataSlice';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux';
+import {Restaraunt} from '../../API';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Product'>;
+  route: RouteProp<AppStackParamList, 'Product'>;
 };
 const StyledText = withFont(Text);
-export default function ProductScreen({navigation}: Props) {
+export default function ProductScreen({navigation, route}: Props) {
   const {width} = useWindowDimensions();
   const scrollViewRef = React.createRef<ScrollView>();
-
+  const product: Product = route.params.product;
   const [numberOfLines, setNumberOfLines] = useState<number | undefined>(3);
+  const active: string = useSelector(
+    (state: RootState) => state.data.activeShop,
+  );
+  const shops: Array<Restaraunt> = useSelector(
+    (state: RootState) => state.data.shops,
+  );
+  const activeShop: Restaraunt =
+    shops.filter(value => value.id === active).length > 0
+      ? shops.filter(value => value.id === active)[0]
+      : {
+          id: '',
+          phone: '',
+          name: '',
+          address: '',
+          coords: {lat: 0, lan: 0},
+          outOfStock: [],
+          workHours: {},
+          recommendations: [],
+          delivery: {},
+        };
+
+  function isOutOfStock() {
+    if (activeShop.outOfStock.indexOf('Продукты/' + product.id) !== -1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   function renderTopImage() {
     return (
       <>
         <FirebaseImage
-          innerUrl={'gs://firstkst.appspot.com/images/pancaces.png'}
+          innerUrl={product.picture_url}
           imageStyle={{
             width,
             resizeMode: 'cover',
@@ -92,7 +126,7 @@ export default function ProductScreen({navigation}: Props) {
               fontWeight: '700',
               width: (width / 3) * 2 - 40,
             }}>
-            Блинчики с грибами
+            {product.name}
           </StyledText>
           <View style={{width: width / 3 - 40}}>
             <StyledText
@@ -102,17 +136,30 @@ export default function ProductScreen({navigation}: Props) {
                 fontSize: 30,
                 textAlign: 'right',
               }}>
-              600 ₸
+              {product.price + ' ' + TENGE_LETTER}
             </StyledText>
-            <StyledText
-              style={{
-                fontWeight: '500',
-                fontSize: 12,
-                color: '#00000080',
-                textAlign: 'right',
-              }}>
-              220 гр.
-            </StyledText>
+            {product.weight !== 0 && (
+              <StyledText
+                style={{
+                  fontWeight: '500',
+                  fontSize: 12,
+                  color: '#00000080',
+                  textAlign: 'right',
+                }}>
+                {product.weight + ' гр.'}
+              </StyledText>
+            )}
+            {product.size !== 0 && (
+              <StyledText
+                style={{
+                  fontWeight: '500',
+                  fontSize: 12,
+                  color: '#00000080',
+                  textAlign: 'right',
+                }}>
+                {product.size + ' л.'}
+              </StyledText>
+            )}
           </View>
         </View>
       </View>
@@ -143,19 +190,7 @@ export default function ProductScreen({navigation}: Props) {
               <StyledText
                 numberOfLines={numberOfLines}
                 style={{fontWeight: '400', fontSize: 20, color: '#000000B2'}}>
-                Блинчики с грибами это отличная закуска, которая не требует
-                никакого другого гарнира к грибам. Блинчики с грибами это
-                отличная закуска, которая не требует никакого другого гарнира к
-                грибам. Блинчики с грибами это отличная закуска, которая не
-                требует никакого другого гарнира к грибам. Блинчики с грибами
-                это отличная закуска, которая не требует никакого другого
-                гарнира к грибам. Блинчики с грибами это отличная закуска,
-                которая не требует никакого другого гарнира к грибам. Блинчики с
-                грибами это отличная закуска, которая не требует никакого
-                другого гарнира к грибам. Блинчики с грибами это отличная
-                закуска, которая не требует никакого другого гарнира к грибам.
-                Блинчики с грибами это отличная закуска, которая не требует
-                никакого другого гарнира к грибам.
+                {product.description?.toString()}
               </StyledText>
             </Collapsible>
           </Pressable>
@@ -292,9 +327,15 @@ export default function ProductScreen({navigation}: Props) {
           bottom: 0,
         }}>
         <BaseButton
-          containerStyle={{backgroundColor: 'white'}}
-          textStyle={{color: '#28B3C6'}}
-          text={'В корзину за 1200 ' + TENGE_LETTER}
+          containerStyle={{
+            backgroundColor: isOutOfStock() ? '#00000026' : 'white',
+          }}
+          textStyle={{color: isOutOfStock() ? 'white' : '#28B3C6'}}
+          text={
+            isOutOfStock()
+              ? 'Недоступно для заказа'
+              : 'В корзину за ' + product.price + ' ' + TENGE_LETTER
+          }
           onPress={() => {}}
         />
       </View>
@@ -318,8 +359,34 @@ export default function ProductScreen({navigation}: Props) {
         />
         {renderTopImage()}
         {renderCard()}
-        {renderDescription()}
-        {renderCount()}
+
+        {product.description?.toString() !== '' && renderDescription()}
+
+        {!isOutOfStock() ? (
+          renderCount()
+        ) : (
+          <View
+            style={{
+              alignSelf: 'flex-end',
+              marginRight: 26,
+              borderRadius: 26 / 2,
+              height: 26,
+              backgroundColor: '#F3F3F7',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9,
+            }}>
+            <StyledText
+              style={{
+                marginHorizontal: 12,
+                fontWeight: '500',
+                fontSize: 12,
+                color: '#5A5858',
+              }}>
+              Будет позже
+            </StyledText>
+          </View>
+        )}
       </ScrollView>
       {renderBottomButton()}
     </View>

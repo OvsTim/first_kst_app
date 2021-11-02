@@ -45,7 +45,7 @@ export default function MenuScreen({navigation}: Props) {
   const HEADER_COLLAPSED_HEIGHT = 60;
 
   const onViewRef = useRef((info: {viewableItems: Array<ViewToken>}) => {
-    if (info.viewableItems.length > 2) {
+    if (info.viewableItems.length > 0) {
       let cat_index = categories.findIndex(
         it => info.viewableItems[0].item.category === 'Категории/' + it.id,
       );
@@ -53,11 +53,18 @@ export default function MenuScreen({navigation}: Props) {
       console.log('cat_index', cat_index);
       if (cat_index !== -1 && cat_index !== activeCategory) {
         setActiveCategory(cat_index);
-        flatlistCategoryRef.current?.scrollToIndex({
-          index: cat_index,
-          animated: true,
-          viewOffset: 18,
-        });
+        if (cat_index !== 0) {
+          flatlistCategoryRef.current?.scrollToIndex({
+            index: cat_index,
+            animated: true,
+            viewOffset: 18,
+          });
+        } else {
+          flatlistCategoryRef.current?.scrollToOffset({
+            offset: 0,
+            animated: true,
+          });
+        }
       }
     }
   });
@@ -374,8 +381,8 @@ export default function MenuScreen({navigation}: Props) {
               if (pr_index !== -1) {
                 flatlistref.current?.scrollToIndex({
                   index: pr_index,
-                  viewOffset: -HEADER_EXPANDED_HEIGHT,
-                  viewPosition: 1,
+                  viewOffset: -HEADER_EXPANDED_HEIGHT + HEADER_COLLAPSED_HEIGHT,
+                  viewPosition: 0,
                   animated: true,
                 });
               } else {

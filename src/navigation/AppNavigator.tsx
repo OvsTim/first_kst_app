@@ -23,13 +23,12 @@ import OrderDeliveryScreen from '../components/OrderDeliveryComponents/OrderDeli
 import BonucesStocksScreen from '../components/BonucesStocksComponents/BonucesStocksScreen';
 import {Address} from '../API';
 import AddEditAddressScreen from '../components/AddEditAddressComponents/AddEditAddressScreen';
-// @ts-ignore
-import {ConfirmationResult} from '@react-native-firebase/auth';
 import EnterPhoneScreen from '../components/AuthComponents/EnterPhoneScreen';
 import EnterCodeScreen from '../components/AuthComponents/EnterCodeScreen';
 import EnterNameScreen from '../components/AuthComponents/EnterNameScreen';
 import EnterBirthdayScreen from '../components/AuthComponents/EnterBirthdayScreen';
 import SelectShopScreen from '../components/SignInComonents/SelectShopScreen';
+import {Product} from '../redux/ProductsDataSlice';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -42,7 +41,7 @@ export type AppStackParamList = {
   History: undefined;
   Map: undefined;
   Settings: undefined;
-  Product: undefined;
+  Product: {product: Product};
   OrderDelivery: undefined;
   BonucesStocks: undefined;
   EnterPhone: undefined;

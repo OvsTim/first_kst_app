@@ -9,6 +9,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useSelector} from 'react-redux';
 import {Restaraunt} from '../../API';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
+import {useNavigation} from '@react-navigation/native';
 
 type Props = {
   product: Product;
@@ -17,11 +18,11 @@ type Props = {
 export const PRODUCT_ITEM_HEIGHT = 150;
 export const TENGE_LETTER = '₸';
 const StyledText = withFont(Text);
-const Button = withPressable(View);
 export function ProductItem(props: Props) {
   const {width} = useWindowDimensions();
   const dispatch = useAppDispatch();
   const product: Product = props.product;
+  const navigation = useNavigation();
   const active: string = useSelector(
     (state: RootState) => state.data.activeShop,
   );
@@ -53,7 +54,7 @@ export function ProductItem(props: Props) {
 
   return (
     <Pressable
-      onPress={() => {}}
+      onPress={() => navigation.navigate('Product', {product})}
       android_ripple={{color: 'gray', radius: 200}}
       style={{width, height: 150}}>
       <View
