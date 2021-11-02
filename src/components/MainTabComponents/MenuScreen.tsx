@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
@@ -8,6 +8,7 @@ import {
   Text,
   useWindowDimensions,
   View,
+  ViewToken,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
@@ -43,18 +44,33 @@ export default function MenuScreen({navigation}: Props) {
   const HEADER_EXPANDED_HEIGHT = 350;
   const HEADER_COLLAPSED_HEIGHT = 60;
 
-  const onViewRef = useRef(({viewableItems}: any) => {
-    // console.log('viewableItems', viewableItems);
+  const onViewRef = useRef((info: {viewableItems: Array<ViewToken>}) => {
+    if (info.viewableItems.length > 2) {
+      let cat_index = categories.findIndex(
+        it => info.viewableItems[0].item.category === 'Категории/' + it.id,
+      );
+
+      console.log('cat_index', cat_index);
+      if (cat_index !== -1 && cat_index !== activeCategory) {
+        setActiveCategory(cat_index);
+        flatlistCategoryRef.current?.scrollToIndex({
+          index: cat_index,
+          animated: true,
+          viewOffset: 18,
+        });
+      }
+    }
   });
 
   const viewConfigRef = useRef({
-    itemVisiblePercentThreshold: 75,
+    viewAreaCoveragePercentThreshold: 100,
     minimumViewTime: 250,
     waitForInteraction: true,
   });
   const {width} = useWindowDimensions();
   const dispatch = useAppDispatch();
   const flatlistref = useRef<FlatList>(null);
+  const flatlistCategoryRef = useRef<FlatList>(null);
   const active: string = useSelector(
     (state: RootState) => state.data.activeShop,
   );
@@ -358,8 +374,8 @@ export default function MenuScreen({navigation}: Props) {
               if (pr_index !== -1) {
                 flatlistref.current?.scrollToIndex({
                   index: pr_index,
-                  viewOffset: -HEADER_EXPANDED_HEIGHT + HEADER_COLLAPSED_HEIGHT,
-                  viewPosition: 0,
+                  viewOffset: -HEADER_EXPANDED_HEIGHT,
+                  viewPosition: 1,
                   animated: true,
                 });
               } else {
@@ -545,6 +561,7 @@ export default function MenuScreen({navigation}: Props) {
             alignItems: 'center',
           }}>
           <FlatList
+            ref={flatlistCategoryRef}
             contentContainerStyle={{
               backgroundColor: 'white',
               alignSelf: 'center',
