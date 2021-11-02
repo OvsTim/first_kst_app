@@ -2,6 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export interface Product {
   id: string;
+  name: string;
   weight?: number;
   size?: number;
   picture_url: string;
@@ -10,6 +11,7 @@ export interface Product {
   isHit?: boolean;
   description?: string;
   price: number;
+  categoryOrder: number;
 }
 
 export interface Category {
@@ -23,11 +25,13 @@ interface ProductsData {
   products: Record<string, Product>;
   categories: Record<string, Category>;
   categoryIds: Array<string>;
+  productIds: Array<string>;
 }
 const initialState = {
   categories: {},
   products: {},
   categoryIds: [],
+  productIds: [],
 } as ProductsData;
 
 const productsDataSlice = createSlice({
@@ -41,12 +45,27 @@ const productsDataSlice = createSlice({
       });
       state.categoryIds = action.payload.map(it => it.id);
     },
+    setProducts(state, action: PayloadAction<Array<Product>>) {
+      state.products = {};
+      action.payload.forEach(it => {
+        state.products[it.id] = it;
+      });
 
+      let sorted = action.payload.sort(function (a, b) {
+        return a.categoryOrder - b.categoryOrder;
+      });
+
+      state.productIds = sorted.map(it => it.id);
+    },
     resetAction() {
       return initialState;
     },
   },
 });
 
-export const {resetAction, setCategories} = productsDataSlice.actions;
+export const {
+  resetAction,
+  setCategories,
+  setProducts,
+} = productsDataSlice.actions;
 export default productsDataSlice.reducer;

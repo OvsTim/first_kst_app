@@ -26,7 +26,12 @@ import {setStocks} from '../../redux/UserDataSlice';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import Modal from 'react-native-modal';
 import BaseButton from '../_CustomComponents/BaseButton';
-import {Category, setCategories} from '../../redux/ProductsDataSlice';
+import {
+  Category,
+  Product,
+  setCategories,
+  setProducts,
+} from '../../redux/ProductsDataSlice';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
@@ -97,6 +102,57 @@ export default function MenuScreen({navigation}: Props) {
           delivery: {},
         };
 
+  function getProductOrderByCategory(path: string, catList: Array<Category>) {
+    let res = 0;
+    let i;
+    for (i = 0; i < catList.length; i++) {
+      if (path.includes(catList[i].name)) {
+        res = catList[i].order;
+      }
+    }
+
+    return res;
+  }
+
+  function requestProducts(catList: Array<Category>) {
+    firestore()
+      .collection('Продукты')
+      .get()
+      .then(res => {
+        let prodList: Array<Product> = [];
+        res.docs.forEach(doc => {
+          prodList.push({
+            id: doc.id,
+            name: doc.get<string>('Название')
+              ? doc.get<string>('Название')
+              : '',
+            description: doc.get<string>('Описание')
+              ? doc.get<string>('Описание')
+              : '',
+            picture_url: doc.get<string>('Картинка')
+              ? doc.get<string>('Картинка')
+              : '',
+            price: doc.get<number>('Цена') ? doc.get<number>('Цена') : 0,
+            weight: doc.get<number>('Вес') ? doc.get<number>('Вес') : 0,
+            isHit: doc.get<boolean>('ХитПродаж')
+              ? doc.get<boolean>('ХитПродаж')
+              : false,
+            isNew: doc.get<boolean>('Новинка')
+              ? doc.get<boolean>('Новинка')
+              : false,
+            size: doc.get<number>('Объем') ? doc.get<number>('Объем') : 0,
+            category: doc.get<DocumentReference>('Категория').path,
+            categoryOrder: getProductOrderByCategory(
+              doc.get<DocumentReference>('Категория').path,
+              catList,
+            ),
+          });
+        });
+        dispatch(setProducts(prodList));
+      })
+      .catch(er => console.log('er', er));
+  }
+
   useFocusEffect(
     React.useCallback(() => {
       firestore()
@@ -144,6 +200,7 @@ export default function MenuScreen({navigation}: Props) {
             });
           });
           dispatch(setCategories(catList));
+          requestProducts(catList);
         })
         .catch(er => console.log('er', er));
     }, []),
