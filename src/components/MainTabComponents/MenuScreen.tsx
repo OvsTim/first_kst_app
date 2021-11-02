@@ -44,7 +44,7 @@ export default function MenuScreen({navigation}: Props) {
   const HEADER_COLLAPSED_HEIGHT = 60;
 
   const onViewRef = useRef(({viewableItems}: any) => {
-    console.log('viewableItems', viewableItems);
+    // console.log('viewableItems', viewableItems);
   });
 
   const viewConfigRef = useRef({
@@ -125,6 +125,7 @@ export default function MenuScreen({navigation}: Props) {
   function requestProducts(catList: Array<Category>) {
     firestore()
       .collection('Продукты')
+      .orderBy('Категория', 'asc')
       .get()
       .then(res => {
         let prodList: Array<Product> = [];
@@ -351,10 +352,22 @@ export default function MenuScreen({navigation}: Props) {
           <Pressable
             onPress={() => {
               setActiveCategory(index);
-              flatlistref.current?.scrollToIndex({
-                index: index * 10,
-                animated: true,
-              });
+              let pr_index = products.findIndex(
+                it => it.category === 'Категории/' + item.id,
+              );
+              if (pr_index !== -1) {
+                flatlistref.current?.scrollToIndex({
+                  index: pr_index,
+                  viewOffset: -HEADER_EXPANDED_HEIGHT + HEADER_COLLAPSED_HEIGHT,
+                  viewPosition: 0,
+                  animated: true,
+                });
+              } else {
+                flatlistref.current?.scrollToOffset({
+                  offset: 0,
+                  animated: true,
+                });
+              }
             }}
             android_ripple={{color: 'gray', radius: 200}}
             style={{
@@ -476,7 +489,7 @@ export default function MenuScreen({navigation}: Props) {
         style={[
           {
             height: headerHeight,
-            backgroundColor: 'lightblue',
+            backgroundColor: 'white',
             position: 'absolute',
             width,
             overflow: 'hidden',
