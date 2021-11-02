@@ -15,6 +15,7 @@ import BaseButton from '../_CustomComponents/BaseButton';
 import DropShadow from 'react-native-drop-shadow';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
+import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'History'>;
 };
@@ -202,7 +203,7 @@ export default function HistoryScreen({}: Props) {
                 lineHeight: 14,
                 fontWeight: '700',
               }}>
-              {'2 000 ₸'}
+              {'2 000 ' + TENGE_LETTER}
             </StyledText>
           </View>
           <View style={{height: 10}} />

@@ -14,6 +14,7 @@ import {withFont} from '../_CustomComponents/HOC/withFont';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import BaseButton from '../_CustomComponents/BaseButton';
 import Collapsible from 'react-native-collapsible';
+import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Product'>;
@@ -293,7 +294,7 @@ export default function ProductScreen({navigation}: Props) {
         <BaseButton
           containerStyle={{backgroundColor: 'white'}}
           textStyle={{color: '#28B3C6'}}
-          text={'В корзину за 1200 ₸'}
+          text={'В корзину за 1200 ' + TENGE_LETTER}
           onPress={() => {}}
         />
       </View>

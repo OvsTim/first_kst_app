@@ -32,6 +32,7 @@ import {
   setCategories,
   setProducts,
 } from '../../redux/ProductsDataSlice';
+import {PRODUCT_ITEM_HEIGHT, ProductItem} from './ProductItem';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
@@ -70,6 +71,13 @@ export default function MenuScreen({navigation}: Props) {
   );
   const categories: Array<Category> = useSelector((state: RootState) =>
     state.products.categoryIds.map(it => categoriesMap[it]),
+  );
+
+  const productsMap: Record<string, Product> = useSelector(
+    (state: RootState) => state.products.products,
+  );
+  const products: Array<Product> = useSelector((state: RootState) =>
+    state.products.productIds.map(it => productsMap[it]),
   );
   const headerHeight = scrollY.interpolate({
     inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
@@ -327,12 +335,6 @@ export default function MenuScreen({navigation}: Props) {
     );
   }
 
-  function getRandomData() {
-    return new Array(100).fill('').map((item, index) => {
-      return {title: 'Title ' + (index + 1)};
-    });
-  }
-
   function renderCategoryItem(item: Category, index: number) {
     return (
       <>
@@ -564,11 +566,14 @@ export default function MenuScreen({navigation}: Props) {
         viewabilityConfig={viewConfigRef.current}
         scrollEventThrottle={16}
         ref={flatlistref}
-        data={getRandomData()}
+        getItemLayout={(data, index) => ({
+          length: PRODUCT_ITEM_HEIGHT,
+          offset: PRODUCT_ITEM_HEIGHT * index,
+          index,
+        })}
+        data={products}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => (
-          <Text style={{height: 150, borderColor: 'red'}}>{item.title}</Text>
-        )}
+        renderItem={({item}) => <ProductItem product={item} />}
       />
       {renderModal()}
       {/*<BaseButton*/}

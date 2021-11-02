@@ -19,6 +19,7 @@ import BaseButton from '../_CustomComponents/BaseButton';
 import * as Progress from 'react-native-progress';
 import Modal from 'react-native-modal';
 import AuthBaseInput from '../_CustomComponents/AuthBaseInput';
+import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -272,7 +273,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             fontSize: 15,
             color: '#828282',
           }}>
-          Бесплатная доставка от 5000 ₸
+          {'Бесплатная доставка от 5000 ' + TENGE_LETTER}
         </StyledText>
         <Progress.Bar
           style={{backgroundColor: '#F2F2F6', marginTop: 9}}
@@ -319,7 +320,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         <BaseButton
           width={width - 68}
           containerStyle={{alignSelf: 'center'}}
-          text={'Итого к оплате 2 000 ₸'}
+          text={'Итого к оплате 2 000 ' + TENGE_LETTER}
           onPress={() => setModalVisible(true)}
         />
         <View style={{height: 20}} />
@@ -394,7 +395,10 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                 lineHeight: 26,
                 color: 'black',
               }}>
-              {'Заказ на 2000 ₸. ' + '\nС какой суммы подготовить сдачу?'}
+              {'Заказ на 2000 ' +
+                TENGE_LETTER +
+                '. ' +
+                '\nС какой суммы подготовить сдачу?'}
             </StyledText>
             <AuthBaseInput
               value={sdacha}
