@@ -48,7 +48,7 @@ export type AppStackParamList = {
   EnterCode: {phone: string; formattedPhone: string};
   EnterName: undefined;
   EnterBirthday: undefined;
-  ChangeRestaraunt: undefined;
+  ChangeRestaraunt: {activeTab: number};
   AddEditAddress: {
     type: 'add' | 'edit';
     address?: Address;
@@ -355,6 +355,7 @@ export default function AppNavigator() {
       <Stack.Screen
         name={'ChangeRestaraunt'}
         component={SelectShopScreen}
+        initialParams={{activeTab: 0}}
         options={{
           ...TransitionPresets.ModalSlideFromBottomIOS,
           headerPressColorAndroid: 'transparent',

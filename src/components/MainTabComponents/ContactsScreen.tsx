@@ -63,7 +63,9 @@ export default function ContactsScreen({navigation}: Props) {
           <BaseButton
             containerStyle={{width: 250}}
             text={'Рестораны на карте'}
-            onPress={() => navigation.navigate('Map')}
+            onPress={() =>
+              navigation.navigate('ChangeRestaraunt', {activeTab: 1})
+            }
           />
           <View style={{height: 19}} />
         </ImageBackground>

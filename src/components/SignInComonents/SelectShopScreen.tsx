@@ -18,9 +18,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {hScale, vScale, window} from '../../utils/scaling';
 import {setActiveShop} from '../../redux/UserDataSlice';
-import {getFontName, withFont} from '../_CustomComponents/HOC/withFont';
-// @ts-ignore
-import TabSelectorAnimation from 'react-native-tab-selector';
+import {withFont} from '../_CustomComponents/HOC/withFont';
 import {Restaraunt} from '../../API';
 import BaseButton from '../_CustomComponents/BaseButton';
 import Geolocation from 'react-native-geolocation-service';
@@ -34,17 +32,24 @@ import {
   getWorkHoursStringByMap,
   getWorkingNow,
 } from '../../utils/workHourUtils';
+import {RouteProp} from '@react-navigation/native';
+import {AppStackParamList} from '../../navigation/AppNavigator';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
+
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'SearchShop'>;
+  route: RouteProp<AppStackParamList, 'ChangeRestaraunt'>;
 };
 
-export default function SelectShopScreen({navigation}: Props) {
+export default function SelectShopScreen({navigation, route}: Props) {
   const StyledText = withFont(Text);
   const mapref = useRef<YaMap>(null);
   const modalizeRef = useRef<Modalize>(null);
   const dispatch = useAppDispatch();
   const {width} = useWindowDimensions();
-  const [indexTab, setIndexTab] = useState<number>(0);
+  const [indexTab, setIndexTab] = useState<number>(
+    route.params && route.params.activeTab ? route.params.activeTab : 0,
+  );
   const [shopIndex, setShopIndex] = useState<number>(-1);
   const [loading, setLoading] = useState<boolean>(true);
   const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
@@ -410,13 +415,21 @@ export default function SelectShopScreen({navigation}: Props) {
           width,
           alignItems: 'center',
         }}>
-        <TabSelectorAnimation
+        <SegmentedControl
           style={{width: width - 22, borderRadius: 9, zIndex: 999}}
-          styleTab={{borderRadius: 9}}
+          tabStyle={{borderRadius: 9}}
+          fontStyle={{
+            fontSize: 15,
+            fontWeight: '400',
+            fontFamily: 'SFProDisplay-Regular',
+          }}
           backgroundColor={'#7676801F'}
-          onChangeTab={setIndexTab}
-          styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}
-          tabs={[{title: 'Списком'}, {title: 'На карте'}]}
+          selectedIndex={indexTab}
+          onChange={event => {
+            setIndexTab(event.nativeEvent.selectedSegmentIndex);
+          }}
+          // styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}
+          values={['Списком', 'На карте']}
         />
       </View>
     </View>

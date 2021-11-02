@@ -12,11 +12,9 @@ import {
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
-import {getFontName, withFont} from '../_CustomComponents/HOC/withFont';
+import {withFont} from '../_CustomComponents/HOC/withFont';
 import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
-// @ts-ignore
-import TabSelectorAnimation from 'react-native-tab-selector';
 import {useSelector} from 'react-redux';
 import {RootState, useAppDispatch} from '../../redux';
 import {Restaraunt, Stock} from '../../API';
@@ -34,6 +32,7 @@ import {
   setProducts,
 } from '../../redux/ProductsDataSlice';
 import {PRODUCT_ITEM_HEIGHT, ProductItem} from './ProductItem';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
@@ -44,33 +43,47 @@ export default function MenuScreen({navigation}: Props) {
   const HEADER_EXPANDED_HEIGHT = 350;
   const HEADER_COLLAPSED_HEIGHT = 60;
 
-  const onViewRef = useRef((info: {viewableItems: Array<ViewToken>}) => {
-    if (info.viewableItems.length > 0) {
-      let cat_index = categories.findIndex(
-        it => info.viewableItems[0].item.category === 'Категории/' + it.id,
-      );
-
-      console.log('cat_index', cat_index);
-      if (cat_index !== -1 && cat_index !== activeCategory) {
-        setActiveCategory(cat_index);
-        if (cat_index !== 0) {
-          flatlistCategoryRef.current?.scrollToIndex({
-            index: cat_index,
-            animated: true,
-            viewOffset: 18,
-          });
-        } else {
+  const onViewRef = useRef(
+    (info: {
+      viewableItems: Array<ViewToken>;
+      changedItems: Array<ViewToken>;
+    }) => {
+      if (info.viewableItems.length > 0) {
+        let cat_index = categories.findIndex(
+          it => info.viewableItems[0].item.category === 'Категории/' + it.id,
+        );
+        //todo:костыль. на самом деле мы видим на 2 элемента раньше, если они есть.
+        console.log('viewableItems', info.viewableItems);
+        console.log('changedItems', info.changedItems);
+        console.log('cat_index', cat_index);
+        if (cat_index === 0) {
+          setActiveCategory(0);
           flatlistCategoryRef.current?.scrollToOffset({
             offset: 0,
             animated: true,
           });
+        } else if (cat_index !== -1 && cat_index !== activeCategory) {
+          setActiveCategory(cat_index);
+          if (cat_index !== 0) {
+            flatlistCategoryRef.current?.scrollToIndex({
+              index: cat_index,
+              animated: true,
+              viewOffset: 18,
+            });
+          }
         }
+      } else {
+        setActiveCategory(0);
+        flatlistCategoryRef.current?.scrollToOffset({
+          offset: 0,
+          animated: true,
+        });
       }
-    }
-  });
+    },
+  );
 
   const viewConfigRef = useRef({
-    viewAreaCoveragePercentThreshold: 100,
+    itemVisiblePercentThreshold: 100,
     minimumViewTime: 250,
     waitForInteraction: true,
   });
@@ -107,6 +120,7 @@ export default function MenuScreen({navigation}: Props) {
     outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
     extrapolate: 'clamp',
   });
+  const [indexTab, setIndexTab] = useState<number>(0);
 
   const [modalStock, setModalStock] = useState<Stock>({
     id: '',
@@ -251,7 +265,9 @@ export default function MenuScreen({navigation}: Props) {
           }}>
           <View style={{width: 18}} />
           <Button
-            onPress={() => navigation.navigate('ChangeRestaraunt')}
+            onPress={() =>
+              navigation.navigate('ChangeRestaraunt', {activeTab: 0})
+            }
             containerStyle={{}}>
             <View
               style={{
@@ -304,17 +320,26 @@ export default function MenuScreen({navigation}: Props) {
           alignItems: 'center',
           marginTop: 15,
         }}>
-        <TabSelectorAnimation
+        <SegmentedControl
           style={{
             marginTop: 20,
             width: width - 70,
             borderRadius: 9,
+            zIndex: 999,
           }}
-          styleTab={{borderRadius: 9}}
+          fontStyle={{
+            fontSize: 15,
+            fontWeight: '400',
+            fontFamily: 'SFProDisplay-Regular',
+          }}
+          tabStyle={{borderRadius: 9}}
           backgroundColor={'#7676801F'}
-          onChangeTab={() => {}}
-          styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}
-          tabs={[{title: 'На доставку'}, {title: 'Самовывоз'}]}
+          selectedIndex={indexTab}
+          onChange={event => {
+            setIndexTab(event.nativeEvent.selectedSegmentIndex);
+          }}
+          // styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}
+          values={['На доставку', 'Самовывоз']}
         />
         <View
           style={{
@@ -325,7 +350,9 @@ export default function MenuScreen({navigation}: Props) {
           }}
         />
         <Button
-          onPress={() => navigation.navigate('ChangeRestaraunt')}
+          onPress={() =>
+            navigation.navigate('ChangeRestaraunt', {activeTab: 0})
+          }
           containerStyle={{marginTop: 13 / 2}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Image
