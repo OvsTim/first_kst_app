@@ -45,7 +45,6 @@ export default function SearchScreen({navigation}: Props) {
       };
       let fuse = new Fuse(products, options);
       result = fuse.search(searchTerm);
-      console.log('res', result);
       setSearchResult(result.map(it => it.item));
     } else {
       setSearchResult([]);

@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {
+  Alert,
   Animated,
   Dimensions,
   FlatList,
@@ -566,7 +567,25 @@ export default function MenuScreen({navigation}: Props) {
             }}>
             {modalStock.description}
           </StyledText>
-          <BaseButton text={'Показать'} onPress={() => {}} />
+          <BaseButton
+            text={'Показать'}
+            onPress={() => {
+              setModalVisible(false);
+              if (
+                products.filter(
+                  it => 'Продукты/' + it.id === modalStock.productId,
+                ).length > 0
+              ) {
+                setTimeout(() => {
+                  navigation.navigate('Product', {
+                    product: products.filter(
+                      it => 'Продукты/' + it.id === modalStock.productId,
+                    )[0],
+                  });
+                }, 600);
+              }
+            }}
+          />
           <View style={{height: 50}} />
         </View>
       </Modal>
