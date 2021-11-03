@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import dataSlice from './UserDataSlice';
 import productsDataSlice from './ProductsDataSlice';
+import basketDataSlice from './BasketDataReducer';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {persistReducer, createMigrate} from 'redux-persist';
 import {configureStore} from '@reduxjs/toolkit';
@@ -16,9 +17,15 @@ const productsPersistConfig = {
   key: 'products',
   storage: AsyncStorage,
 };
+
+const basketPersistConfig = {
+  key: 'basket',
+  storage: AsyncStorage,
+};
 const AppReducer = combineReducers({
   data: persistReducer(dataPersistConfig, dataSlice),
   products: persistReducer(productsPersistConfig, productsDataSlice),
+  basket: persistReducer(basketPersistConfig, basketDataSlice),
 });
 
 const store = configureStore({

@@ -18,8 +18,11 @@ import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
 import {RouteProp} from '@react-navigation/native';
 import {Product} from '../../redux/ProductsDataSlice';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../redux';
+import {RootState, useAppDispatch} from '../../redux';
 import {Restaraunt} from '../../API';
+import {isOutOfStock} from '../../utils/productUtils';
+import {ProductCountButton} from '../MainTabComponents/ProductCountButton';
+import {BasketItem, plusProduct} from '../../redux/BasketDataReducer';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Product'>;
@@ -29,6 +32,7 @@ const StyledText = withFont(Text);
 export default function ProductScreen({navigation, route}: Props) {
   const {width} = useWindowDimensions();
   const scrollViewRef = React.createRef<ScrollView>();
+  const dispatch = useAppDispatch();
   const product: Product = route.params.product;
   const [numberOfLines, setNumberOfLines] = useState<number | undefined>(3);
   const active: string = useSelector(
@@ -51,15 +55,12 @@ export default function ProductScreen({navigation, route}: Props) {
           recommendations: [],
           delivery: {},
         };
-
-  function isOutOfStock() {
-    if (activeShop.outOfStock.indexOf('Продукты/' + product.id) !== -1) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
+  const basket: Array<BasketItem> = useSelector(
+    (state: RootState) => state.basket.basket,
+  );
+  const count: number = basket.filter(it => it.item.id === product.id)[0]
+    ? basket.filter(it => it.item.id === product.id)[0].count
+    : 0;
   function renderTopImage() {
     return (
       <>
@@ -265,48 +266,7 @@ export default function ProductScreen({navigation, route}: Props) {
             borderRadius: 30,
             justifyContent: 'center',
           }}>
-          <View style={{borderRadius: 30, overflow: 'hidden'}}>
-            <Pressable
-              onPress={() => {}}
-              android_ripple={{color: 'gray', radius: 200}}
-              style={{
-                height: 26,
-                width: 26,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <StyledText
-                style={{fontSize: 12, color: '#5A5858CC', fontWeight: '500'}}>
-                -
-              </StyledText>
-            </Pressable>
-          </View>
-          <StyledText
-            style={{
-              fontSize: 12,
-              color: '#5A5858CC',
-              fontWeight: '500',
-              width: 30,
-              textAlign: 'center',
-            }}>
-            2
-          </StyledText>
-          <View style={{borderRadius: 30, overflow: 'hidden'}}>
-            <Pressable
-              onPress={() => {}}
-              android_ripple={{color: 'gray', radius: 200}}
-              style={{
-                height: 26,
-                width: 26,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <StyledText
-                style={{fontSize: 12, color: '#5A5858CC', fontWeight: '500'}}>
-                +
-              </StyledText>
-            </Pressable>
-          </View>
+          <ProductCountButton product={product} isProductScreen={true} />
         </View>
       </View>
     );
@@ -328,15 +288,28 @@ export default function ProductScreen({navigation, route}: Props) {
         }}>
         <BaseButton
           containerStyle={{
-            backgroundColor: isOutOfStock() ? '#00000026' : 'white',
+            backgroundColor: isOutOfStock(activeShop, product)
+              ? '#00000026'
+              : 'white',
           }}
-          textStyle={{color: isOutOfStock() ? 'white' : '#28B3C6'}}
+          textStyle={{
+            color: isOutOfStock(activeShop, product) ? 'white' : '#28B3C6',
+          }}
           text={
-            isOutOfStock()
+            isOutOfStock(activeShop, product)
               ? 'Недоступно для заказа'
-              : 'В корзину за ' + product.price + ' ' + TENGE_LETTER
+              : 'В корзину за ' +
+                (count < 2 ? product.price : product.price * count) +
+                ' ' +
+                TENGE_LETTER
           }
-          onPress={() => {}}
+          onPress={() => {
+            if (count === 0 && !isOutOfStock(activeShop, product)) {
+              dispatch(plusProduct(product));
+            }
+
+            navigation.goBack();
+          }}
         />
       </View>
     );
@@ -362,7 +335,7 @@ export default function ProductScreen({navigation, route}: Props) {
 
         {product.description?.toString() !== '' && renderDescription()}
 
-        {!isOutOfStock() ? (
+        {!isOutOfStock(activeShop, product) ? (
           renderCount()
         ) : (
           <View

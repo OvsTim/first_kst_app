@@ -167,7 +167,7 @@ export default function MenuScreen({navigation}: Props) {
   function requestProducts(catList: Array<Category>) {
     firestore()
       .collection('Продукты')
-      .orderBy('Категория', 'asc')
+      .orderBy('Название', 'asc')
       .get()
       .then(res => {
         let prodList: Array<Product> = [];
@@ -391,6 +391,46 @@ export default function MenuScreen({navigation}: Props) {
     );
   }
 
+  function renderStocks() {
+    return (
+      <FlatList
+        contentContainerStyle={{
+          height: 150,
+          alignItems: 'center',
+          marginVertical: 18,
+        }}
+        keyExtractor={(item, index) => index.toString()}
+        showsHorizontalScrollIndicator={false}
+        data={stocks}
+        horizontal={true}
+        ItemSeparatorComponent={() => <View style={{width: 18}} />}
+        ListFooterComponent={() => <View style={{width: 18}} />}
+        renderItem={({item}) => (
+          <Pressable
+            onPress={() => {
+              if (!item.id) {
+                return;
+              } else {
+                setModalStock(item);
+                setModalVisible(true);
+              }
+            }}
+            style={{marginLeft: 18}}>
+            <FirebaseImage
+              innerUrl={item.image}
+              resizeMode={'contain'}
+              imageStyle={{
+                borderRadius: 15,
+                width: width - 60,
+                height: 126,
+              }}
+            />
+          </Pressable>
+        )}
+      />
+    );
+  }
+
   function renderCategoryItem(item: Category, index: number) {
     return (
       <>
@@ -554,42 +594,7 @@ export default function MenuScreen({navigation}: Props) {
           },
         ]}>
         {renderSelection()}
-        <FlatList
-          contentContainerStyle={{
-            height: 150,
-            alignItems: 'center',
-            marginVertical: 18,
-          }}
-          keyExtractor={(item, index) => index.toString()}
-          showsHorizontalScrollIndicator={false}
-          data={stocks}
-          horizontal={true}
-          ItemSeparatorComponent={() => <View style={{width: 18}} />}
-          ListFooterComponent={() => <View style={{width: 18}} />}
-          renderItem={({item}) => (
-            <Pressable
-              onPress={() => {
-                if (!item.id) {
-                  return;
-                } else {
-                  setModalStock(item);
-                  setModalVisible(true);
-                }
-              }}
-              style={{marginLeft: 18}}>
-              <FirebaseImage
-                innerUrl={item.image}
-                resizeMode={'contain'}
-                imageStyle={{
-                  borderRadius: 15,
-                  width: width - 60,
-                  height: 126,
-                }}
-              />
-            </Pressable>
-          )}
-        />
-
+        {renderStocks()}
         <View
           style={{
             width,
@@ -645,11 +650,6 @@ export default function MenuScreen({navigation}: Props) {
         renderItem={({item}) => <ProductItem product={item} />}
       />
       {renderModal()}
-      {/*<BaseButton*/}
-      {/*  text={'123'}*/}
-      {/*  textStyle={{fontWeight: '700'}}*/}
-      {/*  onPress={() => navigation.navigate('Product')}*/}
-      {/*/>*/}
     </>
   );
 }

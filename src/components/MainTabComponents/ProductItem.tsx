@@ -2,7 +2,6 @@ import {Product} from '../../redux/ProductsDataSlice';
 import {Pressable, Text, useWindowDimensions, View} from 'react-native';
 import React from 'react';
 import {withFont} from '../_CustomComponents/HOC/withFont';
-import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {RootState, useAppDispatch} from '../../redux';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import LinearGradient from 'react-native-linear-gradient';
@@ -10,6 +9,8 @@ import {useSelector} from 'react-redux';
 import {Restaraunt} from '../../API';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
 import {useNavigation} from '@react-navigation/native';
+import {isOutOfStock} from '../../utils/productUtils';
+import {ProductCountButton} from './ProductCountButton';
 
 type Props = {
   product: Product;
@@ -44,14 +45,6 @@ export function ProductItem(props: Props) {
           delivery: {},
         };
 
-  function isOutOfStock() {
-    if (activeShop.outOfStock.indexOf('Продукты/' + product.id) !== -1) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   return (
     <Pressable
       onPress={() => navigation.navigate('Product', {product})}
@@ -67,7 +60,7 @@ export function ProductItem(props: Props) {
           marginLeft: 18,
           borderBottomColor: '#D3D5DD',
         }}>
-        {isOutOfStock() ? (
+        {isOutOfStock(activeShop, product) ? (
           <Grayscale>
             <FirebaseImage
               innerUrl={product.picture_url}
@@ -116,7 +109,7 @@ export function ProductItem(props: Props) {
             numberOfLines={2}
             ellipsizeMode={'tail'}
             style={{
-              color: isOutOfStock() ? '#00000080' : 'black',
+              color: isOutOfStock(activeShop, product) ? '#00000080' : 'black',
               fontWeight: '400',
               fontSize: 15,
               width: width / 2 - 18,
@@ -128,7 +121,9 @@ export function ProductItem(props: Props) {
               style={{
                 width: width / 2 - 18,
                 marginTop: 5,
-                color: isOutOfStock() ? '#0000004D' : '#00000080',
+                color: isOutOfStock(activeShop, product)
+                  ? '#0000004D'
+                  : '#00000080',
                 fontSize: 10,
                 fontWeight: '400',
               }}
@@ -142,7 +137,9 @@ export function ProductItem(props: Props) {
               style={{
                 width: width / 2 - 18,
                 marginTop: 12,
-                color: isOutOfStock() ? '#0000004D' : '#00000080',
+                color: isOutOfStock(activeShop, product)
+                  ? '#0000004D'
+                  : '#00000080',
                 fontSize: 12,
                 fontWeight: '500',
               }}
@@ -156,7 +153,9 @@ export function ProductItem(props: Props) {
               style={{
                 width: width / 2 - 18,
                 marginTop: 12,
-                color: isOutOfStock() ? '#0000004D' : '#00000080',
+                color: isOutOfStock(activeShop, product)
+                  ? '#0000004D'
+                  : '#00000080',
 
                 fontSize: 12,
                 fontWeight: '500',
@@ -175,46 +174,7 @@ export function ProductItem(props: Props) {
             right: 18,
             bottom: 11,
           }}>
-          {!isOutOfStock() ? (
-            <Pressable
-              onPress={() => {}}
-              android_ripple={{color: 'gray', radius: 200}}
-              style={{
-                height: 26,
-                backgroundColor: '#BEE8EE',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <StyledText
-                style={{
-                  marginHorizontal: 26,
-                  color: '#046674',
-                  fontWeight: '700',
-                  fontSize: 12,
-                }}>
-                {product.price + ' ' + TENGE_LETTER}
-              </StyledText>
-            </Pressable>
-          ) : (
-            <View
-              style={{
-                height: 26,
-                backgroundColor: '#F3F3F7',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 9,
-              }}>
-              <StyledText
-                style={{
-                  marginHorizontal: 12,
-                  fontWeight: '500',
-                  fontSize: 12,
-                  color: '#5A5858',
-                }}>
-                Будет позже
-              </StyledText>
-            </View>
-          )}
+          <ProductCountButton product={product} />
         </View>
       </View>
     </Pressable>

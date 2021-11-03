@@ -29,6 +29,9 @@ import EnterNameScreen from '../components/AuthComponents/EnterNameScreen';
 import EnterBirthdayScreen from '../components/AuthComponents/EnterBirthdayScreen';
 import SelectShopScreen from '../components/SignInComonents/SelectShopScreen';
 import {Product} from '../redux/ProductsDataSlice';
+import {BasketItem} from '../redux/BasketDataReducer';
+import {useSelector} from 'react-redux';
+import {RootState} from '../redux';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -179,6 +182,9 @@ function BasketTab() {
 }
 
 function Home() {
+  const basket: Array<BasketItem> = useSelector(
+    (state: RootState) => state.basket.basket,
+  );
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -310,23 +316,25 @@ function Home() {
                   }}
                   source={require('../assets/Bag_tab.png')}
                 />
-                <View
-                  style={{
-                    right: 31,
-                    top: 8,
-                    position: 'absolute',
-                    width: 13,
-                    height: 13,
-                    backgroundColor: '#FF4545',
-                    borderRadius: 13 / 2,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <StyledText
-                    style={{fontSize: 7, color: 'white', fontWeight: '500'}}>
-                    1
-                  </StyledText>
-                </View>
+                {basket.length > 0 && (
+                  <View
+                    style={{
+                      right: 31,
+                      top: 8,
+                      position: 'absolute',
+                      width: 13,
+                      height: 13,
+                      backgroundColor: '#FF4545',
+                      borderRadius: 13 / 2,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <StyledText
+                      style={{fontSize: 7, color: 'white', fontWeight: '500'}}>
+                      {basket.length}
+                    </StyledText>
+                  </View>
+                )}
               </>
             );
           },
@@ -370,6 +378,11 @@ export default function AppNavigator() {
           headerBackTitleVisible: true,
           headerBackImage: _ => <View />,
           headerTitle: 'Рестораны',
+          headerTitleStyle: {
+            color: 'black',
+            fontSize: 17,
+            fontFamily: 'SFProDisplay-Bold',
+          },
           headerStyle: {backgroundColor: '#F7F7F7'},
         }}
       />
