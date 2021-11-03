@@ -19,19 +19,10 @@ const basketDataSlice = createSlice({
   reducers: {
     plusProduct(state, action: PayloadAction<Product>) {
       if (state.basket.some(item => item.item.id === action.payload.id)) {
-        //если есть такой элемент
-        let item = state.basket.filter(
-          obj => obj.item.id === action.payload.id,
-        )[0]; //берем его
-        let newList = state.basket.filter(
-          obj => obj.item.id !== action.payload.id,
-        ); //удаляем его из списка
-        let newItem = {
-          count: item.count + 1,
-          item: item.item,
-        }; //увеличиваем количество
-        newList.push(newItem); //кладем в список
-        state.basket = [...newList];
+        let index = state.basket.findIndex(
+          it => it.item.id === action.payload.id,
+        );
+        state.basket[index].count = state.basket[index].count + 1;
       } else {
         state.basket.push({
           count: 1,
@@ -51,18 +42,10 @@ const basketDataSlice = createSlice({
           obj => obj.item.id !== action.payload.id,
         );
       } else {
-        let item = state.basket.filter(
-          obj => obj.item.id === action.payload.id,
-        )[0]; //берем его
-        let newList = state.basket.filter(
-          obj => obj.item.id !== action.payload.id,
-        ); //удаляем его из списка
-        let newItem = {
-          count: item.count - 1,
-          item: item.item,
-        }; //уменьшаем количество
-        newList.push(newItem); //кладем в список
-        state.basket = [...newList];
+        let index = state.basket.findIndex(
+          it => it.item.id === action.payload.id,
+        );
+        state.basket[index].count = state.basket[index].count - 1;
       }
     },
     deleteProduct(state, action: PayloadAction<Product>) {
