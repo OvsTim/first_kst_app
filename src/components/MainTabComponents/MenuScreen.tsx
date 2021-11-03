@@ -43,48 +43,53 @@ export default function MenuScreen({navigation}: Props) {
   const HEADER_EXPANDED_HEIGHT = 350;
   const HEADER_COLLAPSED_HEIGHT = 60;
 
-  const onViewRef = useRef(
-    (info: {
-      viewableItems: Array<ViewToken>;
-      changedItems: Array<ViewToken>;
-    }) => {
-      if (info.viewableItems.length > 0) {
-        let cat_index = categories.findIndex(
-          it => info.viewableItems[0].item.category === 'Категории/' + it.id,
-        );
-        //todo:костыль. на самом деле мы видим на 2 элемента раньше, если они есть.
-        console.log('viewableItems', info.viewableItems);
-        console.log('changedItems', info.changedItems);
-        console.log('cat_index', cat_index);
-        if (cat_index === 0) {
-          setActiveCategory(0);
-          flatlistCategoryRef.current?.scrollToOffset({
-            offset: 0,
-            animated: true,
-          });
-        } else if (cat_index !== -1 && cat_index !== activeCategory) {
-          setActiveCategory(cat_index);
-          if (cat_index !== 0) {
-            flatlistCategoryRef.current?.scrollToIndex({
-              index: cat_index,
-              animated: true,
-              viewOffset: 18,
-            });
-          }
-        }
-      } else {
+  const onViewRef = useRef((info: {viewableItems: Array<ViewToken>}) => {
+    if (info.viewableItems.length > 0) {
+      //костыль. на самом деле мы видим на 2 элемента раньше, если они есть.
+      // console.log('viewableItems', info.viewableItems);
+
+      let reallyFirstViewableItem =
+        info.viewableItems[0].index && info.viewableItems[0].index < 2
+          ? info.viewableItems[0].item
+          : products[
+              info.viewableItems[0].index ? info.viewableItems[0].index - 2 : 0
+            ];
+
+      // console.log('reallyFirstViewableItem', reallyFirstViewableItem);
+
+      let cat_index = categories.findIndex(
+        it => reallyFirstViewableItem.category === 'Категории/' + it.id,
+      );
+
+      // console.log('cat_index', cat_index);
+      if (cat_index === 0) {
         setActiveCategory(0);
         flatlistCategoryRef.current?.scrollToOffset({
           offset: 0,
           animated: true,
         });
+      } else if (cat_index !== -1 && cat_index !== activeCategory) {
+        setActiveCategory(cat_index);
+        if (cat_index !== 0) {
+          flatlistCategoryRef.current?.scrollToIndex({
+            index: cat_index,
+            animated: true,
+            viewOffset: 18,
+          });
+        }
       }
-    },
-  );
+    } else {
+      // setActiveCategory(0);
+      // flatlistCategoryRef.current?.scrollToOffset({
+      //   offset: 0,
+      //   animated: true,
+      // });
+    }
+  });
 
   const viewConfigRef = useRef({
     itemVisiblePercentThreshold: 100,
-    minimumViewTime: 250,
+    minimumViewTime: 500,
     waitForInteraction: true,
   });
   const {width} = useWindowDimensions();
