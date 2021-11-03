@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  FlatList,
-  Image,
-  StatusBar,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import {FlatList, Image, Text, useWindowDimensions, View} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import BaseButton from '../_CustomComponents/BaseButton';
@@ -16,8 +9,6 @@ import {BasketItem} from '../../redux/BasketDataReducer';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
 import {TENGE_LETTER} from './ProductItem';
-import FirebaseImage from '../_CustomComponents/FirebaseImage';
-import {isOutOfStock} from '../../utils/productUtils';
 import {ProductCountButton} from './ProductCountButton';
 import {ImageMap} from '../../redux/UserDataSlice';
 
@@ -28,7 +19,9 @@ type Props = {
 export default function BasketScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
-  const imagesMap: ImageMap = useSelector(state => state.data.images);
+  const imagesMap: ImageMap = useSelector(
+    (state: RootState) => state.data.images,
+  );
 
   const basket: Array<BasketItem> = useSelector(
     (state: RootState) => state.basket.basket,
