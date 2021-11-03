@@ -1,5 +1,12 @@
 import React from 'react';
-import {FlatList, Image, Text, useWindowDimensions, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  StatusBar,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import BaseButton from '../_CustomComponents/BaseButton';
@@ -11,6 +18,7 @@ import {RootState} from '../../redux';
 import {TENGE_LETTER} from './ProductItem';
 import {ProductCountButton} from './ProductCountButton';
 import {ImageMap} from '../../redux/UserDataSlice';
+import {useFocusEffect} from '@react-navigation/native';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -25,6 +33,17 @@ export default function BasketScreen({navigation}: Props) {
 
   const basket: Array<BasketItem> = useSelector(
     (state: RootState) => state.basket.basket,
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // console.log('basket', basket);
+      if (basket.length > 0) {
+        StatusBar.setBackgroundColor('white');
+      } else {
+        StatusBar.setBackgroundColor('#f2f2f2');
+      }
+    }, [basket]),
   );
 
   function getNumberOfCounts() {
@@ -134,7 +153,7 @@ export default function BasketScreen({navigation}: Props) {
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <FocusAwareStatusBar
           translucent={false}
-          backgroundColor={'#f2f2f2'}
+          backgroundColor={basket.length === 0 ? '#f2f2f2' : 'white'}
           barStyle="dark-content"
         />
         <Image
@@ -201,7 +220,7 @@ export default function BasketScreen({navigation}: Props) {
               {getNumberOfCounts() +
                 ' ' +
                 num_word(getNumberOfCounts(), ['товар', 'товара', 'товаров']) +
-                ' на сумму ' +
+                '\nна сумму ' +
                 getTotalPrice() +
                 ' ' +
                 TENGE_LETTER}
@@ -212,13 +231,26 @@ export default function BasketScreen({navigation}: Props) {
           data={basket}
           renderItem={({item}) => renderBasketItem(item)}
         />
-        <View style={{position: 'absolute', bottom: 38, alignSelf: 'center'}}>
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            alignSelf: 'center',
+            backgroundColor: 'white',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderTopColor: '#F2F2F6',
+            borderTopWidth: 1,
+            width,
+          }}>
+          <View style={{height: 20}} />
           <BaseButton
             text={'Оформить заказ на ' + getTotalPrice() + ' ' + TENGE_LETTER}
             onPress={() => {
               navigation.navigate('OrderDelivery');
             }}
           />
+          <View style={{height: 20}} />
         </View>
       </View>
     );

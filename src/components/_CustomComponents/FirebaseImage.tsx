@@ -40,6 +40,8 @@ export default function FirebaseImage(props: Props) {
           dispatch(setImageUrl({ref: props.innerUrl, url: res}));
         })
         .catch(er => console.log('er', er));
+    } else {
+      setUrl(imagesMap[props.innerUrl]);
     }
   }, [props.innerUrl, url]);
 

@@ -2,7 +2,7 @@ import {Product} from '../../redux/ProductsDataSlice';
 import {Pressable, Text, useWindowDimensions, View} from 'react-native';
 import React from 'react';
 import {withFont} from '../_CustomComponents/HOC/withFont';
-import {RootState, useAppDispatch} from '../../redux';
+import {RootState} from '../../redux';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector} from 'react-redux';
@@ -21,7 +21,6 @@ export const TENGE_LETTER = '₸';
 const StyledText = withFont(Text);
 export function ProductItem(props: Props) {
   const {width} = useWindowDimensions();
-  const dispatch = useAppDispatch();
   const product: Product = props.product;
   const navigation = useNavigation();
   const active: string = useSelector(

@@ -3,12 +3,10 @@ import {
   Dimensions,
   Image,
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StatusBar,
   Text,
-  TextInput,
   useWindowDimensions,
   View,
 } from 'react-native';

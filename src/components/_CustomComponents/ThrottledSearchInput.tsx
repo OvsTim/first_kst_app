@@ -6,9 +6,8 @@ import {
   ViewStyle,
   TextInputProps,
   Pressable,
+  useWindowDimensions,
 } from 'react-native';
-import {vScale, hScale, window} from '../../utils/scaling';
-
 type Props = {
   value: string;
   throttle?: number;
@@ -44,6 +43,7 @@ function throttle(func: Function, ms: number): Function {
 
 export default function ThrottledSearchInput(props: Props) {
   const [value, setValue] = useState<string>(props.value);
+  const {width} = useWindowDimensions();
   const throttled = useRef(
     throttle((term: string) => {
       props.onThrottledChange(term);
@@ -68,27 +68,27 @@ export default function ThrottledSearchInput(props: Props) {
         }}
         style={{
           position: 'absolute',
-          paddingHorizontal: hScale(12),
-          right: 0,
-          top: vScale(0),
+          paddingHorizontal: 12,
+          left: 0,
+          top: 0,
           bottom: 0,
           justifyContent: 'center',
         }}>
         {props.showSearchIcon && value === '' ? (
           <Image
             style={{
-              width: hScale(24),
-              height: hScale(24),
+              width: 15,
+              height: 15,
               tintColor: 'gray',
             }}
-            source={require('../../assets/search.png')}
+            source={require('../../assets/magnifyingglass.png')}
             resizeMode={'contain'}
           />
         ) : (
           <Image
             style={{
-              width: hScale(15),
-              height: hScale(15),
+              width: 15,
+              height: 15,
               alignSelf: 'center',
               tintColor: 'gray',
             }}
@@ -104,25 +104,32 @@ export default function ThrottledSearchInput(props: Props) {
     <View
       style={[
         {
-          width: window().width - hScale(32),
-          height: vScale(44),
+          width: width - 32,
+          height: 40,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#E5E5E5',
-          borderRadius: vScale(5),
+          backgroundColor: '#7676801F',
+          borderRadius: 10,
         },
         props.styleContainer,
       ]}>
       <TextInput
         style={[
           {
+            alignSelf: 'center',
             width: '100%',
-            paddingRight: hScale(32),
-            paddingLeft: hScale(12),
-            fontSize: vScale(14),
+            paddingRight: 12,
+            paddingLeft: 30,
+            fontSize: 17,
+            paddingVertical: 0,
+            textAlignVertical: 'center',
+            includeFontPadding: false,
+            fontFamily: 'SFProDisplay-Regular',
           },
           props.styleInput,
         ]}
+        placeholder={'Например, роллы'}
+        multiline={false}
         onChangeText={terms => {
           handleInput(terms);
         }}

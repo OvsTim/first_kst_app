@@ -89,7 +89,7 @@ export default function MenuScreen({navigation}: Props) {
 
   const viewConfigRef = useRef({
     itemVisiblePercentThreshold: 100,
-    minimumViewTime: 500,
+    minimumViewTime: 400,
     waitForInteraction: true,
   });
   const {width} = useWindowDimensions();
@@ -301,7 +301,9 @@ export default function MenuScreen({navigation}: Props) {
               borderRadius: 15,
               overflow: 'hidden',
             }}>
-            <Button onPress={() => {}} containerStyle={{width: 30, height: 30}}>
+            <Button
+              onPress={() => navigation.navigate('Search')}
+              containerStyle={{width: 30, height: 30}}>
               <Image
                 style={{width: 30, height: 22}}
                 source={require('../../assets/search.png')}

@@ -32,6 +32,7 @@ import {Product} from '../redux/ProductsDataSlice';
 import {BasketItem} from '../redux/BasketDataReducer';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux';
+import SearchScreen from '../components/SearchComponents/SearchScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -56,6 +57,7 @@ export type AppStackParamList = {
     type: 'add' | 'edit';
     address?: Address;
   };
+  Search: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -99,6 +101,11 @@ function MenuTab() {
       <MenuStack.Screen
         name="Menu"
         component={MenuScreen}
+        options={{headerShown: false}}
+      />
+      <MenuStack.Screen
+        name="Search"
+        component={SearchScreen}
         options={{headerShown: false}}
       />
     </MenuStack.Navigator>
@@ -165,12 +172,15 @@ function ContactsTab() {
 }
 
 function BasketTab() {
+  const basket: Array<BasketItem> = useSelector(
+    (state: RootState) => state.basket.basket,
+  );
   return (
     <BasketStack.Navigator screenOptions={options}>
       <BasketStack.Screen
         name="Basket"
         component={BasketScreen}
-        options={() => ({title: 'Корзина'})}
+        options={() => ({title: 'Корзина', headerShown: basket.length === 0})}
       />
       <BasketStack.Screen
         name={'OrderDelivery'}
