@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   FlatList,
   Image,
@@ -19,6 +19,8 @@ import {TENGE_LETTER} from './ProductItem';
 import {ProductCountButton} from './ProductCountButton';
 import {ImageMap} from '../../redux/UserDataSlice';
 import {useFocusEffect} from '@react-navigation/native';
+import {Restaraunt} from '../../API';
+import {RecommendCard} from './RecommendCard';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -34,6 +36,28 @@ export default function BasketScreen({navigation}: Props) {
   const basket: Array<BasketItem> = useSelector(
     (state: RootState) => state.basket.basket,
   );
+  const active: string = useSelector(
+    (state: RootState) => state.data.activeShop,
+  );
+  const shops: Array<Restaraunt> = useSelector(
+    (state: RootState) => state.data.shops,
+  );
+  const activeShop: Restaraunt =
+    shops.filter(value => value.id === active).length > 0
+      ? shops.filter(value => value.id === active)[0]
+      : {
+          id: '',
+          phone: '',
+          name: '',
+          address: '',
+          coords: {lat: 0, lan: 0},
+          outOfStock: [],
+          workHours: {},
+          recommendations: [],
+          delivery: {},
+        };
+
+  const [isVisible, setVisible] = useState<boolean>(true);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -44,6 +68,11 @@ export default function BasketScreen({navigation}: Props) {
         StatusBar.setBackgroundColor('#f2f2f2');
       }
     }, [basket]),
+  );
+  useFocusEffect(
+    React.useCallback(() => {
+      setVisible(true);
+    }, []),
   );
 
   function getNumberOfCounts() {
@@ -230,6 +259,23 @@ export default function BasketScreen({navigation}: Props) {
           keyExtractor={(_, index) => index.toString()}
           data={basket}
           renderItem={({item}) => renderBasketItem(item)}
+          ListFooterComponent={() =>
+            activeShop.recommendations.length > 0 ? (
+              <RecommendCard
+                visible={isVisible}
+                onClose={() => setVisible(false)}
+                recommend={
+                  activeShop.recommendations[
+                    Math.floor(
+                      Math.random() * activeShop.recommendations.length,
+                    )
+                  ]
+                }
+              />
+            ) : (
+              <View />
+            )
+          }
         />
         <View
           style={{
