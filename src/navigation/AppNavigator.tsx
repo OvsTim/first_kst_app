@@ -33,6 +33,7 @@ import {BasketItem} from '../redux/BasketDataReducer';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux';
 import SearchScreen from '../components/SearchComponents/SearchScreen';
+import OrderSuccessScreen from '../components/OrderSuccessComponents/OrderSuccessScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -53,6 +54,7 @@ export type AppStackParamList = {
   EnterName: undefined;
   EnterBirthday: undefined;
   ChangeRestaraunt: {activeTab: number};
+  OrderSuccess: undefined;
   AddEditAddress: {
     type: 'add' | 'edit';
     address?: Address;
@@ -400,6 +402,14 @@ export default function AppNavigator() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name={'OrderSuccess'}
+        component={OrderSuccessScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+
       <Stack.Screen
         name={'ChangeRestaraunt'}
         component={SelectShopScreen}

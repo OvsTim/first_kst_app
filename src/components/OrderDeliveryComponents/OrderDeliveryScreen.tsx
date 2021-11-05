@@ -387,7 +387,13 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             ' ' +
             TENGE_LETTER
           }
-          onPress={() => setModalVisible(true)}
+          onPress={() => {
+            if (paymentWay === 'CASH') {
+              setModalVisible(true);
+            } else {
+              navigation.navigate('OrderSuccess');
+            }
+          }}
         />
         <View style={{height: 20}} />
       </View>
@@ -461,7 +467,9 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                 lineHeight: 26,
                 color: 'black',
               }}>
-              {'Заказ на 2000 ' +
+              {'Заказ на ' +
+                getTotalPrice() +
+                ' ' +
                 TENGE_LETTER +
                 '. ' +
                 '\nС какой суммы подготовить сдачу?'}
@@ -503,7 +511,12 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               }}>
               <BaseButton
                 text={sdacha ? 'Продолжить' : 'У меня без сдачи'}
-                onPress={() => {}}
+                onPress={() => {
+                  setModalVisible(false);
+                  setTimeout(() => {
+                    navigation.navigate('OrderSuccess');
+                  }, 500);
+                }}
               />
             </View>
           </View>
