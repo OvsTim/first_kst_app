@@ -92,6 +92,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
   }
 
   function handlePayment() {
+    navigation.navigate('OrderSuccess');
     if (orderDeliveryType === 'DELIVERY' && !currentAddress) {
       Alert.alert('Сообщение', 'Укажите адрес доставки');
       return;
@@ -446,6 +447,11 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             'Итого к оплате ' + getTotalPrice().toString() + ' ' + TENGE_LETTER
           }
           onPress={() => {
+            if (orderDeliveryType === 'DELIVERY' && !currentAddress) {
+              Alert.alert('Сообщение', 'Укажите адрес доставки');
+              return;
+            }
+
             if (paymentWay === 'CASH') {
               setModalVisible(true);
             } else {

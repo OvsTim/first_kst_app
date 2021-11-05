@@ -76,7 +76,7 @@ export default function SearchScreen({navigation}: Props) {
           android_ripple={{color: 'gray', radius: 200}}
           style={{
             width: 80,
-            height: 44,
+            height: 40,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
