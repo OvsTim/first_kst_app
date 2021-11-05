@@ -37,9 +37,10 @@ export type OrderStatus =
 
 export interface Order {
   id: string; //внутренний идшник для базы
+  currentStatus: OrderStatus;
   public_id: number; //внешний идшник для пользователя
   payment_type: OrderPaymentType; //тип оплаты
-  product: Array<BasketItem>; //список продуктов(внутри объект продукта и количество)
+  products: Array<BasketItem>; //список продуктов(внутри объект продукта и количество)
   delivery_type: OrderDeliveryType; //тип доставки
   active: boolean; //является ли этот заказ активным (выводить его в профиле)
   address?: Address; //адрес доставки (если OrderDeliveryType === DELIVERY)
@@ -50,7 +51,7 @@ export interface Order {
   //то время пустое, иначе пишем там часы и минуты
   mark: number; //оценка (0-5)
   commentary: string; //комментарий
-  user_id: string; //ид юзера, который заказал
+  user_id?: string; //ид юзера, который заказал
   price: number; //Итоговая цена
 }
 

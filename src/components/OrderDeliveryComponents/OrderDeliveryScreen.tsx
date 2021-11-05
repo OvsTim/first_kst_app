@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   KeyboardAvoidingView,
@@ -19,13 +20,16 @@ import Modal from 'react-native-modal';
 import AuthBaseInput from '../_CustomComponents/AuthBaseInput';
 import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
 import {
+  Order,
   OrderDeliveryType,
   OrderPaymentType,
+  OrderStatus,
 } from '../../redux/ProductsDataSlice';
 import {BasketItem} from '../../redux/BasketDataReducer';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
 import {Address, Restaraunt} from '../../API';
+import auth from '@react-native-firebase/auth';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -65,12 +69,69 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           recommendations: [],
           delivery: {},
         };
-  function getTotalPrice() {
+  function getBasketPrice() {
     let price = 0;
     basket.forEach(it => {
       price = price + it.count * it.item.price;
     });
     return price;
+  }
+
+  function getTotalPrice() {
+    if (orderDeliveryType === 'PICKUP') {
+      return getBasketPrice();
+    } else if (getBasketPrice() >= 5000) {
+      return getBasketPrice();
+    } else {
+      return getBasketPrice() + 800;
+    }
+  }
+
+  function randomInteger(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function handlePayment() {
+    if (orderDeliveryType === 'DELIVERY' && !currentAddress) {
+      Alert.alert('Сообщение', 'Укажите адрес доставки');
+      return;
+    }
+
+    let statusesArray: Array<{status: OrderStatus; time: string}> = [];
+
+    if (orderDeliveryType === 'PICKUP') {
+      statusesArray = [
+        {status: 'IS_NEW', time: ''},
+        {status: 'PROCESSING', time: ''},
+        {status: 'COOKING', time: ''},
+        {status: 'READY', time: ''},
+      ];
+    } else {
+      statusesArray = [
+        {status: 'IS_NEW', time: ''},
+        {status: 'PROCESSING', time: ''},
+        {status: 'COOKING', time: ''},
+        {status: 'DELIVER', time: ''},
+      ];
+    }
+
+    let order: Order = {
+      currentStatus: 'IS_NEW',
+      active: true,
+      sdacha: sdacha !== '' ? parseInt(sdacha) : undefined,
+      delivery_type: orderDeliveryType,
+      id: '1231231231312',
+      address: currentAddress,
+      payment_type: paymentWay,
+      products: basket,
+      commentary: '',
+      mark: 0,
+      price: getTotalPrice(),
+      restaurant: activeShop.name,
+      user_id: auth().currentUser?.uid ? auth().currentUser?.uid : '',
+      public_id: randomInteger(1, 10000000),
+      statuses: statusesArray,
+    };
   }
 
   function renderHeaderAndAddress() {
@@ -292,31 +353,33 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           </StyledText>
           <StyledText
             style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
-            {getTotalPrice() + ' ' + TENGE_LETTER}
+            {getBasketPrice() + ' ' + TENGE_LETTER}
           </StyledText>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: width - 68,
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: 5,
-          }}>
-          <StyledText
+        {orderDeliveryType === 'DELIVERY' && (
+          <View
             style={{
-              fontWeight: '500',
-              color: 'black',
-              fontSize: 15,
-              lineHeight: 23,
+              flexDirection: 'row',
+              width: width - 68,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginTop: 5,
             }}>
-            Стоимость доставки
-          </StyledText>
-          <StyledText
-            style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
-            {getTotalPrice() >= 5000 ? 'Бесплатно' : '800 ₸'}
-          </StyledText>
-        </View>
+            <StyledText
+              style={{
+                fontWeight: '500',
+                color: 'black',
+                fontSize: 15,
+                lineHeight: 23,
+              }}>
+              Стоимость доставки
+            </StyledText>
+            <StyledText
+              style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
+              {getBasketPrice() >= 5000 ? 'Бесплатно' : '800 ₸'}
+            </StyledText>
+          </View>
+        )}
       </>
     );
   }
@@ -335,7 +398,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         </StyledText>
         <Progress.Bar
           style={{backgroundColor: '#F2F2F6', marginTop: 9}}
-          progress={getTotalPrice() / 5000}
+          progress={getBasketPrice() / 5000}
           borderColor={'transparent'}
           borderRadius={3}
           animated={true}
@@ -345,7 +408,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         />
         <StyledText
           style={{marginTop: 10, fontWeight: '700', color: '#28B3C6'}}>
-          {getTotalPrice() + ' '}
+          {getBasketPrice() + ' '}
           <StyledText style={{fontWeight: '700', color: '#828282'}}>
             / 5000
           </StyledText>
@@ -380,18 +443,13 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           width={width - 68}
           containerStyle={{alignSelf: 'center'}}
           text={
-            'Итого к оплате ' +
-            (getTotalPrice() >= 5000
-              ? getTotalPrice().toString()
-              : (getTotalPrice() + 800).toString()) +
-            ' ' +
-            TENGE_LETTER
+            'Итого к оплате ' + getTotalPrice().toString() + ' ' + TENGE_LETTER
           }
           onPress={() => {
             if (paymentWay === 'CASH') {
               setModalVisible(true);
             } else {
-              navigation.navigate('OrderSuccess');
+              handlePayment();
             }
           }}
         />
@@ -417,7 +475,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         {renderHeaderAndAddress()}
         {renderPaymentWays()}
         {renderCostAndDelivery()}
-        {renderFreeDeliveryAndMenu()}
+        {orderDeliveryType === 'DELIVERY' && renderFreeDeliveryAndMenu()}
       </ScrollView>
       {renderBottomButton()}
       <Modal
@@ -514,7 +572,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                 onPress={() => {
                   setModalVisible(false);
                   setTimeout(() => {
-                    navigation.navigate('OrderSuccess');
+                    handlePayment();
                   }, 500);
                 }}
               />
