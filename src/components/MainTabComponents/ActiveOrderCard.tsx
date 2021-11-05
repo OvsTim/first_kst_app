@@ -10,10 +10,12 @@ import {
 import React from 'react';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import * as Progress from 'react-native-progress';
-import {Marker} from 'react-native-yamap';
+import {Order} from '../../redux/ProductsDataSlice';
+import {getStatusOrderString} from '../../utils/ordersUtils';
+import {useNavigation} from '@react-navigation/native';
 
 type Props = {
-  orderNumber: string;
+  order: Order;
   totalProgressLength: number;
   index: number;
 };
@@ -21,6 +23,7 @@ type Props = {
 export default function ActiveOrderCard(props: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
+  const navigation = useNavigation();
   const array = [...Array(props.totalProgressLength).keys()];
   return (
     <DropShadow
@@ -46,7 +49,7 @@ export default function ActiveOrderCard(props: Props) {
         }}>
         <Pressable
           style={{width: width - 34, height: 127, borderRadius: 15}}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('OrderInfo', {order: props.order})}
           android_ripple={{color: 'gray', radius: 200}}>
           <StyledText
             style={{
@@ -56,7 +59,7 @@ export default function ActiveOrderCard(props: Props) {
               fontSize: 12,
               marginHorizontal: 28,
             }}>
-            {'Заказ №' + props.orderNumber}
+            {'Заказ № ' + props.order.public_id}
           </StyledText>
           <StyledText
             style={{
@@ -65,7 +68,7 @@ export default function ActiveOrderCard(props: Props) {
               marginTop: 12,
               marginHorizontal: 28,
             }}>
-            Готовим
+            {getStatusOrderString(props.order.currentStatus)}
           </StyledText>
 
           <FlatList

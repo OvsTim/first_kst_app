@@ -30,6 +30,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
 import {Address, Restaraunt} from '../../API';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -119,10 +120,13 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     let order: Order = {
       currentStatus: 'IS_NEW',
       active: true,
-      sdacha: sdacha !== '' ? parseInt(sdacha) : undefined,
+      sdacha: sdacha !== '' ? parseInt(sdacha) : 0,
       delivery_type: orderDeliveryType,
       id: '1231231231312',
-      address: currentAddress,
+      address:
+        orderDeliveryType === 'DELIVERY'
+          ? currentAddress
+          : {id: '', street: '', flat: '', house: ''},
       payment_type: paymentWay,
       products: basket,
       commentary: '',
@@ -133,6 +137,37 @@ export default function OrderDeliveryScreen({navigation}: Props) {
       public_id: randomInteger(1, 10000000),
       statuses: statusesArray,
     };
+
+    firestore()
+      .collection('Заказы')
+      .add({
+        ТекущийСтатус: order.currentStatus,
+        Активен: true,
+        Сдача: order.sdacha,
+        ТипПолучения: order.delivery_type,
+        Адрес:
+          orderDeliveryType === 'DELIVERY'
+            ? currentAddress
+            : {id: '', street: '', flat: '', house: ''},
+        ТипОплаты: order.payment_type,
+        Продукты: order.products,
+        Комментарий: '',
+        Оценка: 0,
+        Цена: order.price,
+        Ресторан: order.restaurant,
+        ИДПользователя: auth().currentUser?.uid ? auth().currentUser?.uid : '',
+        НомерЗаказа: order.public_id,
+        Статусы: order.statuses,
+      })
+      .then(_ => {
+        navigation.navigate('OrderSuccess');
+      })
+      .catch(er => {
+        Alert.alert(
+          'Ошибка',
+          'Произошла ошибка с кодом ' + er.code + ', повторите попытку позже',
+        );
+      });
   }
 
   function renderHeaderAndAddress() {

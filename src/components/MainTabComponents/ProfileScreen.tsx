@@ -1,5 +1,13 @@
-import React, {useState} from 'react';
-import {Image, Pressable, Text, useWindowDimensions, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  FlatList,
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
@@ -12,7 +20,14 @@ import {useFocusEffect} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
-import {Restaraunt} from '../../API';
+import {Address, Restaraunt} from '../../API';
+import {
+  Order,
+  OrderDeliveryType,
+  OrderPaymentType,
+  OrderStatus,
+} from '../../redux/ProductsDataSlice';
+import {getIndexByStatus} from '../../utils/ordersUtils';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
@@ -47,7 +62,7 @@ export default function ProfileScreen({navigation}: Props) {
   const [userName, setUserName] = useState<string>(
     auth().currentUser?.displayName || '',
   );
-
+  const [orderList, setOrderList] = useState<Array<Order>>([]);
   useFocusEffect(
     React.useCallback(() => {
       setAuthorized(auth().currentUser?.displayName !== null);
@@ -65,6 +80,45 @@ export default function ProfileScreen({navigation}: Props) {
           setAddressLength(res.size);
         })
         .catch(er => console.log('er', er));
+
+      const subscriber = firestore()
+        .collection('Заказы')
+        .where('ИДПользователя', '==', auth().currentUser?.uid)
+        .where('Активен', '==', true)
+        .onSnapshot(snap => {
+          if (!snap) {
+            // setOrderList([]);
+          } else {
+            let orders: Array<Order> = [];
+            console.log('snap.docs', snap.docs);
+            snap.docs.forEach(doc => {
+              let order: Order = {
+                id: doc.id,
+                public_id: doc.get<number>('НомерЗаказа'),
+                currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
+                user_id: auth().currentUser?.uid,
+                price: doc.get<number>('Цена'),
+                mark: 0,
+                commentary: '',
+                sdacha: doc.get<number>('Сдача'),
+                restaurant: doc.get<string>('Ресторан'),
+                active: true,
+                payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
+                delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
+                address: undefined,
+                statuses: doc.get<Array<any>>('Статусы'),
+                products: [],
+              };
+              orders.push(order);
+            });
+            console.log('orders', orders);
+
+            setOrderList(orders);
+          }
+        });
+
+      // Stop listening for updates when no longer required
+      return () => subscriber();
     }, [navigation]),
   );
 
@@ -116,14 +170,9 @@ export default function ProfileScreen({navigation}: Props) {
     );
   }
 
-  function renderAuthorized() {
+  function renderHeader() {
     return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'flex-start',
-          justifyContent: 'flex-start',
-        }}>
+      <>
         <FocusAwareStatusBar
           translucent={false}
           backgroundColor={'white'}
@@ -284,12 +333,24 @@ export default function ProfileScreen({navigation}: Props) {
             />
           </View>
         </Pressable>
-        <ActiveOrderCard
-          orderNumber={'2032'}
-          totalProgressLength={5}
-          index={1}
-        />
-      </View>
+      </>
+    );
+  }
+
+  function renderAuthorized() {
+    return (
+      <FlatList
+        style={{}}
+        ListHeaderComponent={() => renderHeader()}
+        data={orderList}
+        renderItem={({item}) => (
+          <ActiveOrderCard
+            order={item}
+            totalProgressLength={4}
+            index={getIndexByStatus(item.currentStatus)}
+          />
+        )}
+      />
     );
   }
 

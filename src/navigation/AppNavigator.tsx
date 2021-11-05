@@ -28,12 +28,13 @@ import EnterCodeScreen from '../components/AuthComponents/EnterCodeScreen';
 import EnterNameScreen from '../components/AuthComponents/EnterNameScreen';
 import EnterBirthdayScreen from '../components/AuthComponents/EnterBirthdayScreen';
 import SelectShopScreen from '../components/SignInComonents/SelectShopScreen';
-import {Product} from '../redux/ProductsDataSlice';
+import {Order, Product} from '../redux/ProductsDataSlice';
 import {BasketItem} from '../redux/BasketDataReducer';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux';
 import SearchScreen from '../components/SearchComponents/SearchScreen';
 import OrderSuccessScreen from '../components/OrderSuccessComponents/OrderSuccessScreen';
+import OrderInfoScreen from '../components/OrderInfoComponents/OrderInfoScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -70,6 +71,7 @@ export type AppStackParamList = {
   DeliveryListSelect: undefined;
   DeliveryListBasket: undefined;
   Search: undefined;
+  OrderInfo: {order: Order};
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -166,6 +168,11 @@ function ProfileTab() {
         name="AddEditAddress"
         component={AddEditAddressScreen}
         options={{title: 'Адрес доставки', headerBackTitle: 'Назад'}}
+      />
+      <ProfileStack.Screen
+        name="OrderInfo"
+        component={OrderInfoScreen}
+        options={{title: 'Информация о заказе', headerBackTitle: 'Назад'}}
       />
     </ProfileStack.Navigator>
   );
