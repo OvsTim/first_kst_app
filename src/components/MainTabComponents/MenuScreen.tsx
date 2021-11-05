@@ -17,22 +17,28 @@ import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {useSelector} from 'react-redux';
 import {RootState, useAppDispatch} from '../../redux';
-import {Restaraunt, Stock} from '../../API';
+import {Address, Restaraunt, Stock} from '../../API';
 import {useFocusEffect} from '@react-navigation/native';
 // @ts-ignore
 import firestore, {DocumentReference} from '@react-native-firebase/firestore';
-import {setStocks} from '../../redux/UserDataSlice';
+import {
+  setCurrentAddress,
+  setOrderDeliveryType,
+  setStocks,
+} from '../../redux/UserDataSlice';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import Modal from 'react-native-modal';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {
   Category,
+  OrderDeliveryType,
   Product,
   setCategories,
   setProducts,
 } from '../../redux/ProductsDataSlice';
 import {PRODUCT_ITEM_HEIGHT, ProductItem} from './ProductItem';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import auth from '@react-native-firebase/auth';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
@@ -102,6 +108,12 @@ export default function MenuScreen({navigation}: Props) {
   const shops: Array<Restaraunt> = useSelector(
     (state: RootState) => state.data.shops,
   );
+  const orderDeliveryType: OrderDeliveryType = useSelector(
+    (state: RootState) => state.data.orderDeliveryType,
+  );
+  const currentAddress: Address | undefined = useSelector(
+    (state: RootState) => state.data.currentAddress,
+  );
   const scrollY = new Animated.Value(0);
   const stocks: Array<Stock> = useSelector(
     (state: RootState) => state.data.stocks,
@@ -125,7 +137,6 @@ export default function MenuScreen({navigation}: Props) {
     outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
     extrapolate: 'clamp',
   });
-  const [indexTab, setIndexTab] = useState<number>(0);
 
   const [modalStock, setModalStock] = useState<Stock>({
     id: '',
@@ -341,9 +352,14 @@ export default function MenuScreen({navigation}: Props) {
           }}
           tabStyle={{borderRadius: 9}}
           backgroundColor={'#7676801F'}
-          selectedIndex={indexTab}
+          selectedIndex={orderDeliveryType === 'DELIVERY' ? 0 : 1}
           onChange={event => {
-            setIndexTab(event.nativeEvent.selectedSegmentIndex);
+            if (event.nativeEvent.selectedSegmentIndex === 0) {
+              dispatch(setOrderDeliveryType('DELIVERY'));
+              dispatch(setCurrentAddress(undefined));
+            } else {
+              dispatch(setOrderDeliveryType('PICKUP'));
+            }
           }}
           // styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}
           values={['На доставку', 'Самовывоз']}
@@ -356,39 +372,97 @@ export default function MenuScreen({navigation}: Props) {
             backgroundColor: '#DCDDE4',
           }}
         />
-        <Button
-          onPress={() =>
-            navigation.navigate('ChangeRestaraunt', {activeTab: 0})
-          }
-          containerStyle={{marginTop: 13 / 2}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-              style={{width: 18, height: 18, marginRight: 18}}
-              source={require('../../assets/samovivoz.png')}
-            />
-            <StyledText
-              numberOfLines={1}
-              ellipsizeMode={'tail'}
-              style={{
-                fontWeight: '400',
-                width: width / 2,
-                fontSize: 15,
-                color: 'black',
-              }}>
-              {activeShop.address}
-            </StyledText>
-            <Image
-              style={{
-                marginLeft: 10,
-                tintColor: 'black',
-                width: 12,
-                height: 6,
-                transform: [{rotate: '270deg'}],
-              }}
-              source={require('../../assets/droprdown.png')}
-            />
-          </View>
-        </Button>
+        {orderDeliveryType === 'PICKUP' ? (
+          <Button
+            onPress={() =>
+              navigation.navigate('ChangeRestaraunt', {activeTab: 0})
+            }
+            containerStyle={{marginTop: 13 / 2}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image
+                style={{width: 18, height: 18, marginRight: 18}}
+                source={require('../../assets/samovivoz.png')}
+              />
+              <StyledText
+                numberOfLines={1}
+                ellipsizeMode={'tail'}
+                style={{
+                  fontWeight: '400',
+                  width: width / 2,
+                  fontSize: 15,
+                  color: 'black',
+                }}>
+                {activeShop.address}
+              </StyledText>
+              <Image
+                style={{
+                  marginLeft: 10,
+                  tintColor: 'black',
+                  width: 12,
+                  height: 6,
+                  transform: [{rotate: '270deg'}],
+                }}
+                source={require('../../assets/droprdown.png')}
+              />
+            </View>
+          </Button>
+        ) : (
+          <Button
+            onPress={() => {
+              if (!auth().currentUser?.displayName) {
+                navigation.navigate('EnterPhone');
+              } else {
+                navigation.navigate('DeliveryListSelect');
+              }
+            }}
+            containerStyle={{marginTop: 13 / 2}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {currentAddress && (
+                <Image
+                  style={{width: 18, height: 18, marginRight: 18}}
+                  source={require('../../assets/delivery_icon.png')}
+                />
+              )}
+              {currentAddress ? (
+                <StyledText
+                  numberOfLines={1}
+                  ellipsizeMode={'tail'}
+                  style={{
+                    fontWeight: '400',
+                    fontSize: 15,
+                    color: '#28B3C6',
+                  }}>
+                  {currentAddress.street +
+                    ' ' +
+                    currentAddress.house +
+                    ', ' +
+                    currentAddress.flat}
+                </StyledText>
+              ) : (
+                <StyledText
+                  numberOfLines={1}
+                  ellipsizeMode={'tail'}
+                  style={{
+                    fontWeight: '400',
+                    fontSize: 15,
+                    color: '#28B3C6',
+                  }}>
+                  {'Укажите адрес доставки'}
+                </StyledText>
+              )}
+              <Image
+                style={{
+                  marginLeft: 10,
+                  tintColor: '#28B3C6',
+                  width: 12,
+                  height: 6,
+                  transform: [{rotate: '270deg'}],
+                }}
+                source={require('../../assets/droprdown.png')}
+              />
+            </View>
+          </Button>
+        )}
       </View>
     );
   }

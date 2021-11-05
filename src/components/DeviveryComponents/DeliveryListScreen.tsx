@@ -14,19 +14,22 @@ import {withFont} from '../_CustomComponents/HOC/withFont';
 import BaseButton from '../_CustomComponents/BaseButton';
 import firestore from '@react-native-firebase/firestore';
 import {Address} from '../../API';
-import {useFocusEffect} from '@react-navigation/native';
+import {RouteProp, useFocusEffect} from '@react-navigation/native';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 import auth from '@react-native-firebase/auth';
+import {useAppDispatch} from '../../redux';
+import {setAddresses, setCurrentAddress} from '../../redux/UserDataSlice';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'DeliveryList'>;
+  route: RouteProp<AppStackParamList, 'DeliveryList'>;
 };
-export default function DeliveryListScreen({navigation}: Props) {
+export default function DeliveryListScreen({navigation, route}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
   const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
-
+  const dispatch = useAppDispatch();
   const [addressList, setAddressList] = useState<Array<Address>>(
     Array(5).fill({
       id: '',
@@ -74,6 +77,7 @@ export default function DeliveryListScreen({navigation}: Props) {
             list.push(newAddress);
           });
           setAddressList(list);
+          dispatch(setAddresses(list));
         })
         .catch(er => console.log('er', er));
     }, []),
@@ -125,7 +129,14 @@ export default function DeliveryListScreen({navigation}: Props) {
         <BaseButton
           width={width - 66 - 67}
           text={'Добавить адрес'}
-          onPress={() => navigation.navigate('AddEditAddress', {type: 'add'})}
+          onPress={() => {
+            console.log('route', route);
+            if (route.name === 'DeliveryList') {
+              navigation.navigate('AddEditAddress', {type: 'add'});
+            } else {
+              navigation.navigate('AddEditAddressSelect', {type: 'add'});
+            }
+          }}
         />
       </>
     );
@@ -143,9 +154,17 @@ export default function DeliveryListScreen({navigation}: Props) {
           backgroundColor: 'white',
         }}
         disabled={item.street === '' ? true : null}
-        onPress={() =>
-          navigation.navigate('AddEditAddress', {address: item, type: 'edit'})
-        }
+        onPress={() => {
+          if (route.name === 'DeliveryList') {
+            navigation.navigate('AddEditAddress', {
+              address: item,
+              type: 'edit',
+            });
+          } else {
+            dispatch(setCurrentAddress(item));
+            navigation.goBack();
+          }
+        }}
         android_ripple={{color: 'gray', radius: 200}}>
         <ShimmerPlaceHolder
           style={{width: width - 120}}
@@ -234,6 +253,7 @@ export default function DeliveryListScreen({navigation}: Props) {
                   onPress: () => {
                     rowMap[addressList.indexOf(data.item)].closeRow();
                     deleteAddress(data.item.id);
+                    dispatch(setCurrentAddress(undefined));
                   },
                 },
               ]);
@@ -262,7 +282,13 @@ export default function DeliveryListScreen({navigation}: Props) {
           <BaseButton
             containerStyle={{width: width - 150}}
             text={'Добавить адрес'}
-            onPress={() => navigation.navigate('AddEditAddress', {type: 'add'})}
+            onPress={() => {
+              if (route.name === 'DeliveryList') {
+                navigation.navigate('AddEditAddress', {type: 'add'});
+              } else {
+                navigation.navigate('AddEditAddressSelect', {type: 'add'});
+              }
+            }}
           />
           <View style={{height: 60}} />
         </>

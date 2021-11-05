@@ -16,6 +16,8 @@ import firestore from '@react-native-firebase/firestore';
 import * as Progress from 'react-native-progress';
 import NewBaseInput, {InputRefType} from '../_CustomComponents/NewBaseInput';
 import auth from '@react-native-firebase/auth';
+import {setCurrentAddress} from '../../redux/UserDataSlice';
+import {useAppDispatch} from '../../redux';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'AddEditAddress'>;
@@ -24,6 +26,7 @@ type Props = {
 export default function AddEditAddressScreen({navigation, route}: Props) {
   const StyledText = withFont(Text);
   const {width} = useWindowDimensions();
+  const dispatch = useAppDispatch();
   const [loadingToolbar, setLoadingToolbar] = useState<boolean>(false);
   const streetRef = useRef<InputRefType>(null);
   const homeRef = useRef<InputRefType>(null);
@@ -145,6 +148,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
         // console.log('res', res);
         setLoadingToolbar(false);
         navigation.goBack();
+        dispatch(setCurrentAddress(undefined));
       })
       .catch(er => {
         console.log('er', er);

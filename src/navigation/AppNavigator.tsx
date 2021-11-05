@@ -57,6 +57,11 @@ export type AppStackParamList = {
     type: 'add' | 'edit';
     address?: Address;
   };
+  AddEditAddressSelect: {
+    type: 'add' | 'edit';
+    address?: Address;
+  };
+  DeliveryListSelect: undefined;
   Search: undefined;
 };
 
@@ -107,6 +112,16 @@ function MenuTab() {
         name="Search"
         component={SearchScreen}
         options={{headerShown: false}}
+      />
+      <MenuStack.Screen
+        name="DeliveryListSelect"
+        component={DeliveryListScreen}
+        options={{title: 'Адреса доставки', headerBackTitle: 'Отменв'}}
+      />
+      <MenuStack.Screen
+        name="AddEditAddressSelect"
+        component={AddEditAddressScreen}
+        options={{title: 'Адрес доставки', headerBackTitle: 'Назад'}}
       />
     </MenuStack.Navigator>
   );
