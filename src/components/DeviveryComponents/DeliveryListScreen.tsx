@@ -133,6 +133,8 @@ export default function DeliveryListScreen({navigation, route}: Props) {
             console.log('route', route);
             if (route.name === 'DeliveryList') {
               navigation.navigate('AddEditAddress', {type: 'add'});
+            } else if (route.name === 'DeliveryListBasket') {
+              navigation.navigate('AddEditAddressBasket', {type: 'add'});
             } else {
               navigation.navigate('AddEditAddressSelect', {type: 'add'});
             }
@@ -285,6 +287,8 @@ export default function DeliveryListScreen({navigation, route}: Props) {
             onPress={() => {
               if (route.name === 'DeliveryList') {
                 navigation.navigate('AddEditAddress', {type: 'add'});
+              } else if (route.name === 'DeliveryListBasket') {
+                navigation.navigate('AddEditAddressBasket', {type: 'add'});
               } else {
                 navigation.navigate('AddEditAddressSelect', {type: 'add'});
               }

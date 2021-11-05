@@ -18,6 +18,14 @@ import * as Progress from 'react-native-progress';
 import Modal from 'react-native-modal';
 import AuthBaseInput from '../_CustomComponents/AuthBaseInput';
 import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
+import {
+  OrderDeliveryType,
+  OrderPaymentType,
+} from '../../redux/ProductsDataSlice';
+import {BasketItem} from '../../redux/BasketDataReducer';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux';
+import {Address, Restaraunt} from '../../API';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -25,12 +33,46 @@ const StyledText = withFont(Text);
 export default function OrderDeliveryScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
 
-  const [paymentWay, setPaymentWay] = useState<'cash' | 'card' | 'caspi'>(
-    'cash',
+  const [paymentWay, setPaymentWay] = useState<OrderPaymentType>('CASH');
+  const orderDeliveryType: OrderDeliveryType = useSelector(
+    (state: RootState) => state.data.orderDeliveryType,
   );
-
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [sdacha, setSdacha] = useState<string>('');
+  const currentAddress: Address | undefined = useSelector(
+    (state: RootState) => state.data.currentAddress,
+  );
+  const basket: Array<BasketItem> = useSelector(
+    (state: RootState) => state.basket.basket,
+  );
+  const active: string = useSelector(
+    (state: RootState) => state.data.activeShop,
+  );
+  const shops: Array<Restaraunt> = useSelector(
+    (state: RootState) => state.data.shops,
+  );
+  const activeShop: Restaraunt =
+    shops.filter(value => value.id === active).length > 0
+      ? shops.filter(value => value.id === active)[0]
+      : {
+          id: '',
+          phone: '',
+          name: '',
+          address: '',
+          coords: {lat: 0, lan: 0},
+          outOfStock: [],
+          workHours: {},
+          recommendations: [],
+          delivery: {},
+        };
+  function getTotalPrice() {
+    let price = 0;
+    basket.forEach(it => {
+      price = price + it.count * it.item.price;
+    });
+    return price;
+  }
+
   function renderHeaderAndAddress() {
     return (
       <>
@@ -43,7 +85,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             color: 'black',
             fontSize: 25,
           }}>
-          Доставка
+          {orderDeliveryType === 'DELIVERY' ? 'Доставка' : 'Самовывоз'}
         </StyledText>
         <View
           style={{
@@ -60,25 +102,43 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               fontSize: 15,
               fontWeight: '400',
               width: width - 100,
-              marginTop: 16,
-              paddingBottom: 10,
+              marginVertical: 16,
               color: 'black',
-              borderBottomColor: '#0000001A',
-              borderBottomWidth: 1,
             }}>
-            Баймагамбетова 1/2
+            {activeShop.address}
           </StyledText>
-          <View style={{overflow: 'hidden', borderRadius: 15}}>
-            <Pressable
-              onPress={() => {}}
-              android_ripple={{color: 'gray', radius: 200}}
-              style={{paddingVertical: 15, width: width - 68}}>
-              <StyledText
-                style={{marginLeft: 15, color: '#28B3C6', fontWeight: '400'}}>
-                Выбрать другой адрес
-              </StyledText>
-            </Pressable>
-          </View>
+          {orderDeliveryType === 'DELIVERY' && (
+            <>
+              <View
+                style={{
+                  backgroundColor: '#0000001A',
+                  height: 1,
+                  width: width - 100,
+                }}
+              />
+              <View style={{overflow: 'hidden', borderRadius: 15}}>
+                <Pressable
+                  onPress={() => navigation.navigate('DeliveryListBasket')}
+                  android_ripple={{color: 'gray', radius: 200}}
+                  style={{paddingVertical: 15, width: width - 68}}>
+                  <StyledText
+                    style={{
+                      marginLeft: 15,
+                      color: '#28B3C6',
+                      fontWeight: '400',
+                    }}>
+                    {!currentAddress
+                      ? 'Укажите адрем доставки'
+                      : currentAddress.street +
+                        ' ' +
+                        currentAddress.house +
+                        ', ' +
+                        currentAddress.flat}
+                  </StyledText>
+                </Pressable>
+              </View>
+            </>
+          )}
         </View>
       </>
     );
@@ -114,7 +174,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               borderBottomWidth: 1,
             }}>
             <Pressable
-              onPress={() => setPaymentWay('cash')}
+              onPress={() => setPaymentWay('CASH')}
               android_ripple={{color: 'gray', radius: 200}}
               style={{
                 paddingVertical: 12,
@@ -128,13 +188,13 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                   height: 22,
                   marginLeft: 23,
                   marginRight: 10,
-                  tintColor: paymentWay === 'cash' ? '#28B3C6' : 'black',
+                  tintColor: paymentWay === 'CASH' ? '#28B3C6' : 'black',
                 }}
                 source={require('../../assets/Cash.png')}
               />
               <StyledText
                 style={{
-                  color: paymentWay === 'cash' ? '#28B3C6' : 'black',
+                  color: paymentWay === 'CASH' ? '#28B3C6' : 'black',
                   fontWeight: '400',
                 }}>
                 Наличными курьеру
@@ -149,7 +209,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               borderBottomWidth: 1,
             }}>
             <Pressable
-              onPress={() => setPaymentWay('card')}
+              onPress={() => setPaymentWay('CARD')}
               android_ripple={{color: 'gray', radius: 200}}
               style={{
                 paddingVertical: 12,
@@ -163,13 +223,13 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                   height: 22,
                   marginLeft: 23,
                   marginRight: 10,
-                  tintColor: paymentWay === 'card' ? '#28B3C6' : 'black',
+                  tintColor: paymentWay === 'CARD' ? '#28B3C6' : 'black',
                 }}
                 source={require('../../assets/Visa.png')}
               />
               <StyledText
                 style={{
-                  color: paymentWay === 'card' ? '#28B3C6' : 'black',
+                  color: paymentWay === 'CARD' ? '#28B3C6' : 'black',
                   fontWeight: '400',
                 }}>
                 Картой курьеру
@@ -178,7 +238,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           </View>
           <View style={{overflow: 'hidden', borderRadius: 15}}>
             <Pressable
-              onPress={() => setPaymentWay('caspi')}
+              onPress={() => setPaymentWay('KASPI')}
               android_ripple={{color: 'gray', radius: 200}}
               style={{
                 paddingVertical: 12,
@@ -192,13 +252,13 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                   height: 22,
                   marginLeft: 23,
                   marginRight: 10,
-                  tintColor: paymentWay === 'caspi' ? '#28B3C6' : 'black',
+                  tintColor: paymentWay === 'KASPI' ? '#28B3C6' : 'black',
                 }}
                 source={require('../../assets/Visa.png')}
               />
               <StyledText
                 style={{
-                  color: paymentWay === 'caspi' ? '#28B3C6' : 'black',
+                  color: paymentWay === 'KASPI' ? '#28B3C6' : 'black',
                   fontWeight: '400',
                 }}>
                 Kaspi Gold (перевод)
@@ -232,7 +292,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           </StyledText>
           <StyledText
             style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
-            1 200 ₸
+            {getTotalPrice() + ' ' + TENGE_LETTER}
           </StyledText>
         </View>
         <View
@@ -254,7 +314,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           </StyledText>
           <StyledText
             style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
-            800 ₸
+            {getTotalPrice() >= 5000 ? 'Бесплатно' : '800 ₸'}
           </StyledText>
         </View>
       </>
@@ -275,16 +335,17 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         </StyledText>
         <Progress.Bar
           style={{backgroundColor: '#F2F2F6', marginTop: 9}}
-          progress={0.3}
+          progress={getTotalPrice() / 5000}
           borderColor={'transparent'}
           borderRadius={3}
+          animated={true}
           width={width - 68}
           height={6}
           color={'#28B3C6'}
         />
         <StyledText
           style={{marginTop: 10, fontWeight: '700', color: '#28B3C6'}}>
-          {'1200 '}
+          {getTotalPrice() + ' '}
           <StyledText style={{fontWeight: '700', color: '#828282'}}>
             / 5000
           </StyledText>
@@ -318,7 +379,14 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         <BaseButton
           width={width - 68}
           containerStyle={{alignSelf: 'center'}}
-          text={'Итого к оплате 2 000 ' + TENGE_LETTER}
+          text={
+            'Итого к оплате ' +
+            (getTotalPrice() >= 5000
+              ? getTotalPrice().toString()
+              : (getTotalPrice() + 800).toString()) +
+            ' ' +
+            TENGE_LETTER
+          }
           onPress={() => setModalVisible(true)}
         />
         <View style={{height: 20}} />

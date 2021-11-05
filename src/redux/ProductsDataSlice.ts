@@ -45,12 +45,13 @@ export interface Order {
   address?: Address; //адрес доставки (если OrderDeliveryType === DELIVERY)
   restaurant: string; //как то поформатированный адрес ресторана
   sdacha?: number; //сдача (если OrderPaymentType === CASH)
-  statuses: Record<OrderStatus, string>;
+  statuses: Array<{status: OrderStatus; time: string}>;
   //история статусов,грубо говоря список статусов и времени. если что то не произошло,
   //то время пустое, иначе пишем там часы и минуты
   mark: number; //оценка (0-5)
   commentary: string; //комментарий
   user_id: string; //ид юзера, который заказал
+  price: number; //Итоговая цена
 }
 
 interface ProductsData {

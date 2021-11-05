@@ -61,7 +61,12 @@ export type AppStackParamList = {
     type: 'add' | 'edit';
     address?: Address;
   };
+  AddEditAddressBasket: {
+    type: 'add' | 'edit';
+    address?: Address;
+  };
   DeliveryListSelect: undefined;
+  DeliveryListBasket: undefined;
   Search: undefined;
 };
 
@@ -201,6 +206,16 @@ function BasketTab() {
         name={'OrderDelivery'}
         component={OrderDeliveryScreen}
         options={() => ({title: '', headerLeft: () => <View />})}
+      />
+      <BasketStack.Screen
+        name="DeliveryListBasket"
+        component={DeliveryListScreen}
+        options={{title: 'Адреса доставки', headerBackTitle: 'Отменв'}}
+      />
+      <BasketStack.Screen
+        name="AddEditAddressBasket"
+        component={AddEditAddressScreen}
+        options={{title: 'Адрес доставки', headerBackTitle: 'Назад'}}
       />
     </BasketStack.Navigator>
   );
