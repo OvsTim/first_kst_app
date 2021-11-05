@@ -103,14 +103,14 @@ export default function EnterCodeScreen({navigation, route}: Props) {
       confirm
         .confirm(code)
         .then((res: UserCredential) => {
-          // if (
-          //   res.additionalUserInfo?.isNewUser ||
-          //   !res.additionalUserInfo?.username
-          // ) {
-          navigation.navigate('EnterName');
-          // } else {
-          //   navigation.popToTop();
-          // }
+          if (res.additionalUserInfo?.isNewUser || !res.user.displayName) {
+            navigation.navigate('EnterName');
+          } else {
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'Home'}],
+            });
+          }
         })
         .catch((er: {code: any}) => {
           if (er.code === 'auth/invalid-verification-code') {

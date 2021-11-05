@@ -22,6 +22,7 @@ import {useFocusEffect} from '@react-navigation/native';
 // @ts-ignore
 import firestore, {DocumentReference} from '@react-native-firebase/firestore';
 import {
+  setAddresses,
   setCurrentAddress,
   setOrderDeliveryType,
   setStocks,
@@ -217,6 +218,42 @@ export default function MenuScreen({navigation}: Props) {
 
   useFocusEffect(
     React.useCallback(() => {
+      if (auth().currentUser?.displayName) {
+        firestore()
+          .collection('Пользователи')
+          .doc(auth().currentUser?.uid)
+          .collection('Адреса')
+          .where('Улица', '!=', '')
+          .get()
+          .then(res => {
+            let list: Array<Address> = [];
+            res.docs.forEach(doc => {
+              let newAddress: Address = {
+                id: doc.id,
+                name: doc.get<string>('Название')
+                  ? doc.get<string>('Название')
+                  : '',
+                street: doc.get<string>('Улица'),
+                house: doc.get<string>('Дом'),
+                flat: doc.get<string>('Квартира'),
+                code: doc.get<string>('КодДомофона')
+                  ? doc.get<string>('КодДомофона')
+                  : '',
+                commentary: doc.get<string>('Комментарий')
+                  ? doc.get<string>('Комментарий')
+                  : '',
+                entrance: doc.get<string>('Подъезд')
+                  ? doc.get<string>('Подъезд')
+                  : '',
+                floor: doc.get<string>('Этаж') ? doc.get<string>('Этаж') : '',
+              };
+              list.push(newAddress);
+            });
+            dispatch(setAddresses(list));
+          })
+          .catch(er => console.log('er', er));
+      }
+
       firestore()
         .collection('Акции')
         .get()
