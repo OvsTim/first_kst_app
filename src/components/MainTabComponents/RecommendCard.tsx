@@ -68,6 +68,7 @@ export function RecommendCard(props: Props) {
               width: width / 2 - 18,
               marginRight: 18,
               borderRadius: 11,
+              marginBottom: 18,
             }}
           />
           <View>

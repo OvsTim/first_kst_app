@@ -1,4 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {BasketItem} from './BasketDataReducer';
+import {Address} from '../API';
 
 export interface Product {
   id: string;
@@ -19,6 +21,36 @@ export interface Category {
   name: string;
   fire: boolean;
   order: number;
+}
+
+export type OrderPaymentType = 'CASH' | 'CARD' | 'KASPI';
+export type OrderDeliveryType = 'PICKUP' | 'DELIVERY';
+
+export type OrderStatus =
+  | 'IS_NEW' //оформлен
+  | 'PROCESSING' //принят в обработку
+  | 'COOKING' //готовим
+  | 'DELIVER' //Курьер в пути
+  | 'SUCCESS' //Заказ успешно доставлен или успешно получен
+  | 'CANCELLED' //Отменен
+  | 'READY'; //готово к выдаче
+
+export interface Order {
+  id: string; //внутренний идшник для базы
+  public_id: number; //внешний идшник для пользователя
+  payment_type: OrderPaymentType; //тип оплаты
+  product: Array<BasketItem>; //список продуктов(внутри объект продукта и количество)
+  delivery_type: OrderDeliveryType; //тип доставки
+  active: boolean; //является ли этот заказ активным (выводить его в профиле)
+  address?: Address; //адрес доставки (если OrderDeliveryType === DELIVERY)
+  restaurant: string; //как то поформатированный адрес ресторана
+  sdacha?: number; //сдача (если OrderPaymentType === CASH)
+  statuses: Record<OrderStatus, string>;
+  //история статусов,грубо говоря список статусов и времени. если что то не произошло,
+  //то время пустое, иначе пишем там часы и минуты
+  mark: number; //оценка (0-5)
+  commentary: string; //комментарий
+  user_id: string; //ид юзера, который заказал
 }
 
 interface ProductsData {

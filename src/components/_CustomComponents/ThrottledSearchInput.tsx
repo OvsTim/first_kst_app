@@ -113,12 +113,25 @@ export default function ThrottledSearchInput(props: Props) {
         },
         props.styleContainer,
       ]}>
+      <Image
+        style={{
+          position: 'absolute',
+          paddingHorizontal: 12,
+          left: 5,
+          justifyContent: 'center',
+          width: 15,
+          height: 15,
+          tintColor: 'gray',
+        }}
+        source={require('../../assets/magnifyingglass.png')}
+        resizeMode={'contain'}
+      />
       <TextInput
         style={[
           {
             alignSelf: 'center',
             width: '100%',
-            paddingRight: 12,
+            paddingRight: 30,
             paddingLeft: 30,
             fontSize: 17,
             paddingVertical: 0,
@@ -137,7 +150,30 @@ export default function ThrottledSearchInput(props: Props) {
         value={value}
         underlineColorAndroid={'rgba(0,0,0,0)'}
       />
-      {renderSearchIcon()}
+      {value.length > 0 && (
+        <Pressable
+          onPress={() => {
+            setValue('');
+          }}
+          style={{
+            position: 'absolute',
+            paddingHorizontal: 12,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            justifyContent: 'center',
+          }}>
+          <Image
+            style={{
+              width: 15,
+              height: 15,
+              tintColor: 'gray',
+            }}
+            source={require('../../assets/clear_ios.jpg')}
+          />
+        </Pressable>
+      )}
+      {/*{renderSearchIcon()}*/}
     </View>
   );
 }

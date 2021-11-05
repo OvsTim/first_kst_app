@@ -426,6 +426,7 @@ export default function SelectShopScreen({navigation, route}: Props) {
           backgroundColor={'#7676801F'}
           selectedIndex={indexTab}
           onChange={event => {
+            setShopIndex(-1);
             setIndexTab(event.nativeEvent.selectedSegmentIndex);
           }}
           // styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}

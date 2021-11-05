@@ -23,7 +23,7 @@ import {Restaraunt} from '../../API';
 import {isOutOfStock} from '../../utils/productUtils';
 import {ProductCountButton} from '../MainTabComponents/ProductCountButton';
 import {BasketItem, plusProduct} from '../../redux/BasketDataReducer';
-
+import GestureRecognizer from 'react-native-swipe-gestures';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Product'>;
   route: RouteProp<AppStackParamList, 'Product'>;
@@ -316,7 +316,13 @@ export default function ProductScreen({navigation, route}: Props) {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <GestureRecognizer
+      onSwipeDown={_ => navigation.goBack()}
+      config={{
+        velocityThreshold: 0.3,
+        directionalOffsetThreshold: 80,
+      }}
+      style={{flex: 1}}>
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={{
@@ -335,33 +341,9 @@ export default function ProductScreen({navigation, route}: Props) {
 
         {product.description?.toString() !== '' && renderDescription()}
 
-        {!isOutOfStock(activeShop, product) ? (
-          renderCount()
-        ) : (
-          <View
-            style={{
-              alignSelf: 'flex-end',
-              marginRight: 26,
-              borderRadius: 26 / 2,
-              height: 26,
-              backgroundColor: '#F3F3F7',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 9,
-            }}>
-            <StyledText
-              style={{
-                marginHorizontal: 12,
-                fontWeight: '500',
-                fontSize: 12,
-                color: '#5A5858',
-              }}>
-              Будет позже
-            </StyledText>
-          </View>
-        )}
+        {!isOutOfStock(activeShop, product) && renderCount()}
       </ScrollView>
       {renderBottomButton()}
-    </View>
+    </GestureRecognizer>
   );
 }

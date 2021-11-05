@@ -21,6 +21,7 @@ import {ImageMap} from '../../redux/UserDataSlice';
 import {useFocusEffect} from '@react-navigation/native';
 import {Restaraunt} from '../../API';
 import {RecommendCard} from './RecommendCard';
+import auth from '@react-native-firebase/auth';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -293,7 +294,11 @@ export default function BasketScreen({navigation}: Props) {
           <BaseButton
             text={'Оформить заказ на ' + getTotalPrice() + ' ' + TENGE_LETTER}
             onPress={() => {
-              navigation.navigate('OrderDelivery');
+              if (auth().currentUser?.displayName !== null) {
+                navigation.navigate('OrderDelivery');
+              } else {
+                navigation.navigate('EnterPhone');
+              }
             }}
           />
           <View style={{height: 20}} />

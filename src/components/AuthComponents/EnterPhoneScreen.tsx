@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   Pressable,
   StatusBar,
@@ -12,6 +13,7 @@ import {AppStackParamList} from '../../navigation/AppNavigator';
 import {getFontName, withFont} from '../_CustomComponents/HOC/withFont';
 import BaseButton from '../_CustomComponents/BaseButton';
 import TextInputMask from 'react-native-text-input-mask';
+import firestore from '@react-native-firebase/firestore';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EnterPhone'>;
@@ -21,6 +23,7 @@ export default function EnterPhoneScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const [phone, setPhone] = useState<string>('');
   const [formattedPhone, setFormattedPhone] = useState<string>('');
+  const [blacklist, setBlacklist] = useState<Array<string>>([]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -44,6 +47,20 @@ export default function EnterPhoneScreen({navigation}: Props) {
       ),
     });
   }, [navigation]);
+
+  useEffect(() => {
+    firestore()
+      .collection('Черный список')
+      .doc('Список')
+      .get()
+      .then(res => {
+        setBlacklist(
+          res.get<Array<string>>('Телефоны')
+            ? res.get<Array<string>>('Телефоны')
+            : [],
+        );
+      });
+  }, []);
 
   return (
     <View
@@ -118,7 +135,9 @@ export default function EnterPhoneScreen({navigation}: Props) {
           active={phone.length === 10}
           text={'Продолжить'}
           onPress={() => {
-            if (phone.length === 10) {
+            if (blacklist.includes('+7' + phone)) {
+              Alert.alert('Ошибка', 'Данный телефон находится в черном списке');
+            } else if (phone.length === 10) {
               navigation.navigate('EnterCode', {
                 phone: '+7' + phone,
                 formattedPhone,
