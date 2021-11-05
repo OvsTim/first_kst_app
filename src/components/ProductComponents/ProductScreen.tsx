@@ -61,6 +61,9 @@ export default function ProductScreen({navigation, route}: Props) {
   const count: number = basket.filter(it => it.item.id === product.id)[0]
     ? basket.filter(it => it.item.id === product.id)[0].count
     : 0;
+  const productsMap: Record<string, Product> = useSelector(
+    (state: RootState) => state.products.products,
+  );
   function renderTopImage() {
     return (
       <>
@@ -306,6 +309,12 @@ export default function ProductScreen({navigation, route}: Props) {
           onPress={() => {
             if (count === 0 && !isOutOfStock(activeShop, product)) {
               dispatch(plusProduct(product));
+              if (
+                basket.filter(it => it.item.name === 'Персональный набор')
+                  .length === 0
+              ) {
+                dispatch(plusProduct(productsMap['Персональный набор']));
+              }
             }
 
             navigation.goBack();

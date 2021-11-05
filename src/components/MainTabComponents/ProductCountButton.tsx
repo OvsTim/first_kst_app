@@ -49,7 +49,9 @@ export function ProductCountButton(props: Props) {
   const count: number = basket.filter(it => it.item.id === product.id)[0]
     ? basket.filter(it => it.item.id === product.id)[0].count
     : 0;
-
+  const productsMap: Record<string, Product> = useSelector(
+    (state: RootState) => state.products.products,
+  );
   if (count === 0 && isOutOfStock(activeShop, product)) {
     return (
       <View
@@ -78,7 +80,20 @@ export function ProductCountButton(props: Props) {
   ) {
     return (
       <Pressable
-        onPress={() => dispatch(plusProduct(product))}
+        onPress={() => {
+          //todo:перекостылить с боевыми данными
+          if (product.category !== 'Категории/Сеты') {
+            dispatch(plusProduct(product));
+          } else {
+            dispatch(plusProduct(product));
+            if (
+              basket.filter(it => it.item.name === 'Персональный набор')
+                .length === 0
+            ) {
+              dispatch(plusProduct(productsMap['Персональный набор']));
+            }
+          }
+        }}
         android_ripple={{color: 'gray', radius: 200}}
         style={{
           height: 26,
