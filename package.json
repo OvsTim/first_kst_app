@@ -36,6 +36,7 @@
     "react": "17.0.1",
     "react-i18next": "^11.8.10",
     "react-native": "0.64.0",
+    "react-native-animated-colors": "^1.0.5",
     "react-native-collapsible": "^1.6.0",
     "react-native-color-matrix-image-filters": "^5.2.10",
     "react-native-device-info": "^8.4.0",

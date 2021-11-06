@@ -31,6 +31,7 @@ import {RootState} from '../../redux';
 import {Address, Restaraunt} from '../../API';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import dayjs from 'dayjs';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -103,17 +104,19 @@ export default function OrderDeliveryScreen({navigation}: Props) {
 
     if (orderDeliveryType === 'PICKUP') {
       statusesArray = [
-        {status: 'IS_NEW', time: ''},
+        {status: 'IS_NEW', time: dayjs(new Date()).format().toString()},
         {status: 'PROCESSING', time: ''},
         {status: 'COOKING', time: ''},
         {status: 'READY', time: ''},
+        {status: 'SUCCESS', time: ''},
       ];
     } else {
       statusesArray = [
-        {status: 'IS_NEW', time: ''},
+        {status: 'IS_NEW', time: dayjs(new Date()).format().toString()},
         {status: 'PROCESSING', time: ''},
         {status: 'COOKING', time: ''},
         {status: 'DELIVER', time: ''},
+        {status: 'SUCCESS', time: ''},
       ];
     }
 

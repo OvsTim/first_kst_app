@@ -37,3 +37,22 @@ export function getIndexByStatus(status: OrderStatus) {
       return 3;
   }
 }
+
+export function getDescByStatus(status: OrderStatus) {
+  switch (status) {
+    case 'IS_NEW':
+      return 'Заказ оформлен';
+    case 'PROCESSING':
+      return 'Принят в обработку';
+    case 'COOKING':
+      return 'Готовим';
+    case 'DELIVER':
+      return 'Курьер в пути';
+    case 'SUCCESS':
+      return 'Заказ получен';
+    case 'CANCELLED':
+      return 'Отменен';
+    case 'READY':
+      return 'Заказ готов к выдаче';
+  }
+}
