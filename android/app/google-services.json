@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "164585661216-0bc1u6k74u71hf3if39g4s747tovfr87.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "first.kst",
+            "certificate_hash": "46554fbc1f1a7231f54e106814237fcc494927b7"
+          }
+        },
+        {
           "client_id": "164585661216-9q8f2pkbr6s74ismkputqhrqu0chi6vg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

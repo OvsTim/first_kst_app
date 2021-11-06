@@ -19,13 +19,15 @@ import {RouteProp} from '@react-navigation/native';
 // @ts-ignore
 import auth, {
   // @ts-ignore
-
   ConfirmationResult,
   // @ts-ignore
   UserCredential,
+  // @ts-ignore
+  User,
 } from '@react-native-firebase/auth';
 // @ts-ignore
 import {useSmsUserConsent} from '@eabdullazyanov/react-native-sms-user-consent';
+
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EnterCode'>;
   route: RouteProp<AppStackParamList, 'EnterCode'>;
@@ -97,6 +99,22 @@ export default function EnterCodeScreen({navigation, route}: Props) {
       setCode(retrievedCode);
     }
   }, [retrievedCode]);
+
+  function onAuthStateChanged(user: User | null) {
+    if (user && !user.displayName) {
+      navigation.navigate('EnterName');
+    } else {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      });
+    }
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
 
   useEffect(() => {
     if (code.length === 6 && confirm) {

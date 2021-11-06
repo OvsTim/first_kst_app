@@ -96,9 +96,8 @@ export default function AppWithNavigationState() {
     });
   }, []);
 
-  // Handle user state changes
-  function onAuthStateChanged(user: User | null) {
-    if (user !== null) {
+  useEffect(() => {
+    if (auth().currentUser?.displayName) {
       setInitializing(false);
     } else {
       auth()
@@ -108,11 +107,6 @@ export default function AppWithNavigationState() {
           setInitializing(false);
         });
     }
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
   }, []);
 
   useEffect(() => {
