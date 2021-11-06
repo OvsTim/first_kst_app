@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StatusBar} from 'react-native';
+import {StatusBar, Dimensions} from 'react-native';
 import {vScale, hScale, statusBarHeight, window} from '../../utils/scaling';
 import Modal from 'react-native-modal';
 
@@ -21,7 +21,7 @@ export class DialogView extends Component {
         backdropTransitionOutTiming={0}
         isVisible={isVisible}
         deviceWidth={window().width}
-        deviceHeight={window().height}
+        deviceHeight={Dimensions.get('screen').height}
         swipeDirection={swipeDirection}
         style={{
           margin: 0,
