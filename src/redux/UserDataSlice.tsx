@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Address, Restaraunt, Stock} from '../API';
-import {OrderDeliveryType} from './ProductsDataSlice';
+import {Order, OrderDeliveryType} from './ProductsDataSlice';
 
 interface UserState {
   token: string;
@@ -17,6 +17,7 @@ interface UserState {
   orderDeliveryType: OrderDeliveryType;
   addressess: Array<Address>;
   currentAddress?: Address;
+  orders: Array<Order>;
 }
 
 export type ImageMap = Record<string, string>;
@@ -32,6 +33,8 @@ const initialState = {
   firebase_token: '',
   activeShop: '',
   orderDeliveryType: 'DELIVERY',
+  orders: [],
+  addressess: [],
   shops: Array(5).fill({
     id: '',
     address: '',
@@ -82,6 +85,9 @@ const dataSlice = createSlice({
     setFirebaseToken(state, action: PayloadAction<string>) {
       state.firebase_token = action.payload || '';
     },
+    setOrders(state, action: PayloadAction<Array<Order>>) {
+      state.orders = action.payload;
+    },
     setShops(state, action: PayloadAction<Array<Restaraunt>>) {
       state.shops = action.payload;
     },
@@ -96,6 +102,11 @@ const dataSlice = createSlice({
     },
     setCurrentAddress(state, action: PayloadAction<Address | undefined>) {
       state.currentAddress = action.payload;
+    },
+    logout(state, action: PayloadAction<undefined>) {
+      state.currentAddress = undefined;
+      state.orders = [];
+      state.addressess = [];
     },
     // setData(
     //   state,
@@ -127,5 +138,7 @@ export const {
   setShops,
   setStocks,
   setCurrentAddress,
+  setOrders,
+  logout,
 } = dataSlice.actions;
 export default dataSlice.reducer;

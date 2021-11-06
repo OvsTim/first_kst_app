@@ -19,6 +19,8 @@ import firestore, {Timestamp} from '@react-native-firebase/firestore';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import * as Progress from 'react-native-progress';
+import {useAppDispatch} from '../../redux';
+import {logout} from '../../redux/UserDataSlice';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Settings'>;
 };
@@ -26,6 +28,7 @@ const StyledText = withFont(Text);
 const Button = withPressable(View);
 export default function SettingsScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
+  const dispatch = useAppDispatch();
   const dateRef = useRef<InputRefType>(null);
   const nameRef = useRef<InputRefType>(null);
   const emailRef = useRef<InputRefType>(null);
@@ -288,6 +291,7 @@ export default function SettingsScreen({navigation}: Props) {
                         .signInAnonymously()
                         .then(_ => {
                           navigation.goBack();
+                          dispatch(logout());
                         });
                     })
                     .catch(er => {

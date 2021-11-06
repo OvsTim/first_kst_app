@@ -187,7 +187,11 @@ export default function ProfileScreen({navigation}: Props) {
         <View style={{height: 25}} />
         <View style={{flexDirection: 'row'}}>
           <View style={{width: 18}} />
-          <Button onPress={() => {}} containerStyle={{}}>
+          <Button
+            onPress={() => {
+              navigation.navigate('ChangeRestaraunt', {activeTab: 0});
+            }}
+            containerStyle={{}}>
             <View
               style={{
                 flexDirection: 'row',

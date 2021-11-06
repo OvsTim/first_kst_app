@@ -50,7 +50,9 @@ export default function BonucesStocksScreen(props: Props) {
       <BaseButton
         width={width - 66 - 67}
         text={'Перейти в меню'}
-        onPress={() => {}}
+        onPress={() => {
+          props.navigation.navigate('Menu');
+        }}
       />
     </View>
   );

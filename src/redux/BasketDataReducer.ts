@@ -53,6 +53,9 @@ const basketDataSlice = createSlice({
         obj => obj.item.id !== action.payload.id,
       );
     },
+    setBasket(state, action: PayloadAction<Array<BasketItem>>) {
+      state.basket = action.payload;
+    },
     clearBasket(state) {
       state.basket = [];
     },
@@ -69,5 +72,6 @@ export const {
   deleteProduct,
   minusProduct,
   clearBasket,
+  setBasket,
 } = basketDataSlice.actions;
 export default basketDataSlice.reducer;

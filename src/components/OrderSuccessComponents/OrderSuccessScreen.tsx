@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StatusBar, Text, useWindowDimensions, View} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {useBackHandler} from '@react-native-community/hooks';
+import {useAppDispatch} from '../../redux';
+import {clearBasket} from '../../redux/BasketDataReducer';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderSuccess'>;
@@ -13,10 +15,17 @@ type Props = {
 export default function OrderSuccessScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
+  const dispatch = useAppDispatch();
+
   useBackHandler(() => {
     // handle it
     return true;
   });
+
+  useEffect(() => {
+    dispatch(clearBasket());
+  }, []);
+
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
       <StatusBar

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -16,14 +16,82 @@ import DropShadow from 'react-native-drop-shadow';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import {
+  Order,
+  OrderDeliveryType,
+  OrderPaymentType,
+  OrderStatus,
+} from '../../redux/ProductsDataSlice';
+import {RootState, useAppDispatch} from '../../redux';
+import {setOrders} from '../../redux/UserDataSlice';
+import {Restaraunt} from '../../API';
+import {useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import {setBasket} from '../../redux/BasketDataReducer';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'History'>;
 };
 const StyledText = withFont(Text);
 const Button = withPressable(View);
-export default function HistoryScreen({}: Props) {
+export default function HistoryScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
-  const [auth, setAuth] = useState<boolean>(false);
+  const [authorized, setAuthorized] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const orders: Array<Order> = useSelector(
+    (state: RootState) => state.data.orders,
+  );
+
+  useEffect(() => {
+    dayjs.locale('ru');
+    if (auth().currentUser?.displayName) {
+      setAuthorized(true);
+      firestore()
+        .collection('Заказы')
+        .where('ИДПользователя', '==', auth().currentUser?.uid)
+        .where('ТекущийСтатус', '==', 'SUCCESS')
+        // .orderBy('ДатаЗаказа', 'asc')
+        .get()
+        .then(res => {
+          console.log('res', res);
+          let list: Array<Order> = [];
+
+          res.docs.forEach(doc => {
+            let order: Order = {
+              id: doc.id,
+              public_id: doc.get<number>('НомерЗаказа'),
+              currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
+              user_id: auth().currentUser?.uid,
+              price: doc.get<number>('Цена'),
+              mark: 0,
+              commentary: '',
+              sdacha: doc.get<number>('Сдача'),
+              restaurant: doc.get<string>('Ресторан'),
+              active: true,
+              payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
+              delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
+              address: {
+                id: doc.get<string>('Адрес.id'),
+                house: doc.get<string>('Адрес.house'),
+                street: doc.get<string>('Адрес.street'),
+                code: doc.get<string>('Адрес.code'),
+                name: doc.get<string>('Адрес.name'),
+                flat: doc.get<string>('Адрес.flat'),
+                commentary: doc.get<string>('Адрес.commentary'),
+                floor: doc.get<string>('Адрес.floor'),
+                entrance: doc.get<string>('Адрес.entrance'),
+              },
+              statuses: doc.get<Array<any>>('Статусы'),
+              products: doc.get<Array<any>>('Продукты'),
+            };
+            list.push(order);
+          });
+          dispatch(setOrders(list));
+        })
+        .catch(er => console.log('er', er));
+    }
+  }, []);
 
   function renderEmpty() {
     return (
@@ -63,13 +131,14 @@ export default function HistoryScreen({}: Props) {
         <BaseButton
           width={width - 66 - 67}
           text={'Перейти в меню'}
-          onPress={() => setAuth(true)}
+          onPress={() => navigation.navigate('Menu')}
         />
       </View>
     );
   }
 
-  function renderItem() {
+  function renderItem(order: Order) {
+    console.log('order', order);
     return (
       <DropShadow
         style={{
@@ -98,7 +167,7 @@ export default function HistoryScreen({}: Props) {
                 fontSize: 12,
                 lineHeight: 14,
               }}>
-              № 2904
+              {'№ ' + order.public_id.toString()}
             </StyledText>
             <StyledText
               style={{
@@ -112,7 +181,7 @@ export default function HistoryScreen({}: Props) {
                 borderBottomWidth: 1,
                 borderBottomColor: '#F2F2F6',
               }}>
-              9 октября 2021 г. в 13:12
+              {dayjs(order.statuses[0].time).format('DD MMMM YYYY г. в HH:mm')}
             </StyledText>
             <StyledText
               style={{
@@ -123,7 +192,9 @@ export default function HistoryScreen({}: Props) {
                 fontSize: 12,
                 lineHeight: 14,
               }}>
-              На доставку / на самовывоз
+              {order.delivery_type === 'DELIVERY'
+                ? 'На доставку'
+                : 'На самовывоз'}
             </StyledText>
             <StyledText
               style={{
@@ -138,20 +209,22 @@ export default function HistoryScreen({}: Props) {
                 borderBottomWidth: 1,
                 borderBottomColor: '#F2F2F6',
               }}>
-              Костанай, микрорайон Юбилейный, 39
+              {order.delivery_type === 'PICKUP'
+                ? order.restaurant
+                : order.address?.street +
+                  ' ' +
+                  order.address?.house +
+                  ', ' +
+                  order.address?.flat}
             </StyledText>
           </Pressable>
           <FlatList
             style={{paddingLeft: 27, marginVertical: 10}}
-            data={[
-              'gs://firstkst.appspot.com/images/eggs.png',
-              'gs://firstkst.appspot.com/images/nabor.png',
-              'gs://firstkst.appspot.com/images/pancaces.png',
-              'gs://firstkst.appspot.com/images/porridge.png',
-            ]}
+            data={order.products.map(it => it.item.picture_url)}
             horizontal
             showsHorizontalScrollIndicator={false}
             bounces={false}
+            keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={() => <View style={{width: 50}} />}
             renderItem={({item}) => (
               <>
@@ -203,12 +276,17 @@ export default function HistoryScreen({}: Props) {
                 lineHeight: 14,
                 fontWeight: '700',
               }}>
-              {'2 000 ' + TENGE_LETTER}
+              {order.price + ' ' + TENGE_LETTER}
             </StyledText>
           </View>
           <View style={{height: 10}} />
           <View style={{borderRadius: 15, overflow: 'hidden'}}>
-            <Button onPress={() => {}} containerStyle={{}}>
+            <Button
+              onPress={() => {
+                dispatch(setBasket(order.products));
+                navigation.navigate('Basket');
+              }}
+              containerStyle={{}}>
               <View style={{flexDirection: 'row', marginVertical: 20}}>
                 <Image
                   style={{width: 16, height: 16}}
@@ -243,12 +321,13 @@ export default function HistoryScreen({}: Props) {
         />
         <FlatList
           contentContainerStyle={{width, alignItems: 'center'}}
-          data={[1]}
-          renderItem={() => renderItem()}
+          data={orders}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => renderItem(item)}
         />
       </View>
     );
   }
 
-  return auth ? renderList() : renderEmpty();
+  return authorized ? renderList() : renderEmpty();
 }

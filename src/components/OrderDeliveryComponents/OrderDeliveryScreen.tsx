@@ -94,7 +94,6 @@ export default function OrderDeliveryScreen({navigation}: Props) {
   }
 
   function handlePayment() {
-    navigation.navigate('OrderSuccess');
     if (orderDeliveryType === 'DELIVERY' && !currentAddress) {
       Alert.alert('Сообщение', 'Укажите адрес доставки');
       return;
@@ -144,6 +143,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     firestore()
       .collection('Заказы')
       .add({
+        ДатаЗаказа: new firestore.Timestamp(new Date()?.getTime() / 1000, 0),
         ТекущийСтатус: order.currentStatus,
         Активен: true,
         Сдача: order.sdacha,
