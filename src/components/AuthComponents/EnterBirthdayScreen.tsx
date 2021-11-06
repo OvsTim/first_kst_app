@@ -146,11 +146,18 @@ export default function EnterBirthdayScreen({navigation}: Props) {
         }}
       />
       <DateTimePickerModal
+        minimumDate={new Date(1940, 1, 1)}
         date={new Date(1990, 1, 1)}
         display={'spinner'}
         confirmTextIOS={'Выбрать'}
         cancelTextIOS={'Отменить'}
-        maximumDate={new Date()}
+        maximumDate={
+          new Date(
+            new Date().getFullYear() - 12,
+            new Date().getMonth(),
+            new Date().getDate(),
+          )
+        }
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}

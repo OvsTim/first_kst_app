@@ -80,47 +80,53 @@ export default function ProfileScreen({navigation}: Props) {
           setAddressLength(res.size);
         })
         .catch(er => console.log('er', er));
-
-      const subscriber = firestore()
-        .collection('Заказы')
-        .where('ИДПользователя', '==', auth().currentUser?.uid)
-        .where('Активен', '==', true)
-        .onSnapshot(snap => {
-          if (!snap) {
-            // setOrderList([]);
-          } else {
-            let orders: Array<Order> = [];
-            console.log('snap.docs', snap.docs);
-            snap.docs.forEach(doc => {
-              let order: Order = {
-                id: doc.id,
-                public_id: doc.get<number>('НомерЗаказа'),
-                currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
-                user_id: auth().currentUser?.uid,
-                price: doc.get<number>('Цена'),
-                mark: 0,
-                commentary: '',
-                sdacha: doc.get<number>('Сдача'),
-                restaurant: doc.get<string>('Ресторан'),
-                active: true,
-                payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
-                delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
-                address: undefined,
-                statuses: doc.get<Array<any>>('Статусы'),
-                products: [],
-              };
-              orders.push(order);
-            });
-            console.log('orders', orders);
-
-            setOrderList(orders);
-          }
-        });
-
-      // Stop listening for updates when no longer required
-      return () => subscriber();
     }, [navigation]),
   );
+
+  useEffect(() => {
+    if (!authorized) {
+      return;
+    }
+
+    const subscriber = firestore()
+      .collection('Заказы')
+      .where('ИДПользователя', '==', auth().currentUser?.uid)
+      .where('Активен', '==', true)
+      .onSnapshot(snap => {
+        if (!snap) {
+          // setOrderList([]);
+        } else {
+          let orders: Array<Order> = [];
+          console.log('snap.docs', snap.docs);
+          snap.docs.forEach(doc => {
+            let order: Order = {
+              id: doc.id,
+              public_id: doc.get<number>('НомерЗаказа'),
+              currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
+              user_id: auth().currentUser?.uid,
+              price: doc.get<number>('Цена'),
+              mark: 0,
+              commentary: '',
+              sdacha: doc.get<number>('Сдача'),
+              restaurant: doc.get<string>('Ресторан'),
+              active: true,
+              payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
+              delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
+              address: undefined,
+              statuses: doc.get<Array<any>>('Статусы'),
+              products: [],
+            };
+            orders.push(order);
+          });
+          console.log('orders', orders);
+
+          setOrderList(orders);
+        }
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
+  }, [authorized]);
 
   function renderUnauthorized() {
     return (
