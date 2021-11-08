@@ -81,6 +81,10 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   }, []);
 
   useEffect(() => {
+    setTimeout(() => codeRef.current?.focus(), 150);
+  }, []);
+
+  useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {});
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       setTimeout(() => {
