@@ -117,7 +117,7 @@ export default function AppWithNavigationState() {
     const subscriber = firestore()
       .collection('Рестораны')
       .onSnapshot(res => {
-        if (!res.empty) {
+        if (res && !res.empty) {
           let newList: Array<Restaraunt> = [];
           res.docs.forEach(rest => {
             let newRest: Restaraunt = {
