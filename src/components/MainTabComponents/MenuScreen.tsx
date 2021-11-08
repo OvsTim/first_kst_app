@@ -432,7 +432,7 @@ export default function MenuScreen({navigation}: Props) {
                   fontSize: 15,
                   color: 'black',
                 }}>
-                {activeShop.address}
+                {activeShop.name}
               </StyledText>
               <Image
                 style={{
