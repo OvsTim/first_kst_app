@@ -50,7 +50,7 @@ export default function ActiveOrderCard(props: Props) {
         <Pressable
           style={{width: width - 34, height: 127, borderRadius: 15}}
           onPress={() => navigation.navigate('OrderInfo', {order: props.order})}
-          android_ripple={{color: 'gray', radius: 200}}>
+          android_ripple={{color: 'lightgrey', radius: 200}}>
           <StyledText
             style={{
               marginTop: 24,

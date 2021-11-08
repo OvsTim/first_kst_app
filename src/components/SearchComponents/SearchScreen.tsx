@@ -73,7 +73,7 @@ export default function SearchScreen({navigation}: Props) {
         />
         <Pressable
           onPress={() => navigation.goBack()}
-          android_ripple={{color: 'gray', radius: 200}}
+          android_ripple={{color: 'lightgrey', radius: 200}}
           style={{
             width: 80,
             height: 40,

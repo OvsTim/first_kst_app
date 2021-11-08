@@ -47,7 +47,7 @@ export function ProductItem(props: Props) {
   return (
     <Pressable
       onPress={() => navigation.navigate('Product', {product})}
-      android_ripple={{color: 'gray', radius: 200}}
+      android_ripple={{color: 'lightgrey', radius: 200}}
       style={{width, height: 150}}>
       <View
         style={{

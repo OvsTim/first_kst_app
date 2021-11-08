@@ -37,7 +37,7 @@ export default function EnterPhoneScreen({navigation}: Props) {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            android_ripple={{color: 'gray', radius: 200}}>
+            android_ripple={{color: 'lightgrey', radius: 200}}>
             <Image
               style={{width: 20, height: 20}}
               source={require('../../assets/closeAuth.png')}

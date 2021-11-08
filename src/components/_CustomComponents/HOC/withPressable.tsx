@@ -6,6 +6,7 @@ import {
   StyleProp,
   ViewStyle,
   View,
+  ColorValue,
 } from 'react-native';
 import {withLoading} from './withLoading';
 
@@ -15,6 +16,7 @@ interface WithPressableProps {
   children?: React.ReactNode;
   containerStyle: StyleProp<ViewStyle> | ViewStyle;
   androidRippleRadius?: number;
+  androidRippleColor?: ColorValue;
 }
 
 interface Props extends WithPressableProps, ViewProps {}

@@ -259,7 +259,7 @@ export default function ProfileScreen({navigation}: Props) {
             borderBottomColor: '#F2F2F6',
           }}
           onPress={() => navigation.navigate('BonucesStocks')}
-          android_ripple={{color: 'gray', radius: 200}}>
+          android_ripple={{color: 'lightgrey', radius: 200}}>
           <View
             style={{
               flexDirection: 'row',
@@ -286,7 +286,7 @@ export default function ProfileScreen({navigation}: Props) {
             borderBottomColor: '#F2F2F6',
           }}
           onPress={() => navigation.navigate('DeliveryList')}
-          android_ripple={{color: 'gray', radius: 200}}>
+          android_ripple={{color: 'lightgrey', radius: 200}}>
           <View
             style={{
               flexDirection: 'row',
@@ -325,7 +325,7 @@ export default function ProfileScreen({navigation}: Props) {
             borderBottomColor: '#F2F2F6',
           }}
           onPress={() => navigation.navigate('History')}
-          android_ripple={{color: 'gray', radius: 200}}>
+          android_ripple={{color: 'lightgrey', radius: 200}}>
           <View
             style={{
               flexDirection: 'row',
