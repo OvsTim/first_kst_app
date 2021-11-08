@@ -228,7 +228,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                       fontWeight: '400',
                     }}>
                     {!currentAddress
-                      ? 'Укажите адрем доставки'
+                      ? 'Укажите адрес доставки'
                       : currentAddress.street +
                         ' ' +
                         currentAddress.house +

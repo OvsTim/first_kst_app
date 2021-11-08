@@ -160,7 +160,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   }, [code, confirm]);
 
   function startShake() {
-    Vibration.vibrate(400);
+    // Vibration.vibrate(400);
     Animated.loop(
       Animated.sequence([
         Animated.timing(shakeAnimation, {
