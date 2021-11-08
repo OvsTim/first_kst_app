@@ -101,6 +101,11 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   }, [retrievedCode]);
 
   function onAuthStateChanged(user: User | null) {
+    console.log('useronAuthStateChanged', user);
+    if (user && user.phoneNumber === null) {
+      return;
+    }
+
     if (user && !user.displayName) {
       navigation.navigate('EnterName');
     } else {

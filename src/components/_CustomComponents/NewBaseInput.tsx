@@ -98,6 +98,7 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
     textContentType,
     onSubmitEditing,
     placeholderTextColor,
+    editable,
   }: Props,
   ref,
 ) => {
@@ -172,6 +173,7 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
         placeholderTextColor={
           placeholderTextColor ? placeholderTextColor : '#A0A0A0'
         }
+        editable={editable}
         placeholder={placeholder}
         value={text}
         onChangeText={it => {
