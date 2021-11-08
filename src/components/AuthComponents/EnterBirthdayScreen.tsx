@@ -31,6 +31,7 @@ export default function EnterBirthdayScreen({navigation}: Props) {
   );
   const [date, setDate] = useState<Date | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -38,13 +39,23 @@ export default function EnterBirthdayScreen({navigation}: Props) {
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
+    setIsFirstTime(false);
   };
 
-  const handleConfirm = (date: any) => {
-    if (date) {
+  const handleConfirm = (date: Date | null) => {
+    if (date && !isFirstTime) {
+      setDate(date);
+    } else if (
+      date &&
+      isFirstTime &&
+      date.getFullYear() !== 1990 &&
+      date.getMonth() !== 2 &&
+      date.getDate() !== 1
+    ) {
       setDate(date);
     }
 
+    setIsFirstTime(false);
     hideDatePicker();
   };
 
