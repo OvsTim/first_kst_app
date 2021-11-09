@@ -21,6 +21,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import auth from '@react-native-firebase/auth';
 import {useAppDispatch} from '../../redux';
 import {setAddresses, setCurrentAddress} from '../../redux/UserDataSlice';
+import {hScale, vScale} from '../../utils/scaling';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'DeliveryList'>;
   route: RouteProp<AppStackParamList, 'DeliveryList'>;
@@ -101,7 +102,7 @@ export default function DeliveryListScreen({navigation, route}: Props) {
     return (
       <>
         <Image
-          style={{width: width - 30, height: 300}}
+          style={{width: hScale(375), height: vScale(279)}}
           source={require('../../assets/ph_delivery.png')}
         />
         <StyledText

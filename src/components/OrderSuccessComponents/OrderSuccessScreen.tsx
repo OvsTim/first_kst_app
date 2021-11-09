@@ -7,6 +7,7 @@ import BaseButton from '../_CustomComponents/BaseButton';
 import {useBackHandler} from '@react-native-community/hooks';
 import {useAppDispatch} from '../../redux';
 import {clearBasket} from '../../redux/BasketDataReducer';
+import {hScale, vScale} from '../../utils/scaling';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderSuccess'>;
@@ -34,8 +35,8 @@ export default function OrderSuccessScreen({navigation}: Props) {
         barStyle="dark-content"
       />
       <Image
-        style={{width: width, height: 300, marginTop: 75}}
-        source={require('../../assets/rafiki.png')}
+        style={{width: hScale(394), height: vScale(298), marginTop: vScale(75)}}
+        source={require('../../assets/ph_success.png')}
       />
       <StyledText
         style={{

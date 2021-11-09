@@ -4,6 +4,7 @@ import React from 'react';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
 import {withFont} from '../_CustomComponents/HOC/withFont';
+import {hScale, vScale} from '../../utils/scaling';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'BonucesStocks'>;
@@ -21,7 +22,7 @@ export default function BonucesStocksScreen(props: Props) {
         barStyle="dark-content"
       />
       <Image
-        style={{width, height: 300}}
+        style={{width: hScale(408), height: vScale(301)}}
         source={require('../../assets/ph_stocks.png')}
       />
       <StyledText

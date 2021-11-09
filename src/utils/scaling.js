@@ -17,13 +17,14 @@ Dimensions.addEventListener('change', e => {
   if (height !== 0) {
     real_height = height;
   }
+
   if (width !== 0) {
     real_width = width;
   }
 });
 
-const guidelineBaseWidth = 360;
-const guidelineBaseHeight = 640;
+const guidelineBaseWidth = 414;
+const guidelineBaseHeight = 896;
 
 function checkIphoneX(w) {
   if (Platform.OS === 'ios') {
@@ -32,6 +33,7 @@ function checkIphoneX(w) {
       (w === XSMAX_WIDTH && height === XSMAX_HEIGHT)
     );
   }
+
   return false;
 }
 

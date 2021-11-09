@@ -22,6 +22,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {Restaraunt} from '../../API';
 import {RecommendCard} from './RecommendCard';
 import auth from '@react-native-firebase/auth';
+import {hScale, vScale} from '../../utils/scaling';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -187,7 +188,7 @@ export default function BasketScreen({navigation}: Props) {
           barStyle="dark-content"
         />
         <Image
-          style={{width: width - 30, height: 300}}
+          style={{width: hScale(380), height: vScale(280)}}
           source={require('../../assets/ph_basket.png')}
         />
         <StyledText

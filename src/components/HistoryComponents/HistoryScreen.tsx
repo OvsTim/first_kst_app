@@ -32,6 +32,7 @@ import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import {setBasket} from '../../redux/BasketDataReducer';
 import DialogView from '../_CustomComponents/DialogView';
+import {hScale, vScale} from '../../utils/scaling';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'History'>;
 };
@@ -108,7 +109,7 @@ export default function HistoryScreen({navigation}: Props) {
           barStyle="dark-content"
         />
         <Image
-          style={{width: width - 30, height: 300}}
+          style={{width: hScale(381), height: vScale(283)}}
           source={require('../../assets/ph_history.png')}
         />
         <StyledText

@@ -28,6 +28,7 @@ import {
   OrderStatus,
 } from '../../redux/ProductsDataSlice';
 import {getIndexByStatus} from '../../utils/ordersUtils';
+import {hScale, vScale} from '../../utils/scaling';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
@@ -137,7 +138,7 @@ export default function ProfileScreen({navigation}: Props) {
           barStyle="dark-content"
         />
         <Image
-          style={{width: width - 50, height: 300}}
+          style={{width: hScale(364), height: vScale(271)}}
           source={require('../../assets/ph_profile.png')}
         />
         <StyledText
