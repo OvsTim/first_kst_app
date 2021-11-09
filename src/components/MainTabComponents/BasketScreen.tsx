@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   Image,
+  Pressable,
   StatusBar,
   Text,
   useWindowDimensions,
@@ -12,17 +14,18 @@ import {AppStackParamList} from '../../navigation/AppNavigator';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
-import {BasketItem} from '../../redux/BasketDataReducer';
+import {BasketItem, deleteProduct} from '../../redux/BasketDataReducer';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../redux';
+import {RootState, useAppDispatch} from '../../redux';
 import {TENGE_LETTER} from './ProductItem';
 import {ProductCountButton} from './ProductCountButton';
-import {ImageMap} from '../../redux/UserDataSlice';
+import {ImageMap, setCurrentAddress} from '../../redux/UserDataSlice';
 import {useFocusEffect} from '@react-navigation/native';
 import {Restaraunt} from '../../API';
 import {RecommendCard} from './RecommendCard';
 import auth from '@react-native-firebase/auth';
 import {hScale, vScale} from '../../utils/scaling';
+import {SwipeListView} from 'react-native-swipe-list-view';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -31,6 +34,7 @@ type Props = {
 export default function BasketScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
+  const dispatch = useAppDispatch();
   const imagesMap: ImageMap = useSelector(
     (state: RootState) => state.data.images,
   );
@@ -61,21 +65,13 @@ export default function BasketScreen({navigation}: Props) {
 
   const [isVisible, setVisible] = useState<boolean>(true);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      // console.log('basket', basket);
-      if (basket.length > 0) {
-        StatusBar.setBackgroundColor('white');
-      } else {
-        StatusBar.setBackgroundColor('#f2f2f2');
-      }
-    }, [basket]),
-  );
-  useFocusEffect(
-    React.useCallback(() => {
-      setVisible(true);
-    }, []),
-  );
+  useEffect(() => {
+    if (basket.length > 0) {
+      StatusBar.setBackgroundColor('white');
+    } else {
+      StatusBar.setBackgroundColor('#f2f2f2');
+    }
+  }, [basket]);
 
   function getNumberOfCounts() {
     return basket.reduce((a, b) => +a + +b.count, 0);
@@ -109,7 +105,7 @@ export default function BasketScreen({navigation}: Props) {
 
   function renderBasketItem(basketItem: BasketItem) {
     return (
-      <View style={{width, marginTop: 15}}>
+      <View style={{width, height: 190, backgroundColor: 'white'}}>
         <View style={{flexDirection: 'row'}}>
           <View style={{width: 36}} />
           <Image
@@ -182,9 +178,9 @@ export default function BasketScreen({navigation}: Props) {
   if (basket.length === 0) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <FocusAwareStatusBar
+        <StatusBar
           translucent={false}
-          backgroundColor={basket.length === 0 ? '#f2f2f2' : 'white'}
+          backgroundColor={'#f2f2f2'}
           barStyle="dark-content"
         />
         <Image
@@ -230,13 +226,13 @@ export default function BasketScreen({navigation}: Props) {
           alignItems: 'flex-start',
           justifyContent: 'flex-start',
         }}>
-        <FocusAwareStatusBar
+        <StatusBar
           translucent={false}
           backgroundColor={'#f2f2f2'}
           barStyle="dark-content"
         />
 
-        <FlatList
+        <SwipeListView
           ListHeaderComponent={() => (
             <StyledText
               style={{
@@ -258,9 +254,33 @@ export default function BasketScreen({navigation}: Props) {
             </StyledText>
           )}
           contentContainerStyle={{paddingBottom: 150}}
-          keyExtractor={(_, index) => index.toString()}
+          // ListEmptyComponent={() => renderEmpty()}
           data={basket}
-          renderItem={({item}) => renderBasketItem(item)}
+          closeOnRowOpen={true}
+          closeOnRowPress={true}
+          renderHiddenItem={(data, rowMap) => (
+            <Pressable
+              android_ripple={{color: 'lightgrey', radius: 200}}
+              onPress={() => {
+                rowMap[basket.indexOf(data.item)].closeRow();
+                dispatch(deleteProduct(data.item.item));
+              }}
+              style={{
+                backgroundColor: 'red',
+                width: 70,
+                height: '100%',
+                position: 'absolute',
+                right: 0,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <StyledText
+                style={{color: 'white', fontSize: 12, fontWeight: '700'}}>
+                Удалить
+              </StyledText>
+            </Pressable>
+          )}
+          rightOpenValue={-70}
           ListFooterComponent={() =>
             activeShop.recommendations.length > 0 ? (
               <RecommendCard
@@ -278,6 +298,8 @@ export default function BasketScreen({navigation}: Props) {
               <View />
             )
           }
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => renderBasketItem(item)}
         />
         <View
           style={{
