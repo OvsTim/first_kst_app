@@ -22,7 +22,9 @@ const basketDataSlice = createSlice({
         let index = state.basket.findIndex(
           it => it.item.id === action.payload.id,
         );
-        state.basket[index].count = state.basket[index].count + 1;
+        if (state.basket[index].count < 30) {
+          state.basket[index].count = state.basket[index].count + 1;
+        }
       } else {
         state.basket.push({
           count: 1,
