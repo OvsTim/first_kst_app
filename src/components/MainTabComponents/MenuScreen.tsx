@@ -471,7 +471,7 @@ export default function MenuScreen({navigation}: Props) {
                   style={{
                     fontWeight: '400',
                     fontSize: 15,
-                    color: '#28B3C6',
+                    color: 'black',
                   }}>
                   {currentAddress.street +
                     ' ' +
@@ -494,7 +494,7 @@ export default function MenuScreen({navigation}: Props) {
               <Image
                 style={{
                   marginLeft: 10,
-                  tintColor: '#28B3C6',
+                  tintColor: currentAddress ? 'black' : '#28B3C6',
                   width: 12,
                   height: 6,
                   transform: [{rotate: '270deg'}],
