@@ -48,24 +48,11 @@ const Button = withPressable(View);
 
 export default function MenuScreen({navigation}: Props) {
   const HEADER_EXPANDED_HEIGHT = 350;
-  const HEADER_COLLAPSED_HEIGHT = 60;
 
   const onViewRef = useRef((info: {viewableItems: Array<ViewToken>}) => {
     if (info.viewableItems.length > 0) {
-      //костыль. на самом деле мы видим на 2 элемента раньше, если они есть.
-      // console.log('viewableItems', info.viewableItems);
-
-      let reallyFirstViewableItem =
-        info.viewableItems[0].index && info.viewableItems[0].index < 2
-          ? info.viewableItems[0].item
-          : products[
-              info.viewableItems[0].index ? info.viewableItems[0].index - 2 : 0
-            ];
-
-      // console.log('reallyFirstViewableItem', reallyFirstViewableItem);
-
       let cat_index = categories.findIndex(
-        it => reallyFirstViewableItem.category === 'Категории/' + it.id,
+        it => info.viewableItems[0].item.category === 'Категории/' + it.id,
       );
 
       // console.log('cat_index', cat_index);
@@ -85,24 +72,19 @@ export default function MenuScreen({navigation}: Props) {
           });
         }
       }
-    } else {
-      // setActiveCategory(0);
-      // flatlistCategoryRef.current?.scrollToOffset({
-      //   offset: 0,
-      //   animated: true,
-      // });
     }
   });
 
   const viewConfigRef = useRef({
     itemVisiblePercentThreshold: 100,
-    minimumViewTime: 400,
+    minimumViewTime: 200,
     waitForInteraction: true,
   });
   const {width} = useWindowDimensions();
   const dispatch = useAppDispatch();
   const flatlistref = useRef<FlatList>(null);
   const flatlistCategoryRef = useRef<FlatList>(null);
+  const mainflatlistRef = useRef<FlatList>(null);
   const active: string = useSelector(
     (state: RootState) => state.data.activeShop,
   );
@@ -115,7 +97,6 @@ export default function MenuScreen({navigation}: Props) {
   const currentAddress: Address | undefined = useSelector(
     (state: RootState) => state.data.currentAddress,
   );
-  const scrollY = new Animated.Value(0);
   const stocks: Array<Stock> = useSelector(
     (state: RootState) => state.data.stocks,
   );
@@ -133,11 +114,6 @@ export default function MenuScreen({navigation}: Props) {
   const products: Array<Product> = useSelector((state: RootState) =>
     state.products.productIds.map(it => productsMap[it]),
   );
-  const headerHeight = scrollY.interpolate({
-    inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-    outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
-    extrapolate: 'clamp',
-  });
 
   const [modalStock, setModalStock] = useState<Stock>({
     id: '',
@@ -148,6 +124,7 @@ export default function MenuScreen({navigation}: Props) {
   });
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [activeCategory, setActiveCategory] = useState<number>(0);
+  const [elevation, setElevation] = useState<number>(0);
 
   const activeShop: Restaraunt =
     shops.filter(value => value.id === active).length > 0
@@ -400,7 +377,6 @@ export default function MenuScreen({navigation}: Props) {
               dispatch(setOrderDeliveryType('PICKUP'));
             }
           }}
-          // styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}
           values={['На доставку', 'Самовывоз']}
         />
         <View
@@ -568,14 +544,13 @@ export default function MenuScreen({navigation}: Props) {
                 it => it.category === 'Категории/' + item.id,
               );
               if (pr_index !== -1) {
-                flatlistref.current?.scrollToIndex({
-                  index: pr_index,
-                  viewOffset: -HEADER_EXPANDED_HEIGHT + HEADER_COLLAPSED_HEIGHT,
-                  viewPosition: 0,
+                mainflatlistRef.current?.scrollToOffset({
+                  offset:
+                    pr_index * PRODUCT_ITEM_HEIGHT + HEADER_EXPANDED_HEIGHT,
                   animated: true,
                 });
               } else {
-                flatlistref.current?.scrollToOffset({
+                mainflatlistRef.current?.scrollToOffset({
                   offset: 0,
                   animated: true,
                 });
@@ -706,6 +681,68 @@ export default function MenuScreen({navigation}: Props) {
     );
   }
 
+  function renderMainListItems(mainListItem: number) {
+    switch (mainListItem) {
+      case 1:
+        return renderSelection();
+      case 2:
+        return renderStocks();
+      case 3:
+        return (
+          <View style={{overflow: 'hidden', paddingBottom: 5}}>
+            <View
+              style={[
+                {elevation, backgroundColor: 'white'},
+                elevation > 0
+                  ? {
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 1,
+                      },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 1.41,
+                    }
+                  : {},
+              ]}>
+              <FlatList
+                ref={flatlistCategoryRef}
+                contentContainerStyle={{
+                  backgroundColor: 'white',
+                  alignSelf: 'center',
+                  paddingLeft: 18,
+                  height: 60,
+                }}
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                data={categories}
+                renderItem={({item, index}) => renderCategoryItem(item, index)}
+              />
+            </View>
+          </View>
+        );
+      case 4:
+        return (
+          <FlatList
+            onViewableItemsChanged={onViewRef.current}
+            viewabilityConfig={viewConfigRef.current}
+            scrollEventThrottle={16}
+            ref={flatlistref}
+            getItemLayout={(data, index) => ({
+              length: PRODUCT_ITEM_HEIGHT,
+              offset: PRODUCT_ITEM_HEIGHT * index,
+              index,
+            })}
+            data={products}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => <ProductItem product={item} />}
+          />
+        );
+      default:
+        return <View />;
+    }
+  }
+
   return (
     <>
       <FocusAwareStatusBar
@@ -714,75 +751,23 @@ export default function MenuScreen({navigation}: Props) {
         barStyle="dark-content"
       />
       {renderToolbar()}
-
-      <Animated.View
-        style={[
-          {
-            height: headerHeight,
-            backgroundColor: 'white',
-            position: 'absolute',
-            width,
-            overflow: 'hidden',
-            top: 60,
-            left: 0,
-            zIndex: 99,
-          },
-        ]}>
-        {renderSelection()}
-        {renderStocks()}
-        <View
-          style={{
-            width,
-            height: HEADER_COLLAPSED_HEIGHT,
-            backgroundColor: 'white',
-            position: 'absolute',
-            bottom: 0,
-            alignItems: 'center',
-          }}>
-          <FlatList
-            ref={flatlistCategoryRef}
-            contentContainerStyle={{
-              backgroundColor: 'white',
-              alignSelf: 'center',
-              paddingLeft: 18,
-              height: HEADER_COLLAPSED_HEIGHT,
-            }}
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
-            data={categories}
-            renderItem={({item, index}) => renderCategoryItem(item, index)}
-          />
-        </View>
-      </Animated.View>
-
       <FlatList
-        contentContainerStyle={{
-          paddingTop: HEADER_EXPANDED_HEIGHT,
+        onScroll={r => {
+          if (
+            r.nativeEvent.contentOffset.y > HEADER_EXPANDED_HEIGHT - 40 &&
+            elevation === 0
+          ) {
+            setElevation(3);
+          } else {
+            setElevation(0);
+          }
         }}
-        onScroll={Animated.event(
-          [
-            {
-              nativeEvent: {
-                contentOffset: {
-                  y: scrollY,
-                },
-              },
-            },
-          ],
-          {useNativeDriver: false},
-        )}
-        onViewableItemsChanged={onViewRef.current}
-        viewabilityConfig={viewConfigRef.current}
         scrollEventThrottle={16}
-        ref={flatlistref}
-        getItemLayout={(data, index) => ({
-          length: PRODUCT_ITEM_HEIGHT,
-          offset: PRODUCT_ITEM_HEIGHT * index,
-          index,
-        })}
-        data={products}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => <ProductItem product={item} />}
+        ref={mainflatlistRef}
+        stickyHeaderIndices={[2]}
+        keyExtractor={(_, index) => index.toString()}
+        data={[1, 2, 3, 4]}
+        renderItem={({item}) => renderMainListItems(item)}
       />
       {renderModal()}
     </>
