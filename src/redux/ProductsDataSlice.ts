@@ -36,6 +36,7 @@ export type OrderStatus =
   | 'READY'; //готово к выдаче
 
 export interface Order {
+  dateTimestamp?: number; //дата создания заказа, по факту совпадает с первой из статуса но нужна в виде таймстампа
   id: string; //внутренний идшник для базы
   currentStatus: OrderStatus;
   public_id: number; //внешний идшник для пользователя

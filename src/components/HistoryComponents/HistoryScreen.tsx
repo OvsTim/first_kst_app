@@ -17,7 +17,7 @@ import DropShadow from 'react-native-drop-shadow';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
-import firestore from '@react-native-firebase/firestore';
+import firestore, {Timestamp} from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {
   Order,
@@ -67,6 +67,7 @@ export default function HistoryScreen({navigation}: Props) {
           res.docs.forEach(doc => {
             let order: Order = {
               id: doc.id,
+              dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
               public_id: doc.get<number>('НомерЗаказа'),
               currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
               user_id: auth().currentUser?.uid,
@@ -187,7 +188,7 @@ export default function HistoryScreen({navigation}: Props) {
                 borderBottomWidth: 1,
                 borderBottomColor: '#F2F2F6',
               }}>
-              {dayjs(order.statuses[0].time).format('DD MMMM YYYY г. в HH:mm')}
+              {dayjs(order.dateTimestamp).format('DD MMMM YYYY г. в HH:mm')}
             </StyledText>
             <StyledText
               style={{
