@@ -58,7 +58,7 @@ export default function HistoryScreen({navigation}: Props) {
         .collection('Заказы')
         .where('ИДПользователя', '==', auth().currentUser?.uid)
         .where('ТекущийСтатус', '==', 'SUCCESS')
-        .orderBy('ДатаЗаказа', 'asc')
+        .orderBy('Date', 'desc')
         .get()
         .then(res => {
           console.log('res', res);

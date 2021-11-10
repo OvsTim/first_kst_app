@@ -327,45 +327,49 @@ export default function OrderInfoScreen({route}: Props) {
         )}
         ListFooterComponent={() => (
           <>
-            <StyledText
-              style={{
-                fontWeight: '700',
-                fontSize: 25,
-                color: 'black',
-                marginTop: 21,
-                marginLeft: 13,
-              }}>
-              {'Способ оплаты'}
-            </StyledText>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginLeft: 22,
-                alignItems: 'center',
-                marginTop: 9,
-              }}>
-              <Image
-                style={{
-                  width: 22,
-                  height: 22,
-                  marginRight: 8,
-                  tintColor: '#28B3C6',
-                }}
-                source={
-                  currentOrder.payment_type !== 'CASH'
-                    ? require('../../assets/Visa.png')
-                    : require('../../assets/Cash.png')
-                }
-              />
-              <StyledText
-                style={{fontWeight: '400', color: '#28B3C6', fontSize: 15}}>
-                {currentOrder.payment_type === 'KASPI'
-                  ? 'Kaspi Gold (перевод)'
-                  : currentOrder.payment_type === 'CARD'
-                  ? 'Картой курьеру'
-                  : 'Наличными курьеру'}
-              </StyledText>
-            </View>
+            {currentOrder.delivery_type === 'DELIVERY' && (
+              <>
+                <StyledText
+                  style={{
+                    fontWeight: '700',
+                    fontSize: 25,
+                    color: 'black',
+                    marginTop: 21,
+                    marginLeft: 13,
+                  }}>
+                  {'Способ оплаты'}
+                </StyledText>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginLeft: 22,
+                    alignItems: 'center',
+                    marginTop: 9,
+                  }}>
+                  <Image
+                    style={{
+                      width: 22,
+                      height: 22,
+                      marginRight: 8,
+                      tintColor: '#28B3C6',
+                    }}
+                    source={
+                      currentOrder.payment_type !== 'CASH'
+                        ? require('../../assets/Visa.png')
+                        : require('../../assets/Cash.png')
+                    }
+                  />
+                  <StyledText
+                    style={{fontWeight: '400', color: '#28B3C6', fontSize: 15}}>
+                    {currentOrder.payment_type === 'KASPI'
+                      ? 'Kaspi Gold (перевод)'
+                      : currentOrder.payment_type === 'CARD'
+                      ? 'Картой курьеру'
+                      : 'Наличными курьеру'}
+                  </StyledText>
+                </View>
+              </>
+            )}
             {renderImagesList()}
           </>
         )}

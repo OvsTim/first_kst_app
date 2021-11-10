@@ -143,6 +143,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     firestore()
       .collection('Заказы')
       .add({
+        Date: new firestore.Timestamp(new Date()?.getTime() / 1000, 0),
         ДатаЗаказа: new firestore.Timestamp(new Date()?.getTime() / 1000, 0),
         ТекущийСтатус: order.currentStatus,
         Активен: true,
@@ -152,7 +153,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           orderDeliveryType === 'DELIVERY'
             ? currentAddress
             : {id: '', street: '', flat: '', house: ''},
-        ТипОплаты: order.payment_type,
+        ТипОплаты: orderDeliveryType === 'DELIVERY' ? order.payment_type : '',
         Продукты: order.products,
         Комментарий: '',
         Оценка: 0,
@@ -234,6 +235,34 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                         currentAddress.house +
                         ', ' +
                         currentAddress.flat}
+                  </StyledText>
+                </Pressable>
+              </View>
+            </>
+          )}
+          {orderDeliveryType === 'PICKUP' && (
+            <>
+              <View
+                style={{
+                  backgroundColor: '#0000001A',
+                  height: 1,
+                  width: width - 100,
+                }}
+              />
+              <View style={{overflow: 'hidden', borderRadius: 15}}>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate('ChangeRestaraunt', {activeTab: 0})
+                  }
+                  android_ripple={{color: 'lightgrey', radius: 200}}
+                  style={{paddingVertical: 15, width: width - 68}}>
+                  <StyledText
+                    style={{
+                      marginLeft: 15,
+                      color: '#28B3C6',
+                      fontWeight: '400',
+                    }}>
+                    Cменить ресторан
                   </StyledText>
                 </Pressable>
               </View>
@@ -490,7 +519,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               return;
             }
 
-            if (paymentWay === 'CASH') {
+            if (orderDeliveryType === 'DELIVERY' && paymentWay === 'CASH') {
               setModalVisible(true);
             } else {
               handlePayment();
@@ -517,7 +546,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           barStyle="dark-content"
         />
         {renderHeaderAndAddress()}
-        {renderPaymentWays()}
+        {orderDeliveryType === 'DELIVERY' && renderPaymentWays()}
         {renderCostAndDelivery()}
         {orderDeliveryType === 'DELIVERY' && renderFreeDeliveryAndMenu()}
       </ScrollView>
