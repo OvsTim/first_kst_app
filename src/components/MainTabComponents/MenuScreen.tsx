@@ -40,6 +40,8 @@ import {
 import {PRODUCT_ITEM_HEIGHT, ProductItem} from './ProductItem';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import auth from '@react-native-firebase/auth';
+import {hScale, vScale} from '../../utils/scaling';
+import {useNetInfo} from '@react-native-community/netinfo';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
@@ -48,7 +50,7 @@ const Button = withPressable(View);
 
 export default function MenuScreen({navigation}: Props) {
   const HEADER_EXPANDED_HEIGHT = 350;
-
+  const netInfo = useNetInfo();
   const onViewRef = useRef((info: {viewableItems: Array<ViewToken>}) => {
     if (info.viewableItems.length > 0) {
       let cat_index = categories.findIndex(
@@ -743,33 +745,63 @@ export default function MenuScreen({navigation}: Props) {
     }
   }
 
-  return (
-    <>
-      <FocusAwareStatusBar
-        translucent={false}
-        backgroundColor={'white'}
-        barStyle="dark-content"
-      />
-      {renderToolbar()}
-      <FlatList
-        onScroll={r => {
-          if (
-            r.nativeEvent.contentOffset.y > HEADER_EXPANDED_HEIGHT - 40 &&
-            elevation === 0
-          ) {
-            setElevation(3);
-          } else {
-            setElevation(0);
-          }
-        }}
-        scrollEventThrottle={16}
-        ref={mainflatlistRef}
-        stickyHeaderIndices={[2]}
-        keyExtractor={(_, index) => index.toString()}
-        data={[1, 2, 3, 4]}
-        renderItem={({item}) => renderMainListItems(item)}
-      />
-      {renderModal()}
-    </>
-  );
+  if (!netInfo.isConnected) {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <FocusAwareStatusBar
+          translucent={false}
+          backgroundColor={'#f2f2f2'}
+          barStyle="dark-content"
+        />
+        <Image
+          style={{width: vScale(381), height: hScale(283)}}
+          source={require('../../assets/ph_offline.png')}
+        />
+        <StyledText style={{fontWeight: '700', fontSize: 28, color: 'black'}}>
+          Ой, нет интернета
+        </StyledText>
+        <StyledText
+          style={{
+            width: width - 32,
+            textAlign: 'center',
+            marginVertical: 19,
+            color: 'black',
+          }}>
+          К сожалению Ваш мобильный телефон не подлючен к интернету, попробуйте
+          зайти позже
+        </StyledText>
+        <BaseButton text={'Обновить'} onPress={() => {}} />
+      </View>
+    );
+  } else {
+    return (
+      <>
+        <FocusAwareStatusBar
+          translucent={false}
+          backgroundColor={'white'}
+          barStyle="dark-content"
+        />
+        {renderToolbar()}
+        <FlatList
+          onScroll={r => {
+            if (
+              r.nativeEvent.contentOffset.y > HEADER_EXPANDED_HEIGHT - 40 &&
+              elevation === 0
+            ) {
+              setElevation(3);
+            } else {
+              setElevation(0);
+            }
+          }}
+          scrollEventThrottle={16}
+          ref={mainflatlistRef}
+          stickyHeaderIndices={[2]}
+          keyExtractor={(_, index) => index.toString()}
+          data={[1, 2, 3, 4]}
+          renderItem={({item}) => renderMainListItems(item)}
+        />
+        {renderModal()}
+      </>
+    );
+  }
 }

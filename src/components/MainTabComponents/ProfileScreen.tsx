@@ -138,7 +138,7 @@ export default function ProfileScreen({navigation}: Props) {
           barStyle="dark-content"
         />
         <Image
-          style={{width: hScale(364), height: vScale(271)}}
+          style={{width: vScale(364), height: hScale(271)}}
           source={require('../../assets/ph_profile.png')}
         />
         <StyledText

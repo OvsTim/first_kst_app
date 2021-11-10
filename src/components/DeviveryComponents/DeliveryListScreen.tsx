@@ -102,7 +102,7 @@ export default function DeliveryListScreen({navigation, route}: Props) {
     return (
       <>
         <Image
-          style={{width: hScale(375), height: vScale(279)}}
+          style={{width: vScale(375), height: hScale(279)}}
           source={require('../../assets/ph_delivery.png')}
         />
         <StyledText

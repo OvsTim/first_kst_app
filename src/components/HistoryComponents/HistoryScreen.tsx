@@ -27,12 +27,12 @@ import {
 } from '../../redux/ProductsDataSlice';
 import {RootState, useAppDispatch} from '../../redux';
 import {setOrders} from '../../redux/UserDataSlice';
-import {Restaraunt} from '../../API';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import {setBasket} from '../../redux/BasketDataReducer';
 import DialogView from '../_CustomComponents/DialogView';
 import {hScale, vScale} from '../../utils/scaling';
+import {useNetInfo} from '@react-native-community/netinfo';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'History'>;
 };
@@ -49,7 +49,7 @@ export default function HistoryScreen({navigation}: Props) {
   const [mark, setMark] = useState<number>(0);
   const [commentary, setCommentary] = useState<string>('');
   const [textVisible, setTextVisible] = useState<boolean>(false);
-
+  const netInfo = useNetInfo();
   useEffect(() => {
     dayjs.locale('ru');
     if (auth().currentUser?.displayName) {
@@ -110,7 +110,7 @@ export default function HistoryScreen({navigation}: Props) {
           barStyle="dark-content"
         />
         <Image
-          style={{width: hScale(381), height: vScale(283)}}
+          style={{width: vScale(381), height: hScale(283)}}
           source={require('../../assets/ph_history.png')}
         />
         <StyledText
@@ -317,6 +317,31 @@ export default function HistoryScreen({navigation}: Props) {
     );
   }
 
+  function renderNoInternet() {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <StatusBar
+          translucent={false}
+          backgroundColor={'#f2f2f2'}
+          barStyle="dark-content"
+        />
+        <Image
+          style={{width: vScale(381), height: hScale(283)}}
+          source={require('../../assets/ph_offline.png')}
+        />
+        <StyledText style={{fontWeight: '700', fontSize: 28, color: 'black'}}>
+          Ой, нет интернета
+        </StyledText>
+        <StyledText
+          style={{width: width - 32, textAlign: 'center', marginVertical: 19}}>
+          К сожалению Ваш мобильный телефон не подлючен к интернету, попробуйте
+          зайти позже
+        </StyledText>
+        <BaseButton text={'Обновить'} onPress={() => {}} />
+      </View>
+    );
+  }
+
   function renderList() {
     return (
       <View
@@ -502,5 +527,9 @@ export default function HistoryScreen({navigation}: Props) {
     );
   }
 
-  return authorized ? renderList() : renderEmpty();
+  return !netInfo.isConnected
+    ? renderNoInternet()
+    : authorized
+    ? renderList()
+    : renderEmpty();
 }

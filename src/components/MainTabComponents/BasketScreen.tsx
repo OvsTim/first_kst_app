@@ -26,6 +26,7 @@ import {RecommendCard} from './RecommendCard';
 import auth from '@react-native-firebase/auth';
 import {hScale, vScale} from '../../utils/scaling';
 import {SwipeListView} from 'react-native-swipe-list-view';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -38,7 +39,7 @@ export default function BasketScreen({navigation}: Props) {
   const imagesMap: ImageMap = useSelector(
     (state: RootState) => state.data.images,
   );
-
+  const netinfo = useNetInfo();
   const basket: Array<BasketItem> = useSelector(
     (state: RootState) => state.basket.basket,
   );
@@ -65,13 +66,13 @@ export default function BasketScreen({navigation}: Props) {
 
   const [isVisible, setVisible] = useState<boolean>(true);
 
-  useEffect(() => {
-    if (basket.length > 0) {
-      StatusBar.setBackgroundColor('white');
-    } else {
-      StatusBar.setBackgroundColor('#f2f2f2');
-    }
-  }, [basket]);
+  // useEffect(() => {
+  //   if (basket.length > 0) {
+  //     StatusBar.setBackgroundColor('white');
+  //   } else {
+  //     StatusBar.setBackgroundColor('#f2f2f2');
+  //   }
+  // }, [basket]);
 
   function getNumberOfCounts() {
     return basket.reduce((a, b) => +a + +b.count, 0);
@@ -175,7 +176,35 @@ export default function BasketScreen({navigation}: Props) {
     );
   }
 
-  if (basket.length === 0) {
+  if (!netinfo.isConnected) {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <FocusAwareStatusBar
+          translucent={false}
+          backgroundColor={'#f2f2f2'}
+          barStyle="dark-content"
+        />
+        <Image
+          style={{width: vScale(381), height: hScale(283)}}
+          source={require('../../assets/ph_offline.png')}
+        />
+        <StyledText style={{fontWeight: '700', fontSize: 28, color: 'black'}}>
+          Ой, нет интернета
+        </StyledText>
+        <StyledText
+          style={{
+            width: width - 32,
+            textAlign: 'center',
+            marginVertical: 19,
+            color: 'black',
+          }}>
+          К сожалению Ваш мобильный телефон не подлючен к интернету, попробуйте
+          зайти позже
+        </StyledText>
+        <BaseButton text={'Обновить'} onPress={() => {}} />
+      </View>
+    );
+  } else if (basket.length === 0) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <StatusBar
@@ -184,7 +213,7 @@ export default function BasketScreen({navigation}: Props) {
           barStyle="dark-content"
         />
         <Image
-          style={{width: hScale(380), height: vScale(280)}}
+          style={{width: vScale(380), height: hScale(280)}}
           source={require('../../assets/ph_basket.png')}
         />
         <StyledText

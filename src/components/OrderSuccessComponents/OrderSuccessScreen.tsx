@@ -35,7 +35,7 @@ export default function OrderSuccessScreen({navigation}: Props) {
         barStyle="dark-content"
       />
       <Image
-        style={{width: hScale(394), height: vScale(298), marginTop: vScale(75)}}
+        style={{width: vScale(394), height: hScale(298), marginTop: vScale(75)}}
         source={require('../../assets/ph_success.png')}
       />
       <StyledText

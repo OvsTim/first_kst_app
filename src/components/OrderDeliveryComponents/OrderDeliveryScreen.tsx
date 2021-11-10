@@ -32,6 +32,8 @@ import {Address, Restaraunt} from '../../API';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import dayjs from 'dayjs';
+import {hScale, vScale} from '../../utils/scaling';
+import {useNetInfo} from '@react-native-community/netinfo';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -57,6 +59,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
   const shops: Array<Restaraunt> = useSelector(
     (state: RootState) => state.data.shops,
   );
+  const netInfo = useNetInfo();
   const activeShop: Restaraunt =
     shops.filter(value => value.id === active).length > 0
       ? shops.filter(value => value.id === active)[0]
@@ -531,128 +534,157 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     );
   }
 
-  return (
-    <View style={{flex: 1}}>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 0,
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          paddingBottom: 100,
-        }}>
+  function renderNoInternet() {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <StatusBar
           translucent={false}
           backgroundColor={'#f2f2f2'}
           barStyle="dark-content"
         />
-        {renderHeaderAndAddress()}
-        {orderDeliveryType === 'DELIVERY' && renderPaymentWays()}
-        {renderCostAndDelivery()}
-        {orderDeliveryType === 'DELIVERY' && renderFreeDeliveryAndMenu()}
-      </ScrollView>
-      {renderBottomButton()}
-      <Modal
-        onSwipeComplete={() => setModalVisible(false)}
-        swipeDirection={['down']}
-        isVisible={isModalVisible}
-        statusBarTranslucent={true}
-        onBackdropPress={() => setModalVisible(false)}
-        onBackButtonPress={() => setModalVisible(false)}
-        deviceHeight={Dimensions.get('screen').height}
-        style={{justifyContent: 'flex-end', margin: 0}}>
-        <KeyboardAvoidingView
-          behavior={'padding'}
-          style={{
-            height: '90%',
-            width,
-            alignSelf: 'center',
-            backgroundColor: '#F5F5F8',
-            borderTopLeftRadius: 12,
-            borderTopRightRadius: 12,
+        <Image
+          style={{width: vScale(381), height: hScale(283)}}
+          source={require('../../assets/ph_offline.png')}
+        />
+        <StyledText style={{fontWeight: '700', fontSize: 28, color: 'black'}}>
+          Ой, нет интернета
+        </StyledText>
+        <StyledText
+          style={{width: width - 32, textAlign: 'center', marginVertical: 19}}>
+          К сожалению Ваш мобильный телефон не подлючен к интернету, попробуйте
+          зайти позже
+        </StyledText>
+        <BaseButton text={'Обновить'} onPress={() => {}} />
+      </View>
+    );
+  }
+
+  if (!netInfo.isConnected) {
+    return renderNoInternet();
+  } else {
+    return (
+      <View style={{flex: 1}}>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 0,
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            paddingBottom: 100,
           }}>
-          <View
+          <StatusBar
+            translucent={false}
+            backgroundColor={'#f2f2f2'}
+            barStyle="dark-content"
+          />
+          {renderHeaderAndAddress()}
+          {orderDeliveryType === 'DELIVERY' && renderPaymentWays()}
+          {renderCostAndDelivery()}
+          {orderDeliveryType === 'DELIVERY' && renderFreeDeliveryAndMenu()}
+        </ScrollView>
+        {renderBottomButton()}
+        <Modal
+          onSwipeComplete={() => setModalVisible(false)}
+          swipeDirection={['down']}
+          isVisible={isModalVisible}
+          statusBarTranslucent={true}
+          onBackdropPress={() => setModalVisible(false)}
+          onBackButtonPress={() => setModalVisible(false)}
+          deviceHeight={Dimensions.get('screen').height}
+          style={{justifyContent: 'flex-end', margin: 0}}>
+          <KeyboardAvoidingView
+            behavior={'padding'}
             style={{
-              height: '100%',
+              height: '90%',
               width,
+              alignSelf: 'center',
+              backgroundColor: '#F5F5F8',
+              borderTopLeftRadius: 12,
+              borderTopRightRadius: 12,
             }}>
-            <Pressable
-              android_ripple={{color: 'lightgrey', radius: 200}}
-              style={{
-                width: 90,
-                height: 50,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onPress={() => setModalVisible(false)}>
-              <StyledText
-                style={{fontWeight: '400', color: '#28B3C6', fontSize: 20}}>
-                Отмена
-              </StyledText>
-            </Pressable>
-            <StyledText
-              style={{
-                marginTop: 28,
-                marginHorizontal: 17,
-                fontWeight: '700',
-                fontSize: 22,
-                lineHeight: 26,
-                color: 'black',
-              }}>
-              {'Заказ на ' +
-                getTotalPrice() +
-                ' ' +
-                TENGE_LETTER +
-                '. ' +
-                '\nС какой суммы подготовить сдачу?'}
-            </StyledText>
-            <AuthBaseInput
-              value={sdacha}
-              onTextChanges={term => {
-                if (term.replace(/[^0-9]/g, '')) {
-                  let num: number = parseInt(term.replace(/[^0-9]/g, ''));
-                  if (num <= 20000) {
-                    setSdacha(num.toString());
-                  } else {
-                    setSdacha('20000');
-                  }
-                } else {
-                  setSdacha('');
-                }
-              }}
-              styleInput={{}}
-              styleContainer={{
-                width: width - 34,
-                backgroundColor: 'white',
-                marginTop: 27,
-              }}
-              editable={true}
-              placeholder={''}
-              inputProps={{
-                keyboardType: 'number-pad',
-                textContentType: 'none',
-                maxLength: 5,
-              }}
-            />
             <View
               style={{
+                height: '100%',
                 width,
-                position: 'absolute',
-                bottom: 18,
-                alignItems: 'center',
               }}>
-              <BaseButton
-                text={sdacha ? 'Продолжить' : 'У меня без сдачи'}
-                onPress={() => {
-                  setModalVisible(false);
-                  setTimeout(() => {
-                    handlePayment();
-                  }, 500);
+              <Pressable
+                android_ripple={{color: 'lightgrey', radius: 200}}
+                style={{
+                  width: 90,
+                  height: 50,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() => setModalVisible(false)}>
+                <StyledText
+                  style={{fontWeight: '400', color: '#28B3C6', fontSize: 20}}>
+                  Отмена
+                </StyledText>
+              </Pressable>
+              <StyledText
+                style={{
+                  marginTop: 28,
+                  marginHorizontal: 17,
+                  fontWeight: '700',
+                  fontSize: 22,
+                  lineHeight: 26,
+                  color: 'black',
+                }}>
+                {'Заказ на ' +
+                  getTotalPrice() +
+                  ' ' +
+                  TENGE_LETTER +
+                  '. ' +
+                  '\nС какой суммы подготовить сдачу?'}
+              </StyledText>
+              <AuthBaseInput
+                value={sdacha}
+                onTextChanges={term => {
+                  if (term.replace(/[^0-9]/g, '')) {
+                    let num: number = parseInt(term.replace(/[^0-9]/g, ''));
+                    if (num <= 20000) {
+                      setSdacha(num.toString());
+                    } else {
+                      setSdacha('20000');
+                    }
+                  } else {
+                    setSdacha('');
+                  }
+                }}
+                styleInput={{}}
+                styleContainer={{
+                  width: width - 34,
+                  backgroundColor: 'white',
+                  marginTop: 27,
+                }}
+                editable={true}
+                placeholder={''}
+                inputProps={{
+                  keyboardType: 'number-pad',
+                  textContentType: 'none',
+                  maxLength: 5,
                 }}
               />
+              <View
+                style={{
+                  width,
+                  position: 'absolute',
+                  bottom: 18,
+                  alignItems: 'center',
+                }}>
+                <BaseButton
+                  text={sdacha ? 'Продолжить' : 'У меня без сдачи'}
+                  onPress={() => {
+                    setModalVisible(false);
+                    setTimeout(() => {
+                      handlePayment();
+                    }, 500);
+                  }}
+                />
+              </View>
             </View>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
-    </View>
-  );
+          </KeyboardAvoidingView>
+        </Modal>
+      </View>
+    );
+  }
 }

@@ -22,7 +22,7 @@ export default function BonucesStocksScreen(props: Props) {
         barStyle="dark-content"
       />
       <Image
-        style={{width: hScale(408), height: vScale(301)}}
+        style={{width: vScale(408), height: hScale(301)}}
         source={require('../../assets/ph_stocks.png')}
       />
       <StyledText
