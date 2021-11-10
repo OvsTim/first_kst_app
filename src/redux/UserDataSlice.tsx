@@ -35,7 +35,7 @@ const initialState = {
   orderDeliveryType: 'DELIVERY',
   orders: [],
   addressess: [],
-  shops: Array(5).fill({
+  shops: Array(2).fill({
     id: '',
     address: '',
     phone: '',

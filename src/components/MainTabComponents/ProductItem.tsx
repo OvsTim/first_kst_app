@@ -87,16 +87,16 @@ export function ProductItem(props: Props) {
             colors={['#FF2323', '#C00000']}
             style={{
               position: 'absolute',
-              top: 23,
-              left: width / 2 - 70,
+              top: 20,
+              left: width / 2 - 100,
               borderRadius: 5,
-              height: 11,
+              height: 18,
             }}>
             <StyledText
               style={{
                 color: 'white',
                 fontWeight: '700',
-                fontSize: 7,
+                fontSize: 12,
                 marginHorizontal: 5,
               }}>
               {product.isHit ? 'Хит продаж' : 'Новинка'}
