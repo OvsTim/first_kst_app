@@ -17,7 +17,13 @@ import DropShadow from 'react-native-drop-shadow';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
-import firestore, {Timestamp} from '@react-native-firebase/firestore';
+// @ts-ignore
+import firestore, {
+  FirebaseFirestoreTypes,
+  Timestamp,
+  DocumentSnapshot,
+  QuerySnapshot,
+} from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {
   Order,
@@ -47,68 +53,122 @@ export default function HistoryScreen({navigation}: Props) {
   );
   const [visible, setVisible] = useState<boolean>(false);
   const [mark, setMark] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
+  const [lastDoc, setLastDoc] = useState<DocumentSnapshot | undefined>(
+    undefined,
+  );
   const [commentary, setCommentary] = useState<string>('');
   const [textVisible, setTextVisible] = useState<boolean>(false);
   const netInfo = useNetInfo();
   useEffect(() => {
     dayjs.locale('ru');
+    requestPage(1);
+  }, []);
+
+  function requestPage(page: number) {
     if (auth().currentUser?.displayName) {
       setAuthorized(true);
-      firestore()
-        .collection('Заказы')
-        .where('ИДПользователя', '==', auth().currentUser?.uid)
-        .where('ТекущийСтатус', '==', 'SUCCESS')
-        .orderBy('Date', 'desc')
-        .get()
-        .then(res => {
-          console.log('res', res);
-          let list: Array<Order> = [];
+      if (page === 1) {
+        firestore()
+          .collection('Заказы')
+          .where('ИДПользователя', '==', auth().currentUser?.uid)
+          .where('ТекущийСтатус', '==', 'SUCCESS')
+          .orderBy('Date', 'desc')
 
-          res.docs.forEach(doc => {
-            let order: Order = {
-              id: doc.id,
-              dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
-              public_id: doc.get<number>('НомерЗаказа'),
-              currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
-              user_id: auth().currentUser?.uid,
-              price: doc.get<number>('Цена'),
-              mark: 0,
-              commentary: '',
-              sdacha: doc.get<number>('Сдача'),
-              restaurant: doc.get<string>('Ресторан'),
-              active: true,
-              payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
-              delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
-              address: {
-                id: doc.get<string>('Адрес.id'),
-                house: doc.get<string>('Адрес.house'),
-                street: doc.get<string>('Адрес.street'),
-                code: doc.get<string>('Адрес.code'),
-                name: doc.get<string>('Адрес.name'),
-                flat: doc.get<string>('Адрес.flat'),
-                commentary: doc.get<string>('Адрес.commentary'),
-                floor: doc.get<string>('Адрес.floor'),
-                entrance: doc.get<string>('Адрес.entrance'),
-              },
-              statuses: doc.get<Array<any>>('Статусы'),
-              products: doc.get<Array<any>>('Продукты'),
-            };
-            list.push(order);
-          });
-          dispatch(setOrders(list));
-        })
-        .catch(er => console.log('er', er));
+          .limit(10)
+          .get()
+          .then(res => {
+            let list: Array<Order> = [];
+
+            res.docs.forEach(doc => {
+              let order: Order = {
+                id: doc.id,
+                dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
+                public_id: doc.get<number>('НомерЗаказа'),
+                currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
+                user_id: auth().currentUser?.uid,
+                price: doc.get<number>('Цена'),
+                mark: 0,
+                commentary: '',
+                sdacha: doc.get<number>('Сдача'),
+                restaurant: doc.get<string>('Ресторан'),
+                active: true,
+                payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
+                delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
+                address: {
+                  id: doc.get<string>('Адрес.id'),
+                  house: doc.get<string>('Адрес.house'),
+                  street: doc.get<string>('Адрес.street'),
+                  code: doc.get<string>('Адрес.code'),
+                  name: doc.get<string>('Адрес.name'),
+                  flat: doc.get<string>('Адрес.flat'),
+                  commentary: doc.get<string>('Адрес.commentary'),
+                  floor: doc.get<string>('Адрес.floor'),
+                  entrance: doc.get<string>('Адрес.entrance'),
+                },
+                statuses: doc.get<Array<any>>('Статусы'),
+                products: doc.get<Array<any>>('Продукты'),
+              };
+              list.push(order);
+            });
+            setLastDoc(res.docs[res.docs.length - 1]);
+            dispatch(setOrders(list));
+          })
+          .catch(er => console.log('er', er));
+      } else {
+        firestore()
+          .collection('Заказы')
+          .where('ИДПользователя', '==', auth().currentUser?.uid)
+          .where('ТекущийСтатус', '==', 'SUCCESS')
+          .orderBy('Date', 'desc')
+          .startAfter(lastDoc)
+          .limit(10)
+          .get()
+          .then(res => {
+            let list: Array<Order> = [];
+
+            res.docs.forEach(doc => {
+              let order: Order = {
+                id: doc.id,
+                dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
+                public_id: doc.get<number>('НомерЗаказа'),
+                currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
+                user_id: auth().currentUser?.uid,
+                price: doc.get<number>('Цена'),
+                mark: 0,
+                commentary: '',
+                sdacha: doc.get<number>('Сдача'),
+                restaurant: doc.get<string>('Ресторан'),
+                active: true,
+                payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
+                delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
+                address: {
+                  id: doc.get<string>('Адрес.id'),
+                  house: doc.get<string>('Адрес.house'),
+                  street: doc.get<string>('Адрес.street'),
+                  code: doc.get<string>('Адрес.code'),
+                  name: doc.get<string>('Адрес.name'),
+                  flat: doc.get<string>('Адрес.flat'),
+                  commentary: doc.get<string>('Адрес.commentary'),
+                  floor: doc.get<string>('Адрес.floor'),
+                  entrance: doc.get<string>('Адрес.entrance'),
+                },
+                statuses: doc.get<Array<any>>('Статусы'),
+                products: doc.get<Array<any>>('Продукты'),
+              };
+              list.push(order);
+            });
+            setLastDoc(res.docs[res.docs.length - 1]);
+            dispatch(setOrders([...orders, ...list]));
+          })
+          .catch(er => console.log('er', er));
+      }
     }
-  }, []);
+  }
 
   function renderEmpty() {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <StatusBar
-          translucent={false}
-          backgroundColor={'#f2f2f2'}
-          barStyle="dark-content"
-        />
         <Image
           style={{width: vScale(381), height: hScale(283)}}
           source={require('../../assets/ph_history.png')}
@@ -354,6 +414,13 @@ export default function HistoryScreen({navigation}: Props) {
         <FlatList
           contentContainerStyle={{width, alignItems: 'center'}}
           data={orders}
+          onEndReachedThreshold={0.5}
+          ListEmptyComponent={() => renderEmpty()}
+          onEndReached={() => {
+            console.log('onEndReached', page);
+            requestPage(page + 1);
+            setPage(prevState => prevState + 1);
+          }}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => renderItem(item)}
         />
@@ -527,9 +594,5 @@ export default function HistoryScreen({navigation}: Props) {
     );
   }
 
-  return !netInfo.isConnected
-    ? renderNoInternet()
-    : authorized
-    ? renderList()
-    : renderEmpty();
+  return !netInfo.isConnected ? renderNoInternet() : renderList();
 }
