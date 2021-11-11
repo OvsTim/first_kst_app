@@ -19,9 +19,13 @@ import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
 // @ts-ignore
 import firestore, {
+  // @ts-ignore
   FirebaseFirestoreTypes,
+  // @ts-ignore
   Timestamp,
+  // @ts-ignore
   DocumentSnapshot,
+  // @ts-ignore
   QuerySnapshot,
 } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -46,7 +50,6 @@ const StyledText = withFont(Text);
 const Button = withPressable(View);
 export default function HistoryScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
-  const [authorized, setAuthorized] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const orders: Array<Order> = useSelector(
     (state: RootState) => state.data.orders,
@@ -66,103 +69,100 @@ export default function HistoryScreen({navigation}: Props) {
   }, []);
 
   function requestPage(page: number) {
-    if (auth().currentUser?.displayName) {
-      setAuthorized(true);
-      if (page === 1) {
-        firestore()
-          .collection('Заказы')
-          .where('ИДПользователя', '==', auth().currentUser?.uid)
-          .where('ТекущийСтатус', '==', 'SUCCESS')
-          .orderBy('Date', 'desc')
+    if (page === 1) {
+      firestore()
+        .collection('Заказы')
+        .where('ИДПользователя', '==', auth().currentUser?.uid)
+        .where('ТекущийСтатус', '==', 'SUCCESS')
+        .orderBy('Date', 'desc')
 
-          .limit(10)
-          .get()
-          .then(res => {
-            let list: Array<Order> = [];
+        .limit(10)
+        .get()
+        .then(res => {
+          let list: Array<Order> = [];
 
-            res.docs.forEach(doc => {
-              let order: Order = {
-                id: doc.id,
-                dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
-                public_id: doc.get<number>('НомерЗаказа'),
-                currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
-                user_id: auth().currentUser?.uid,
-                price: doc.get<number>('Цена'),
-                mark: 0,
-                commentary: '',
-                sdacha: doc.get<number>('Сдача'),
-                restaurant: doc.get<string>('Ресторан'),
-                active: true,
-                payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
-                delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
-                address: {
-                  id: doc.get<string>('Адрес.id'),
-                  house: doc.get<string>('Адрес.house'),
-                  street: doc.get<string>('Адрес.street'),
-                  code: doc.get<string>('Адрес.code'),
-                  name: doc.get<string>('Адрес.name'),
-                  flat: doc.get<string>('Адрес.flat'),
-                  commentary: doc.get<string>('Адрес.commentary'),
-                  floor: doc.get<string>('Адрес.floor'),
-                  entrance: doc.get<string>('Адрес.entrance'),
-                },
-                statuses: doc.get<Array<any>>('Статусы'),
-                products: doc.get<Array<any>>('Продукты'),
-              };
-              list.push(order);
-            });
-            setLastDoc(res.docs[res.docs.length - 1]);
-            dispatch(setOrders(list));
-          })
-          .catch(er => console.log('er', er));
-      } else {
-        firestore()
-          .collection('Заказы')
-          .where('ИДПользователя', '==', auth().currentUser?.uid)
-          .where('ТекущийСтатус', '==', 'SUCCESS')
-          .orderBy('Date', 'desc')
-          .startAfter(lastDoc)
-          .limit(10)
-          .get()
-          .then(res => {
-            let list: Array<Order> = [];
+          res.docs.forEach(doc => {
+            let order: Order = {
+              id: doc.id,
+              dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
+              public_id: doc.get<number>('НомерЗаказа'),
+              currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
+              user_id: auth().currentUser?.uid,
+              price: doc.get<number>('Цена'),
+              mark: 0,
+              commentary: '',
+              sdacha: doc.get<number>('Сдача'),
+              restaurant: doc.get<string>('Ресторан'),
+              active: true,
+              payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
+              delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
+              address: {
+                id: doc.get<string>('Адрес.id'),
+                house: doc.get<string>('Адрес.house'),
+                street: doc.get<string>('Адрес.street'),
+                code: doc.get<string>('Адрес.code'),
+                name: doc.get<string>('Адрес.name'),
+                flat: doc.get<string>('Адрес.flat'),
+                commentary: doc.get<string>('Адрес.commentary'),
+                floor: doc.get<string>('Адрес.floor'),
+                entrance: doc.get<string>('Адрес.entrance'),
+              },
+              statuses: doc.get<Array<any>>('Статусы'),
+              products: doc.get<Array<any>>('Продукты'),
+            };
+            list.push(order);
+          });
+          setLastDoc(res.docs[res.docs.length - 1]);
+          dispatch(setOrders(list));
+        })
+        .catch(er => console.log('er', er));
+    } else {
+      firestore()
+        .collection('Заказы')
+        .where('ИДПользователя', '==', auth().currentUser?.uid)
+        .where('ТекущийСтатус', '==', 'SUCCESS')
+        .orderBy('Date', 'desc')
+        .startAfter(lastDoc)
+        .limit(10)
+        .get()
+        .then(res => {
+          let list: Array<Order> = [];
 
-            res.docs.forEach(doc => {
-              let order: Order = {
-                id: doc.id,
-                dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
-                public_id: doc.get<number>('НомерЗаказа'),
-                currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
-                user_id: auth().currentUser?.uid,
-                price: doc.get<number>('Цена'),
-                mark: 0,
-                commentary: '',
-                sdacha: doc.get<number>('Сдача'),
-                restaurant: doc.get<string>('Ресторан'),
-                active: true,
-                payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
-                delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
-                address: {
-                  id: doc.get<string>('Адрес.id'),
-                  house: doc.get<string>('Адрес.house'),
-                  street: doc.get<string>('Адрес.street'),
-                  code: doc.get<string>('Адрес.code'),
-                  name: doc.get<string>('Адрес.name'),
-                  flat: doc.get<string>('Адрес.flat'),
-                  commentary: doc.get<string>('Адрес.commentary'),
-                  floor: doc.get<string>('Адрес.floor'),
-                  entrance: doc.get<string>('Адрес.entrance'),
-                },
-                statuses: doc.get<Array<any>>('Статусы'),
-                products: doc.get<Array<any>>('Продукты'),
-              };
-              list.push(order);
-            });
-            setLastDoc(res.docs[res.docs.length - 1]);
-            dispatch(setOrders([...orders, ...list]));
-          })
-          .catch(er => console.log('er', er));
-      }
+          res.docs.forEach(doc => {
+            let order: Order = {
+              id: doc.id,
+              dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
+              public_id: doc.get<number>('НомерЗаказа'),
+              currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
+              user_id: auth().currentUser?.uid,
+              price: doc.get<number>('Цена'),
+              mark: 0,
+              commentary: '',
+              sdacha: doc.get<number>('Сдача'),
+              restaurant: doc.get<string>('Ресторан'),
+              active: true,
+              payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
+              delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
+              address: {
+                id: doc.get<string>('Адрес.id'),
+                house: doc.get<string>('Адрес.house'),
+                street: doc.get<string>('Адрес.street'),
+                code: doc.get<string>('Адрес.code'),
+                name: doc.get<string>('Адрес.name'),
+                flat: doc.get<string>('Адрес.flat'),
+                commentary: doc.get<string>('Адрес.commentary'),
+                floor: doc.get<string>('Адрес.floor'),
+                entrance: doc.get<string>('Адрес.entrance'),
+              },
+              statuses: doc.get<Array<any>>('Статусы'),
+              products: doc.get<Array<any>>('Продукты'),
+            };
+            list.push(order);
+          });
+          setLastDoc(res.docs[res.docs.length - 1]);
+          dispatch(setOrders([...orders, ...list]));
+        })
+        .catch(er => console.log('er', er));
     }
   }
 
