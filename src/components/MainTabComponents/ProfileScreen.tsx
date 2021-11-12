@@ -3,7 +3,6 @@ import {
   FlatList,
   Image,
   Pressable,
-  ScrollView,
   Text,
   useWindowDimensions,
   View,
@@ -20,7 +19,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
-import {Address, Restaraunt} from '../../API';
+import {Restaraunt} from '../../API';
 import {
   Order,
   OrderDeliveryType,
@@ -101,6 +100,8 @@ export default function ProfileScreen({navigation}: Props) {
           console.log('snap.docs', snap.docs);
           snap.docs.forEach(doc => {
             let order: Order = {
+              user_name: '',
+              user_phone: '',
               id: doc.id,
               public_id: doc.get<number>('НомерЗаказа'),
               currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),

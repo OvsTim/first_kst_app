@@ -68,6 +68,8 @@ export default function OrderInfoScreen({route}: Props) {
       .doc(route.params.order.id)
       .onSnapshot(doc => {
         let order: Order = {
+          user_phone: '',
+          user_name: '',
           id: doc.id,
           public_id: doc.get<number>('НомерЗаказа'),
           currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),

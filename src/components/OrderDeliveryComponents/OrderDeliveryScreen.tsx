@@ -123,6 +123,8 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     }
 
     let order: Order = {
+      user_name: auth().currentUser?.displayName || '',
+      user_phone: auth().currentUser?.phoneNumber || '',
       currentStatus: 'IS_NEW',
       active: true,
       sdacha: sdacha !== '' ? parseInt(sdacha) : 0,
@@ -147,6 +149,8 @@ export default function OrderDeliveryScreen({navigation}: Props) {
       .collection('Заказы')
       .add({
         Date: new firestore.Timestamp(new Date()?.getTime() / 1000, 0),
+        Имя: order.user_name,
+        Телефон: order.user_phone,
         ДатаЗаказа: new firestore.Timestamp(new Date()?.getTime() / 1000, 0),
         ТекущийСтатус: order.currentStatus,
         Активен: true,

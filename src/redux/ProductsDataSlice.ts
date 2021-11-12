@@ -54,6 +54,8 @@ export interface Order {
   commentary: string; //комментарий
   user_id?: string; //ид юзера, который заказал
   price: number; //Итоговая цена
+  user_name: string;
+  user_phone: string;
 }
 
 interface ProductsData {
