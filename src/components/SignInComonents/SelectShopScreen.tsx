@@ -34,7 +34,7 @@ import {
 } from '../../utils/workHourUtils';
 import {RouteProp} from '@react-navigation/native';
 import {AppStackParamList} from '../../navigation/AppNavigator';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import SegmentedControl from 'rn-segmented-control';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'SearchShop'>;
@@ -417,21 +417,31 @@ export default function SelectShopScreen({navigation, route}: Props) {
           alignItems: 'center',
         }}>
         <SegmentedControl
-          style={{width: width - 22, borderRadius: 9, zIndex: 999}}
-          tabStyle={{borderRadius: 9}}
-          fontStyle={{
+          paddingVertical={6}
+          width={width - 22}
+          theme={'LIGHT'}
+          currentIndex={indexTab}
+          containerStyle={{
+            borderRadius: 9,
+            zIndex: 999,
+            backgroundColor: '#7676801F',
+          }}
+          tileStyle={{borderRadius: 9}}
+          activeTextColor={'black'}
+          textColor={'rgba(0, 0, 0, 0.8)'}
+          activeSegmentBackgroundColor={'white'}
+          segmentedControlBackgroundColor={'#DBDBDB'}
+          textStyle={{
             fontSize: 15,
-            fontWeight: '400',
             fontFamily: 'SFProDisplay-Regular',
           }}
-          backgroundColor={'#7676801F'}
-          selectedIndex={indexTab}
+          activeTextWeight={'500'}
           onChange={event => {
             setShopIndex(-1);
-            setIndexTab(event.nativeEvent.selectedSegmentIndex);
+            setIndexTab(event);
           }}
           // styleTitle={{fontSize: 15, fontFamily: getFontName('400')}}
-          values={['Списком', 'На карте']}
+          tabs={['Списком', 'На карте']}
         />
       </View>
     </View>

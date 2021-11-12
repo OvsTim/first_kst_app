@@ -1,6 +1,5 @@
 import React, {useRef, useState} from 'react';
 import {
-  Animated,
   Dimensions,
   FlatList,
   Image,
@@ -19,6 +18,8 @@ import {useSelector} from 'react-redux';
 import {RootState, useAppDispatch} from '../../redux';
 import {Address, Restaraunt, Stock} from '../../API';
 import {useFocusEffect} from '@react-navigation/native';
+import SegmentedControl from 'rn-segmented-control';
+
 // @ts-ignore
 import firestore, {DocumentReference} from '@react-native-firebase/firestore';
 import {
@@ -38,7 +39,6 @@ import {
   setProducts,
 } from '../../redux/ProductsDataSlice';
 import {PRODUCT_ITEM_HEIGHT, ProductItem} from './ProductItem';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import auth from '@react-native-firebase/auth';
 import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -357,29 +357,35 @@ export default function MenuScreen({navigation}: Props) {
           marginTop: 15,
         }}>
         <SegmentedControl
-          style={{
+          paddingVertical={6}
+          width={width - 70}
+          theme={'LIGHT'}
+          currentIndex={orderDeliveryType === 'DELIVERY' ? 0 : 1}
+          containerStyle={{
             marginTop: 20,
-            width: width - 70,
             borderRadius: 9,
             zIndex: 999,
+            backgroundColor: '#7676801F',
           }}
-          fontStyle={{
+          tileStyle={{borderRadius: 9}}
+          activeTextColor={'black'}
+          textColor={'rgba(0, 0, 0, 0.8)'}
+          activeSegmentBackgroundColor={'white'}
+          segmentedControlBackgroundColor={'#DBDBDB'}
+          textStyle={{
             fontSize: 15,
-            fontWeight: '400',
             fontFamily: 'SFProDisplay-Regular',
           }}
-          tabStyle={{borderRadius: 9}}
-          backgroundColor={'#7676801F'}
-          selectedIndex={orderDeliveryType === 'DELIVERY' ? 0 : 1}
+          activeTextWeight={'500'}
           onChange={event => {
-            if (event.nativeEvent.selectedSegmentIndex === 0) {
+            if (event === 0) {
               dispatch(setOrderDeliveryType('DELIVERY'));
               dispatch(setCurrentAddress(undefined));
             } else {
               dispatch(setOrderDeliveryType('PICKUP'));
             }
           }}
-          values={['На доставку', 'Самовывоз']}
+          tabs={['На доставку', 'Самовывоз']}
         />
         <View
           style={{
