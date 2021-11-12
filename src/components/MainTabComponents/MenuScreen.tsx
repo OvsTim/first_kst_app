@@ -412,7 +412,7 @@ export default function MenuScreen({navigation}: Props) {
                 ellipsizeMode={'tail'}
                 style={{
                   fontWeight: '400',
-                  width: width / 2,
+                  maxWidth: width / 2,
                   fontSize: 15,
                   color: 'black',
                 }}>
@@ -454,6 +454,8 @@ export default function MenuScreen({navigation}: Props) {
                   ellipsizeMode={'tail'}
                   style={{
                     fontWeight: '400',
+                    maxWidth: width / 2,
+
                     fontSize: 15,
                     color: 'black',
                   }}>
