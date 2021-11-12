@@ -88,7 +88,7 @@ export function ProductItem(props: Props) {
             style={{
               position: 'absolute',
               top: 20,
-              left: width / 2 - 100,
+              right: width / 2 + 10,
               borderRadius: 5,
               height: 18,
             }}>
