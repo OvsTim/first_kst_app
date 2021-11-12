@@ -126,7 +126,7 @@ export function RecommendCard(props: Props) {
                 justifyContent: 'center',
               }}
               android_ripple={{
-                color: 'gray',
+                color: 'lightgray',
                 radius: 200,
               }}>
               <StyledText
@@ -152,7 +152,7 @@ export function RecommendCard(props: Props) {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              android_ripple={{color: 'gray', radius: 200}}>
+              android_ripple={{lightgray: 'gray', radius: 200}}>
               <StyledText
                 style={{fontSize: 10, fontWeight: '700', color: '#28B3C6'}}>
                 Скрыть

@@ -83,6 +83,8 @@ export default function HistoryScreen({navigation}: Props) {
 
           res.docs.forEach(doc => {
             let order: Order = {
+              user_name: '',
+              user_phone: '',
               id: doc.id,
               dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
               public_id: doc.get<number>('НомерЗаказа'),
@@ -130,6 +132,8 @@ export default function HistoryScreen({navigation}: Props) {
 
           res.docs.forEach(doc => {
             let order: Order = {
+              user_name: '',
+              user_phone: '',
               id: doc.id,
               dateTimestamp: doc.get<Timestamp>('Date').seconds * 1000,
               public_id: doc.get<number>('НомерЗаказа'),

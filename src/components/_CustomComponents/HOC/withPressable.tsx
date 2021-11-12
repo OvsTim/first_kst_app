@@ -34,7 +34,7 @@ export function withPressable<T extends Props>(
       <View style={[props.containerStyle, {overflow: 'hidden'}]}>
         <Pressable
           android_ripple={{
-            color: 'gray',
+            color: props.androidRippleColor ?? 'gray',
             radius: props.androidRippleRadius ?? 200,
           }}
           style={({pressed}) => [

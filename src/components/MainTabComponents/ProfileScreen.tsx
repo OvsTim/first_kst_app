@@ -190,6 +190,7 @@ export default function ProfileScreen({navigation}: Props) {
         <View style={{flexDirection: 'row'}}>
           <View style={{width: 18}} />
           <Button
+            androidRippleColor={'lightgray'}
             onPress={() => {
               navigation.navigate('ChangeRestaraunt', {activeTab: 0});
             }}
