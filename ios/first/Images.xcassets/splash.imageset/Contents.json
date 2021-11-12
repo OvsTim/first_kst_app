@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "iPhone 11 Pro Max - 53х1.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "iPhone 11 Pro Max - 53х2.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "iPhone 11 Pro Max - 53х3.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

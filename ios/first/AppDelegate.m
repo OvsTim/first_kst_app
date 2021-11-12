@@ -1,9 +1,11 @@
 #import "AppDelegate.h"
-
+#import <Firebase.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-
+#import "RNSplashScreen.h"
+#import <YandexMapsMobile/YMKMapKitFactory.h>
+/*
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
@@ -21,21 +23,22 @@ static void InitializeFlipper(UIApplication *application) {
   [client addPlugin:[[FlipperKitNetworkPlugin alloc] initWithNetworkAdapter:[SKIOSNetworkAdapter new]]];
   [client start];
 }
-#endif
+#endif*/
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-#ifdef FB_SONARKIT_ENABLED
-  InitializeFlipper(application);
-#endif
+//#ifdef FB_SONARKIT_ENABLED
+//  InitializeFlipper(application);
+//#endif
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                   moduleName:@"draft64"
+                                                   moduleName:@"F1rst"
                                             initialProperties:nil];
-
+  [FIRApp configure];
+  [YMKMapKit setApiKey: @"5f991160-3890-4d3c-acc4-59203f61edd3"];
   if (@available(iOS 13.0, *)) {
       rootView.backgroundColor = [UIColor systemBackgroundColor];
   } else {
@@ -47,6 +50,7 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  [RNSplashScreen show];
   return YES;
 }
 

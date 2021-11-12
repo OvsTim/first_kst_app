@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "draft64.app"
-               BlueprintName = "draft64"
-               ReferencedContainer = "container:draft64.xcodeproj">
+               BuildableName = "first.app"
+               BlueprintName = "first"
+               ReferencedContainer = "container:first.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "draft64Tests.xctest"
-               BlueprintName = "draft64Tests"
-               ReferencedContainer = "container:draft64.xcodeproj">
+               BuildableName = "firstTests.xctest"
+               BlueprintName = "firstTests"
+               ReferencedContainer = "container:first.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "draft64.app"
-            BlueprintName = "draft64"
-            ReferencedContainer = "container:draft64.xcodeproj">
+            BuildableName = "first.app"
+            BlueprintName = "first"
+            ReferencedContainer = "container:first.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "draft64.app"
-            BlueprintName = "draft64"
-            ReferencedContainer = "container:draft64.xcodeproj">
+            BuildableName = "first.app"
+            BlueprintName = "first"
+            ReferencedContainer = "container:first.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
