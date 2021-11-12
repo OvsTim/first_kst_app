@@ -795,7 +795,10 @@ export default function MenuScreen({navigation}: Props) {
               elevation === 0
             ) {
               setElevation(3);
-            } else {
+            } else if (
+              r.nativeEvent.contentOffset.y <= HEADER_EXPANDED_HEIGHT - 40 &&
+              elevation === 3
+            ) {
               setElevation(0);
             }
           }}
