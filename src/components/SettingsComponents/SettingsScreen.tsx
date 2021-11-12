@@ -54,7 +54,7 @@ export default function SettingsScreen({navigation}: Props) {
             onPress={() => changeMailAndName()}
             containerStyle={{width: 81, height: 24}}>
             <StyledText
-              style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
+              style={{fontWeight: '700', color: '#28B3C6', fontSize: 15}}>
               Готово
             </StyledText>
           </Button>
