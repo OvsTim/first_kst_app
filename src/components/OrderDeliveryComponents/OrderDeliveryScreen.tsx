@@ -123,6 +123,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     }
 
     let order: Order = {
+      restaurant_id: activeShop.id,
       user_name: auth().currentUser?.displayName || '',
       user_phone: auth().currentUser?.phoneNumber || '',
       currentStatus: 'IS_NEW',
@@ -166,6 +167,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         Оценка: 0,
         Цена: order.price,
         Ресторан: order.restaurant,
+        РесторанИД: order.restaurant_id,
         ИДПользователя: auth().currentUser?.uid ? auth().currentUser?.uid : '',
         НомерЗаказа: order.public_id,
         Статусы: order.statuses,

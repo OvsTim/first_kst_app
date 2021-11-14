@@ -100,6 +100,7 @@ export default function ProfileScreen({navigation}: Props) {
           console.log('snap.docs', snap.docs);
           snap.docs.forEach(doc => {
             let order: Order = {
+              restaurant_id: '',
               user_name: '',
               user_phone: '',
               id: doc.id,

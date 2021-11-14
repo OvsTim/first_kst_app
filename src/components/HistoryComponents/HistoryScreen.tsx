@@ -20,13 +20,9 @@ import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
 // @ts-ignore
 import firestore, {
   // @ts-ignore
-  FirebaseFirestoreTypes,
-  // @ts-ignore
   Timestamp,
   // @ts-ignore
   DocumentSnapshot,
-  // @ts-ignore
-  QuerySnapshot,
 } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {
@@ -83,6 +79,7 @@ export default function HistoryScreen({navigation}: Props) {
 
           res.docs.forEach(doc => {
             let order: Order = {
+              restaurant_id: '',
               user_name: '',
               user_phone: '',
               id: doc.id,
@@ -132,6 +129,7 @@ export default function HistoryScreen({navigation}: Props) {
 
           res.docs.forEach(doc => {
             let order: Order = {
+              restaurant_id: '',
               user_name: '',
               user_phone: '',
               id: doc.id,

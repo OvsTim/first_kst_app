@@ -68,6 +68,7 @@ export default function OrderInfoScreen({route}: Props) {
       .doc(route.params.order.id)
       .onSnapshot(doc => {
         let order: Order = {
+          restaurant_id: '',
           user_phone: '',
           user_name: '',
           id: doc.id,

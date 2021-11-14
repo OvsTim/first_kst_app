@@ -20,10 +20,12 @@ import './src/utils/i18n';
 Text.defaultProps = {
   ...(Text.defaultProps || {}),
   allowFontScaling: false,
+  includeFontPadding: false,
 };
 TextInput.defaultProps = {
   ...(TextInput.defaultProps || {}),
   allowFontScaling: false,
+  includeFontPadding: false,
 };
 
 AppRegistry.registerComponent(appName, () => App);
