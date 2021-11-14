@@ -52,6 +52,15 @@ export default function AppWithNavigationState() {
         .then(fcm_token => {
           console.log('TOKEN', fcm_token);
           dispatch(setFirebaseToken(fcm_token));
+          if (auth().currentUser?.displayName) {
+            firestore()
+              .collection('Пользователи')
+              .doc(auth().currentUser?.uid)
+              .update({
+                Токен: fcm_token,
+              });
+          }
+
           // sendTokenToServer(fcm_token, token);
         });
     });
@@ -91,8 +100,15 @@ export default function AppWithNavigationState() {
 
     return messaging().onTokenRefresh(fcm_token => {
       console.log('REFRESH TOKEN', fcm_token);
-      // dispatch(setFirebaseToken(fcm_token));
-      // sendTokenToServer(fcm_token, token);
+      dispatch(setFirebaseToken(fcm_token));
+      if (auth().currentUser?.displayName) {
+        firestore()
+          .collection('Пользователи')
+          .doc(auth().currentUser?.uid)
+          .update({
+            Токен: fcm_token,
+          });
+      }
     });
   }, []);
 

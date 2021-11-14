@@ -27,6 +27,9 @@ import auth, {
 } from '@react-native-firebase/auth';
 // @ts-ignore
 import {useSmsUserConsent} from '@eabdullazyanov/react-native-sms-user-consent';
+import firestore from '@react-native-firebase/firestore';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EnterCode'>;
@@ -34,6 +37,10 @@ type Props = {
 };
 const StyledText = withFont(Text);
 export default function EnterCodeScreen({navigation, route}: Props) {
+  const firebase_token = useSelector(
+    (state: RootState) => state.data.firebase_token,
+  );
+
   const [code, setCode] = useState<string>('');
   const shakeAnimation = new Animated.Value(0);
   const [confirm, setConfirm] = useState<ConfirmationResult>(null);
@@ -113,10 +120,18 @@ export default function EnterCodeScreen({navigation, route}: Props) {
     if (user && !user.displayName) {
       navigation.navigate('EnterName');
     } else {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Home'}],
-      });
+      firestore()
+        .collection('Пользователи')
+        .doc(auth().currentUser?.uid)
+        .update({
+          Токен: firebase_token,
+        })
+        .then(_ => {
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Home'}],
+          });
+        });
     }
   }
 
