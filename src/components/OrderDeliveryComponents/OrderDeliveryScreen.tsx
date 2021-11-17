@@ -142,7 +142,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
       price: getTotalPrice(),
       restaurant: activeShop.name,
       user_id: auth().currentUser?.uid ? auth().currentUser?.uid : '',
-      public_id: randomInteger(1, 10000000),
+      public_id: randomInteger(1, 999999),
       statuses: statusesArray,
     };
 

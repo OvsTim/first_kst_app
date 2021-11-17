@@ -347,6 +347,7 @@ export default function ProfileScreen({navigation}: Props) {
             />
           </View>
         </Pressable>
+        <View style={{height: 15}} />
       </>
     );
   }
@@ -354,7 +355,7 @@ export default function ProfileScreen({navigation}: Props) {
   function renderAuthorized() {
     return (
       <FlatList
-        style={{}}
+        style={{width, alignSelf: 'center'}}
         ListHeaderComponent={() => renderHeader()}
         data={orderList}
         renderItem={({item}) => (
