@@ -5,7 +5,6 @@ import {
   Pressable,
   StatusBar,
   Text,
-  TextInput,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -36,7 +35,6 @@ import {setOrders} from '../../redux/UserDataSlice';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
 import {setBasket} from '../../redux/BasketDataReducer';
-import DialogView from '../_CustomComponents/DialogView';
 import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
 type Props = {
@@ -50,14 +48,12 @@ export default function HistoryScreen({navigation}: Props) {
   const orders: Array<Order> = useSelector(
     (state: RootState) => state.data.orders,
   );
-  const [visible, setVisible] = useState<boolean>(false);
-  const [mark, setMark] = useState<number>(0);
+
   const [page, setPage] = useState<number>(1);
   const [lastDoc, setLastDoc] = useState<DocumentSnapshot | undefined>(
     undefined,
   );
-  const [commentary, setCommentary] = useState<string>('');
-  const [textVisible, setTextVisible] = useState<boolean>(false);
+
   const netInfo = useNetInfo();
   useEffect(() => {
     dayjs.locale('ru');
@@ -226,7 +222,7 @@ export default function HistoryScreen({navigation}: Props) {
             backgroundColor: 'white',
             borderRadius: 15,
           }}>
-          <Pressable onPress={() => setVisible(true)}>
+          <Pressable onPress={() => navigation.navigate('OrderInfo', {order})}>
             <StyledText
               style={{
                 color: '#00000080',
@@ -426,172 +422,6 @@ export default function HistoryScreen({navigation}: Props) {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => renderItem(item)}
         />
-        <DialogView
-          onBackdropPress={() => setVisible(false)}
-          onSwipeComplete={() => setVisible(false)}
-          avoidKeyboard={true}
-          isVisible={visible}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              width: width - 110,
-              alignItems: 'center',
-              borderRadius: 20,
-            }}>
-            <View
-              style={{
-                position: 'absolute',
-                right: -10,
-                top: -10,
-                borderRadius: 15,
-                overflow: 'hidden',
-                borderWidth: 1,
-                borderColor: 'white',
-              }}>
-              <Button
-                onPress={() => setVisible(false)}
-                containerStyle={{
-                  backgroundColor: '#28B3C6',
-                  width: 30,
-                  height: 30,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  style={{width: 9.5, height: 9.5}}
-                  source={require('../../assets/closeDialog.png')}
-                />
-              </Button>
-            </View>
-            <StyledText
-              style={{
-                fontWeight: '700',
-                fontSize: 18,
-                color: 'black',
-                marginTop: 22,
-                marginBottom: 18,
-              }}>
-              Оцените заказ
-            </StyledText>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginBottom: textVisible ? 11 : 60,
-              }}>
-              <Pressable
-                onPress={() => {
-                  setMark(1);
-                  setTextVisible(true);
-                }}>
-                <Image
-                  style={{
-                    width: 46,
-                    height: 42,
-                    tintColor: mark >= 1 ? '#FCF200' : '#D9D9D9',
-                  }}
-                  source={require('../../assets/star.png')}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  setMark(2);
-                  setTextVisible(true);
-                }}>
-                <Image
-                  style={{
-                    width: 46,
-                    height: 42,
-                    tintColor: mark >= 2 ? '#FCF200' : '#D9D9D9',
-                  }}
-                  source={require('../../assets/star.png')}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  setMark(3);
-                  setTextVisible(true);
-                }}>
-                <Image
-                  style={{
-                    width: 46,
-                    height: 42,
-                    tintColor: mark >= 3 ? '#FCF200' : '#D9D9D9',
-                  }}
-                  source={require('../../assets/star.png')}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  setMark(4);
-                  setTextVisible(true);
-                }}>
-                <Image
-                  style={{
-                    width: 46,
-                    height: 42,
-                    tintColor: mark >= 4 ? '#FCF200' : '#D9D9D9',
-                  }}
-                  source={require('../../assets/star.png')}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  setMark(5);
-                  setTextVisible(false);
-                }}>
-                <Image
-                  style={{
-                    width: 46,
-                    height: 42,
-                    tintColor: mark >= 5 ? '#FCF200' : '#D9D9D9',
-                  }}
-                  source={require('../../assets/star.png')}
-                />
-              </Pressable>
-            </View>
-            {textVisible && (
-              <TextInput
-                style={{
-                  marginBottom: 50,
-                  borderColor: '#D9D9D9',
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  width: width - 140,
-                }}
-                value={commentary}
-                onChangeText={text => setCommentary(text)}
-                multiline={true}
-                underlineColorAndroid={'transparent'}
-                placeholder={'Что нам стоит улучшить?'}
-              />
-            )}
-
-            <View style={{position: 'absolute', bottom: -25}}>
-              <BaseButton
-                textStyle={{
-                  fontWeight: '700',
-                  color: 'white',
-                  fontSize: 15,
-                }}
-                containerStyle={{
-                  backgroundColor:
-                    mark === 0 || (mark < 5 && !commentary)
-                      ? '#8B8B8B'
-                      : '#28B3C6',
-                  width: width - 240,
-                  borderWidth: 1,
-                  borderColor: 'white',
-                }}
-                text={'Отправить'}
-                onPress={() => {
-                  if (mark === 5 || (mark < 5 && commentary)) {
-                    setVisible(false);
-                  }
-                }}
-              />
-            </View>
-          </View>
-        </DialogView>
       </View>
     );
   }
