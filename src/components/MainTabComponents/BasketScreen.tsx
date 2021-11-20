@@ -110,7 +110,11 @@ export default function BasketScreen({navigation}: Props) {
         <View style={{flexDirection: 'row'}}>
           <View style={{width: 36}} />
           <Image
-            source={{uri: imagesMap[basketItem.item.picture_url]}}
+            source={
+              imagesMap[basketItem.item.picture_url]
+                ? {uri: imagesMap[basketItem.item.picture_url]}
+                : require('../../assets/img_ph.png')
+            }
             style={{
               height: 94,
               width: width / 2 - 18,
