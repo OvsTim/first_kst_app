@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -29,12 +30,13 @@ import {
   OrderDeliveryType,
   OrderPaymentType,
   OrderStatus,
+  Product,
 } from '../../redux/ProductsDataSlice';
 import {RootState, useAppDispatch} from '../../redux';
 import {setOrders} from '../../redux/UserDataSlice';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
-import {setBasket} from '../../redux/BasketDataReducer';
+import {BasketItem, setBasket} from '../../redux/BasketDataReducer';
 import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
 type Props = {
@@ -48,7 +50,9 @@ export default function HistoryScreen({navigation}: Props) {
   const orders: Array<Order> = useSelector(
     (state: RootState) => state.data.orders,
   );
-
+  const productsMap: Record<string, Product> = useSelector(
+    (state: RootState) => state.products.products,
+  );
   const [page, setPage] = useState<number>(1);
   const [lastDoc, setLastDoc] = useState<DocumentSnapshot | undefined>(
     undefined,
@@ -348,7 +352,18 @@ export default function HistoryScreen({navigation}: Props) {
           <View style={{borderRadius: 15, overflow: 'hidden'}}>
             <Button
               onPress={() => {
-                dispatch(setBasket(order.products));
+                let prevProdItems: Array<BasketItem> = order.products;
+                let newBasket: Array<BasketItem> = [];
+                prevProdItems.forEach(it => {
+                  if (productsMap[it.item.id]) {
+                    newBasket.push({
+                      item: productsMap[it.item.id],
+                      count: it.count,
+                    });
+                  } else {
+                  }
+                });
+                dispatch(setBasket(newBasket));
                 navigation.navigate('Basket');
               }}
               containerStyle={{}}>
