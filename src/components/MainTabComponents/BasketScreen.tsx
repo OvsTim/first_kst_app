@@ -141,7 +141,7 @@ export default function BasketScreen({navigation}: Props) {
       return;
     }
 
-    // navigation.navigate('OrderDelivery');
+    navigation.navigate('OrderDelivery');
   }
 
   function renderBasketItem(basketItem: BasketItem) {

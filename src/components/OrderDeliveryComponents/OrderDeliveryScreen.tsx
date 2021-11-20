@@ -34,6 +34,7 @@ import firestore from '@react-native-firebase/firestore';
 import dayjs from 'dayjs';
 import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {getWorkingNow} from '../../utils/workHourUtils';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -94,6 +95,43 @@ export default function OrderDeliveryScreen({navigation}: Props) {
 
   function randomInteger(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function validateAll() {
+    if (
+      (orderDeliveryType === 'PICKUP' &&
+        getWorkingNow(activeShop.workHours) === 'Закрыто') ||
+      (orderDeliveryType === 'DELIVERY' &&
+        getWorkingNow(activeShop.delivery) === 'Закрыто')
+    ) {
+      Alert.alert(
+        'Ошибка',
+        orderDeliveryType === 'DELIVERY'
+          ? 'Данная доставка сейчас не работает. Выберите другой ресторан'
+          : 'Данный ресторан сейчас не работает. Выберите другой ресторан',
+      );
+      return;
+    }
+
+    console.log('blacklist', activeShop.outOfStock);
+    let names: Array<string> = [];
+
+    basket.forEach(it => {
+      if (activeShop.outOfStock.includes('Продукты/' + it.item.id)) {
+        names.push(it.item.name);
+      }
+    });
+    if (names.length > 0) {
+      Alert.alert(
+        'Ошибка',
+
+        names.join(' ') +
+          ' отсутствуют в данный момент. Удалите отсутствующие товары из корзины и повторите попытку',
+      );
+      return;
+    }
+
+    handlePayment();
   }
 
   function handlePayment() {
@@ -531,7 +569,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             if (orderDeliveryType === 'DELIVERY' && paymentWay === 'CASH') {
               setModalVisible(true);
             } else {
-              handlePayment();
+              validateAll();
             }
           }}
         />
@@ -682,7 +720,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                   onPress={() => {
                     setModalVisible(false);
                     setTimeout(() => {
-                      handlePayment();
+                      validateAll();
                     }, 500);
                   }}
                 />
