@@ -367,11 +367,15 @@ export default function AppWithNavigationState() {
           {textVisible && (
             <TextInput
               style={{
+                textAlignVertical: 'top',
+                paddingTop: 11,
+                paddingHorizontal: 15,
                 marginBottom: 50,
                 borderColor: '#D9D9D9',
                 borderWidth: 1,
                 borderRadius: 10,
                 width: width - 140,
+                minHeight: 83,
               }}
               multiline={true}
               value={commentary}
