@@ -252,40 +252,40 @@ export default function OrderInfoScreen({route}: Props) {
           </View>
         )}
         <StyledText
-          onPress={() => {
-            if (item.time !== '') {
-              return;
-            }
-
-            let statuses = currentOrder.statuses;
-            let newStatuses = [];
-            for (let i = 0; i < statuses.length; i++) {
-              let status = currentOrder.statuses[i];
-              if (status.status === item.status) {
-                status.time = dayjs(new Date()).format().toString();
-              }
-
-              newStatuses.push(status);
-            }
-
-            firestore()
-              .collection('Заказы')
-              .doc(route.params.order.id)
-              .update({
-                Статусы: statuses,
-                ТекущийСтатус: item.status,
-                Активен: item.status !== 'SUCCESS',
-              })
-              .then(_ => {})
-              .catch(er => {
-                Alert.alert(
-                  'Ошибка',
-                  'Произошла ошибка с кодом ' +
-                    er.code +
-                    ', повторите попытку позже',
-                );
-              });
-          }}
+          // onPress={() => {
+          //   if (item.time !== '') {
+          //     return;
+          //   }
+          //
+          //   let statuses = currentOrder.statuses;
+          //   let newStatuses = [];
+          //   for (let i = 0; i < statuses.length; i++) {
+          //     let status = currentOrder.statuses[i];
+          //     if (status.status === item.status) {
+          //       status.time = dayjs(new Date()).format().toString();
+          //     }
+          //
+          //     newStatuses.push(status);
+          //   }
+          //
+          //   firestore()
+          //     .collection('Заказы')
+          //     .doc(route.params.order.id)
+          //     .update({
+          //       Статусы: statuses,
+          //       ТекущийСтатус: item.status,
+          //       Активен: item.status !== 'SUCCESS',
+          //     })
+          //     .then(_ => {})
+          //     .catch(er => {
+          //       Alert.alert(
+          //         'Ошибка',
+          //         'Произошла ошибка с кодом ' +
+          //           er.code +
+          //           ', повторите попытку позже',
+          //       );
+          //     });
+          // }}
           style={{
             fontWeight: '500',
             marginLeft: 14,
@@ -511,35 +511,48 @@ export default function OrderInfoScreen({route}: Props) {
 
       {renderStatusList()}
       {renderProductList()}
-      <BaseButton
-        text={'Отменить заказ'}
-        onPress={() => {
-          let statuses = currentOrder.statuses;
-          statuses.push({
-            status: 'CANCELLED',
-            time: dayjs(new Date()).format().toString(),
-          });
-          firestore()
-            .collection('Заказы')
-            .doc(route.params.order.id)
-            .update({
-              Статусы: statuses,
-              Активен: false,
-              ТекущийСтатус: 'CANCELLED',
-            })
-            .then(_ => {})
-            .catch(er => {
-              Alert.alert(
-                'Ошибка',
-                'Произошла ошибка с кодом ' +
-                  er.code +
-                  ', повторите попытку позже',
-              );
-            });
-        }}
-        containerStyle={{backgroundColor: '#FFD0D0'}}
-        textStyle={{color: '#850000', fontSize: 18}}
-      />
+      {currentOrder.currentStatus === 'IS_NEW' && (
+        <BaseButton
+          text={'Отменить заказ'}
+          onPress={() => {
+            Alert.alert('Сообщение', 'Вы уверены?', [
+              {
+                text: 'Да',
+                onPress: () => {
+                  {
+                    let statuses = currentOrder.statuses;
+                    statuses.push({
+                      status: 'CANCELLED',
+                      time: dayjs(new Date()).format().toString(),
+                    });
+                    firestore()
+                      .collection('Заказы')
+                      .doc(route.params.order.id)
+                      .update({
+                        Статусы: statuses,
+                        Активен: false,
+                        ТекущийСтатус: 'CANCELLED',
+                      })
+                      .then(_ => {})
+                      .catch(er => {
+                        Alert.alert(
+                          'Ошибка',
+                          'Произошла ошибка с кодом ' +
+                            er.code +
+                            ', повторите попытку позже',
+                        );
+                      });
+                  }
+                },
+                style: 'destructive',
+              },
+              {text: 'Нет'},
+            ]);
+          }}
+          containerStyle={{backgroundColor: '#FFD0D0'}}
+          textStyle={{color: '#850000', fontSize: 18}}
+        />
+      )}
       {activeShop.phone && (
         <StyledText
           onPress={() => {
