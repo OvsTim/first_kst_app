@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
-  FlatList,
   Image,
   Pressable,
   StatusBar,
@@ -19,14 +18,15 @@ import {useSelector} from 'react-redux';
 import {RootState, useAppDispatch} from '../../redux';
 import {TENGE_LETTER} from './ProductItem';
 import {ProductCountButton} from './ProductCountButton';
-import {ImageMap, setCurrentAddress} from '../../redux/UserDataSlice';
-import {useFocusEffect} from '@react-navigation/native';
+import {ImageMap} from '../../redux/UserDataSlice';
 import {Restaraunt} from '../../API';
 import {RecommendCard} from './RecommendCard';
 import auth from '@react-native-firebase/auth';
 import {hScale, vScale} from '../../utils/scaling';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {getWorkingNow} from '../../utils/workHourUtils';
+import {OrderDeliveryType} from '../../redux/ProductsDataSlice';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -38,6 +38,9 @@ export default function BasketScreen({navigation}: Props) {
   const dispatch = useAppDispatch();
   const imagesMap: ImageMap = useSelector(
     (state: RootState) => state.data.images,
+  );
+  const orderDeliveryType: OrderDeliveryType = useSelector(
+    (state: RootState) => state.data.orderDeliveryType,
   );
   const netinfo = useNetInfo();
   const basket: Array<BasketItem> = useSelector(
@@ -102,6 +105,43 @@ export default function BasketScreen({navigation}: Props) {
     }
 
     return words[2];
+  }
+
+  function validateAll() {
+    if (
+      (orderDeliveryType === 'PICKUP' &&
+        getWorkingNow(activeShop.workHours) === 'Закрыто') ||
+      (orderDeliveryType === 'DELIVERY' &&
+        getWorkingNow(activeShop.delivery) === 'Закрыто')
+    ) {
+      Alert.alert(
+        'Ошибка',
+        orderDeliveryType === 'DELIVERY'
+          ? 'Данная доставка сейчас не работает. Выберите другой ресторан'
+          : 'Данный ресторан сейчас не работает. Выберите другой ресторан',
+      );
+      return;
+    }
+
+    console.log('blacklist', activeShop.outOfStock);
+    let names: Array<string> = [];
+
+    basket.forEach(it => {
+      if (activeShop.outOfStock.includes('Продукты/' + it.item.id)) {
+        names.push(it.item.name);
+      }
+    });
+    if (names.length > 0) {
+      Alert.alert(
+        'Ошибка',
+
+        names.join(' ') +
+          ' отсутствуют в данный момент. Удалите отсутствующие товары из корзины и повторите попытку',
+      );
+      return;
+    }
+
+    // navigation.navigate('OrderDelivery');
   }
 
   function renderBasketItem(basketItem: BasketItem) {
@@ -351,7 +391,7 @@ export default function BasketScreen({navigation}: Props) {
             text={'Оформить заказ на ' + getTotalPrice() + ' ' + TENGE_LETTER}
             onPress={() => {
               if (auth().currentUser?.displayName !== null) {
-                navigation.navigate('OrderDelivery');
+                validateAll();
               } else {
                 navigation.navigate('EnterPhone');
               }
