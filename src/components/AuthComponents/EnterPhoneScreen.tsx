@@ -106,7 +106,7 @@ export default function EnterPhoneScreen({navigation}: Props) {
         mask={'+7 ([000]) [000] [00] [00]'}
       />
       <StyledText
-        onPress={() => {}}
+        onPress={() => navigation.navigate('Agreement')}
         style={{
           marginTop: 11,
           fontWeight: '400',

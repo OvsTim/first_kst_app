@@ -35,8 +35,10 @@ import {RootState} from '../redux';
 import SearchScreen from '../components/SearchComponents/SearchScreen';
 import OrderSuccessScreen from '../components/OrderSuccessComponents/OrderSuccessScreen';
 import OrderInfoScreen from '../components/OrderInfoComponents/OrderInfoScreen';
+import AgreementScreen from '../components/AgreementComponents/AgreementScreen';
 
 export type AppStackParamList = {
+  Agreement: undefined;
   Home: undefined;
   Basket: undefined;
   Contacts: undefined;
@@ -435,6 +437,36 @@ export default function AppNavigator() {
           headerBackTitleVisible: true,
           headerBackImage: _ => <View />,
           headerTitle: 'Рестораны',
+          headerTitleStyle: {
+            color: 'black',
+            fontSize: 17,
+            fontFamily: 'SFProDisplay-Bold',
+          },
+          headerStyle: {backgroundColor: '#F7F7F7'},
+        }}
+      />
+      <Stack.Screen
+        name={'Agreement'}
+        component={AgreementScreen}
+        options={{
+          headerBackImage: _ => (
+            <Image
+              style={{width: 12, height: 21, marginRight: 8}}
+              source={require('../assets/back.png')}
+            />
+          ),
+          headerPressColorAndroid: 'transparent',
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+          headerTitleAlign: 'center',
+          headerBackTitleStyle: {
+            color: '#28B3C6',
+            fontSize: 14,
+            marginLeft: 4,
+            fontFamily: 'SFProDisplay-Regular',
+          },
+          headerBackTitle: 'Назад',
+          headerBackTitleVisible: true,
+          headerTitle: 'Соглашение',
           headerTitleStyle: {
             color: 'black',
             fontSize: 17,
