@@ -28,10 +28,11 @@ import {getDescByStatus} from '../../utils/ordersUtils';
 import BaseButton from '../_CustomComponents/BaseButton';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../redux';
+import {RootState, useAppDispatch} from '../../redux';
 import {Restaraunt} from '../../API';
 // @ts-ignore
 import AnimatedColorView from 'react-native-animated-colors';
+import {newOrderCancelRequest} from '../../redux/thunks';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderInfo'>;
   route: RouteProp<AppStackParamList, 'OrderInfo'>;
@@ -39,6 +40,7 @@ type Props = {
 
 export default function OrderInfoScreen({route}: Props) {
   const StyledText = withFont(Text);
+  const dispatch = useAppDispatch();
   const [currentOrder, setCurrentOrder] = useState<Order>(route.params.order);
   const {width} = useWindowDimensions();
   const active: string = useSelector(
@@ -533,7 +535,9 @@ export default function OrderInfoScreen({route}: Props) {
                         Активен: false,
                         ТекущийСтатус: 'CANCELLED',
                       })
-                      .then(_ => {})
+                      .then(_ => {
+                        dispatch(newOrderCancelRequest(currentOrder.public_id));
+                      })
                       .catch(er => {
                         Alert.alert(
                           'Ошибка',

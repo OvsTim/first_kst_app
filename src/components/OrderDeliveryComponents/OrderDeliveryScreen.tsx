@@ -27,7 +27,7 @@ import {
 } from '../../redux/ProductsDataSlice';
 import {BasketItem} from '../../redux/BasketDataReducer';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../redux';
+import {RootState, useAppDispatch} from '../../redux';
 import {Address, Restaraunt} from '../../API';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -35,13 +35,14 @@ import dayjs from 'dayjs';
 import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {getWorkingNow} from '../../utils/workHourUtils';
+import {newOrderRequest} from '../../redux/thunks';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
 const StyledText = withFont(Text);
 export default function OrderDeliveryScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
-
+  const dispatch = useAppDispatch();
   const [paymentWay, setPaymentWay] = useState<OrderPaymentType>('CASH');
   const orderDeliveryType: OrderDeliveryType = useSelector(
     (state: RootState) => state.data.orderDeliveryType,
@@ -211,6 +212,20 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         Статусы: order.statuses,
       })
       .then(_ => {
+        dispatch(
+          newOrderRequest({
+            id: order.public_id,
+            type: order.delivery_type,
+            address:
+              order.delivery_type === 'PICKUP'
+                ? activeShop.name
+                : currentAddress?.street +
+                  ' ' +
+                  currentAddress?.house +
+                  ', ' +
+                  currentAddress?.flat,
+          }),
+        );
         navigation.navigate('OrderSuccess');
       })
       .catch(er => {
