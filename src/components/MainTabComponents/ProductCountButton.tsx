@@ -133,7 +133,7 @@ export function ProductCountButton(props: Props) {
               width: 26,
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: 1,
+              marginBottom: 3,
             }}>
             <StyledText
               style={{fontSize: 12, color: '#5A5858CC', fontWeight: '500'}}>
@@ -166,7 +166,7 @@ export function ProductCountButton(props: Props) {
                 fontSize: 12,
                 color: '#5A5858CC',
                 fontWeight: '500',
-                marginBottom: 1,
+                marginBottom: 3,
               }}>
               +
             </StyledText>

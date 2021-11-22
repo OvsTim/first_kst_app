@@ -45,6 +45,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   const shakeAnimation = new Animated.Value(0);
   const [confirm, setConfirm] = useState<ConfirmationResult>(null);
   const [isActive, setIsActive] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const count = 60;
   const codeRef: RefObject<TextInput> = createRef();
@@ -155,8 +156,16 @@ export default function EnterCodeScreen({navigation, route}: Props) {
           }
         })
         .catch((er: {code: any}) => {
+          console.log('er', er);
           if (er.code === 'auth/invalid-verification-code') {
-            startShake();
+            Vibration.vibrate();
+            setIsError(true);
+            setTimeout(() => {
+              setIsError(false);
+              setCode('');
+            }, 1000);
+
+            // startShake();
           } else if (er.code === 'auth/too-many-requests') {
             Alert.alert(
               'Ошибка',
@@ -252,7 +261,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
                 position: 'absolute',
                 left: 40,
               }}>
@@ -275,7 +284,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 80,
               }}>
@@ -299,7 +309,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 120,
               }}>
@@ -323,7 +334,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 160,
               }}>
@@ -347,7 +359,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 200,
               }}>
@@ -371,7 +384,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 240,
               }}>

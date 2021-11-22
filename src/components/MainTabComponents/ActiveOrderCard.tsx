@@ -27,7 +27,7 @@ export default function ActiveOrderCard(props: Props) {
   return (
     <DropShadow
       style={{
-        marginVertical: 6,
+        marginVertical: 10,
         shadowColor: '#000',
         alignSelf: 'center',
 

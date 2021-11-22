@@ -125,6 +125,7 @@ export default function MenuScreen({navigation}: Props) {
     description: '',
   });
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isSwiping, setIsSwiping] = useState<boolean>(false);
   const [activeCategory, setActiveCategory] = useState<number>(0);
   const [elevation, setElevation] = useState<number>(0);
 
@@ -250,7 +251,9 @@ export default function MenuScreen({navigation}: Props) {
               image: doc.get<string>('Картинка')
                 ? doc.get<string>('Картинка')
                 : '',
-              productId: doc.get<DocumentReference>('Продукт').path,
+              productId: doc.get<DocumentReference>('Продукт')
+                ? doc.get<DocumentReference>('Продукт').path
+                : '',
             });
           });
           dispatch(setStocks(stockList));
@@ -292,36 +295,46 @@ export default function MenuScreen({navigation}: Props) {
             flexDirection: 'row',
             marginTop: 25,
             width,
-            backgroundColor: 'white',
             height: 35,
           }}>
-          <View style={{width: 18}} />
-          <Button
-            androidRippleColor={'lightgray'}
-            onPress={() =>
-              navigation.navigate('ChangeRestaraunt', {activeTab: 0})
-            }
-            containerStyle={{}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <StyledText
-                style={{fontWeight: '500', fontSize: 15, color: 'black'}}>
-                {activeShop.name}
-              </StyledText>
-              <Image
+          <View style={{width: 8}} />
+          <View
+            style={{
+              overflow: 'hidden',
+              borderRadius: 15,
+              height: 25,
+              alignSelf: 'center',
+            }}>
+            <Button
+              androidRippleColor={'lightgray'}
+              onPress={() =>
+                navigation.navigate('ChangeRestaraunt', {activeTab: 0})
+              }
+              containerStyle={{height: 25}}>
+              <View
                 style={{
-                  width: 14,
-                  height: 7,
-                  marginLeft: 9,
-                  tintColor: 'black',
-                }}
-                source={require('../../assets/droprdown.png')}
-              />
-            </View>
-          </Button>
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View style={{width: 10}} />
+
+                <StyledText
+                  style={{fontWeight: '500', fontSize: 15, color: 'black'}}>
+                  {activeShop.name}
+                </StyledText>
+                <Image
+                  style={{
+                    width: 14,
+                    height: 7,
+                    marginLeft: 9,
+                    tintColor: 'black',
+                  }}
+                  source={require('../../assets/droprdown.png')}
+                />
+                <View style={{width: 10}} />
+              </View>
+            </Button>
+          </View>
           <View
             style={{
               position: 'absolute',
@@ -500,15 +513,14 @@ export default function MenuScreen({navigation}: Props) {
         contentContainerStyle={{
           height: 150,
           alignItems: 'center',
-          marginVertical: 18,
         }}
         keyExtractor={(item, index) => index.toString()}
         showsHorizontalScrollIndicator={false}
         data={stocks}
         horizontal={true}
-        ItemSeparatorComponent={() => <View style={{width: 18}} />}
+        ItemSeparatorComponent={() => <View style={{width: 9}} />}
         ListFooterComponent={() => <View style={{width: 18}} />}
-        renderItem={({item}) => (
+        renderItem={({item, index}) => (
           <Pressable
             onPress={() => {
               if (!item.id) {
@@ -518,7 +530,7 @@ export default function MenuScreen({navigation}: Props) {
                 setModalVisible(true);
               }
             }}
-            style={{marginLeft: 18}}>
+            style={{marginLeft: index === 0 ? 18 : 9}}>
             <FirebaseImage
               innerUrl={item.image}
               resizeMode={'contain'}
@@ -614,7 +626,14 @@ export default function MenuScreen({navigation}: Props) {
   function renderModal() {
     return (
       <Modal
-        onSwipeComplete={() => setModalVisible(false)}
+        onSwipeComplete={() => {
+          setModalVisible(false);
+          setIsSwiping(false);
+        }}
+        onSwipeStart={() => setIsSwiping(true)}
+        onSwipeCancel={() => {
+          setIsSwiping(false);
+        }}
         swipeDirection={['down']}
         isVisible={modalVisible}
         statusBarTranslucent={true}
@@ -635,7 +654,7 @@ export default function MenuScreen({navigation}: Props) {
               width: 45,
               height: 15,
               marginVertical: 20,
-              transform: [{rotate: '180deg'}],
+              transform: [{rotate: isSwiping ? '180deg' : '0deg'}],
             }}
             source={require('../../assets/modal_arrow.png')}
           />
@@ -667,9 +686,13 @@ export default function MenuScreen({navigation}: Props) {
             {modalStock.description}
           </StyledText>
           <BaseButton
-            text={'Показать'}
+            text={modalStock.productId === '' ? 'Закрыть' : 'Показать'}
             onPress={() => {
               setModalVisible(false);
+              if (modalStock.productId === '') {
+                return;
+              }
+
               if (
                 products.filter(
                   it => 'Продукты/' + it.id === modalStock.productId,
@@ -721,7 +744,7 @@ export default function MenuScreen({navigation}: Props) {
                   backgroundColor: 'white',
                   alignSelf: 'center',
                   paddingLeft: 18,
-                  height: 60,
+                  height: 40,
                 }}
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}

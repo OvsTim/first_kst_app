@@ -18,7 +18,7 @@ import BaseButton from '../_CustomComponents/BaseButton';
 import * as Progress from 'react-native-progress';
 import Modal from 'react-native-modal';
 import AuthBaseInput from '../_CustomComponents/AuthBaseInput';
-import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
+import {DELIVERY_COST, TENGE_LETTER} from '../MainTabComponents/ProductItem';
 import {
   Order,
   OrderDeliveryType,
@@ -90,7 +90,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     } else if (getBasketPrice() >= 5000) {
       return getBasketPrice();
     } else {
-      return getBasketPrice() + 800;
+      return getBasketPrice() + DELIVERY_COST;
     }
   }
 
@@ -506,7 +506,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             </StyledText>
             <StyledText
               style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
-              {getBasketPrice() >= 5000 ? 'Бесплатно' : '800 ₸'}
+              {getBasketPrice() >= 5000 ? 'Бесплатно' : DELIVERY_COST + ' ₸'}
             </StyledText>
           </View>
         )}
@@ -545,8 +545,8 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         </StyledText>
         <View style={{height: 16}} />
         <BaseButton
-          containerStyle={{width: 148, height: 25}}
-          textStyle={{fontSize: 12, color: 'white'}}
+          containerStyle={{width: 148, height: 30}}
+          textStyle={{fontSize: 12, color: 'white', paddingVertical: 0}}
           text={'перейти в меню'}
           onPress={() => navigation.navigate('Menu')}
         />

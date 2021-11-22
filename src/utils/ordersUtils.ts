@@ -9,7 +9,7 @@ export function getStatusOrderString(status: OrderStatus) {
     case 'COOKING':
       return 'Готовим';
     case 'DELIVER':
-      return 'Везем';
+      return 'Курьер в пути';
     case 'SUCCESS':
       return 'Получен';
     case 'CANCELLED':

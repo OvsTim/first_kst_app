@@ -208,6 +208,8 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           maxLength={30}
           textContentType={'streetAddressLine1'}
           keyboardType={'default'}
+          secondLabel={' *'}
+          secondLabelColor={'red'}
           onSubmitEditing={() => {
             console.log('onSubmitEditing');
             homeRef.current?.focus();
@@ -228,6 +230,8 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           placeholder={''}
           showLabel={true}
           label={'Дом (корпус, строение)'}
+          secondLabel={' *'}
+          secondLabelColor={'red'}
           textContentType={'streetAddressLine2'}
           keyboardType={'default'}
           onSubmitEditing={() => {
@@ -251,6 +255,8 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           showLabel={true}
           maxLength={4}
           label={'Квартира'}
+          secondLabel={' *'}
+          secondLabelColor={'red'}
           textContentType={'none'}
           onSubmitEditing={() => {
             entranceRef.current?.focus();
