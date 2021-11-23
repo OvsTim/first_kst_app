@@ -549,7 +549,7 @@ export default function MenuScreen({navigation}: Props) {
             style={{marginLeft: index === 0 ? 18 : 9}}>
             <FirebaseImage
               innerUrl={item.image}
-              resizeMode={'contain'}
+              resizeMode={'cover'}
               imageStyle={{
                 borderRadius: 15,
                 width: width - 60,
@@ -670,9 +670,9 @@ export default function MenuScreen({navigation}: Props) {
             source={require('../../assets/modal_arrow.png')}
           />
           <FirebaseImage
-            resizeMode={'contain'}
+            resizeMode={'cover'}
             innerUrl={modalStock.image}
-            imageStyle={{width: width - 60, height: 126, borderRadius: 15}}
+            imageStyle={{borderRadius: 15, width: width - 60, height: 126}}
           />
           <StyledText
             style={{
