@@ -117,6 +117,8 @@ export default function MenuScreen({navigation}: Props) {
     state.products.productIds.map(it => productsMap[it]),
   );
 
+  console.log('products', products);
+
   const [modalStock, setModalStock] = useState<Stock>({
     id: '',
     name: '',
@@ -163,11 +165,11 @@ export default function MenuScreen({navigation}: Props) {
       .then(res => {
         let prodList: Array<Product> = [];
         res.docs.forEach(doc => {
-          //   console.log(
-          //     "doc.get<DocumentReference>('Категория')",
-          //     doc.id,
-          //     doc.get<DocumentReference>('Категория'),
-          //   );
+          // console.log(
+          //   "doc.get<DocumentReference>('Категория')",
+          //   doc.id,
+          //   doc.get<DocumentReference>('Категория'),
+          // );
 
           prodList.push({
             id: doc.id,
@@ -194,9 +196,18 @@ export default function MenuScreen({navigation}: Props) {
               doc.get<DocumentReference>('Категория').path,
               catList,
             ),
+            productOrder: doc.get<number>('Порядок')
+              ? doc.get<number>('Порядок')
+              : 0,
           });
         });
-        dispatch(setProducts(prodList));
+        dispatch(
+          setProducts(
+            prodList.sort(function (a, b) {
+              return a.productOrder - b.productOrder;
+            }),
+          ),
+        );
       })
       .catch(er => console.log('er123', er));
   }
@@ -660,14 +671,14 @@ export default function MenuScreen({navigation}: Props) {
             borderTopLeftRadius: 15,
             alignItems: 'center',
           }}>
-          <Image
+          <View
             style={{
-              width: 45,
-              height: 15,
               marginVertical: 20,
-              transform: [{rotate: '180deg'}],
+              backgroundColor: '#D9D9D9',
+              width: 42,
+              height: 6,
+              borderRadius: 3,
             }}
-            source={require('../../assets/modal_arrow.png')}
           />
           <FirebaseImage
             resizeMode={'cover'}

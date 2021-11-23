@@ -14,6 +14,7 @@ export interface Product {
   description?: string;
   price: number;
   categoryOrder: number;
+  productOrder?: number;
 }
 
 export interface Category {
