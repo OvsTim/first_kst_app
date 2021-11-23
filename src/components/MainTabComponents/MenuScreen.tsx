@@ -125,7 +125,6 @@ export default function MenuScreen({navigation}: Props) {
     description: '',
   });
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [isSwiping, setIsSwiping] = useState<boolean>(false);
   const [activeCategory, setActiveCategory] = useState<number>(0);
   const [elevation, setElevation] = useState<number>(0);
 
@@ -164,6 +163,12 @@ export default function MenuScreen({navigation}: Props) {
       .then(res => {
         let prodList: Array<Product> = [];
         res.docs.forEach(doc => {
+          //   console.log(
+          //     "doc.get<DocumentReference>('Категория')",
+          //     doc.id,
+          //     doc.get<DocumentReference>('Категория'),
+          //   );
+
           prodList.push({
             id: doc.id,
             name: doc.get<string>('Название')
@@ -193,7 +198,7 @@ export default function MenuScreen({navigation}: Props) {
         });
         dispatch(setProducts(prodList));
       })
-      .catch(er => console.log('er', er));
+      .catch(er => console.log('er123', er));
   }
 
   useFocusEffect(
@@ -294,8 +299,10 @@ export default function MenuScreen({navigation}: Props) {
           style={{
             flexDirection: 'row',
             marginTop: 25,
+            marginBottom: 10,
+            alignItems: 'center',
             width,
-            height: 35,
+            height: 45,
           }}>
           <View style={{width: 8}} />
           <View
@@ -409,99 +416,108 @@ export default function MenuScreen({navigation}: Props) {
           }}
         />
         {orderDeliveryType === 'PICKUP' ? (
-          <Button
-            androidRippleColor={'lightgray'}
-            onPress={() =>
-              navigation.navigate('ChangeRestaraunt', {activeTab: 0})
-            }
-            containerStyle={{marginTop: 13 / 2}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image
-                style={{width: 18, height: 18, marginRight: 18}}
-                source={require('../../assets/samovivoz.png')}
-              />
-              <StyledText
-                numberOfLines={1}
-                ellipsizeMode={'tail'}
-                style={{
-                  fontWeight: '400',
-                  maxWidth: width / 2,
-                  fontSize: 15,
-                  color: 'black',
-                }}>
-                {activeShop.name}
-              </StyledText>
-              <Image
-                style={{
-                  marginLeft: 10,
-                  tintColor: 'black',
-                  width: 12,
-                  height: 6,
-                  transform: [{rotate: '270deg'}],
-                }}
-                source={require('../../assets/droprdown.png')}
-              />
-            </View>
-          </Button>
-        ) : (
-          <Button
-            androidRippleColor={'lightgray'}
-            onPress={() => {
-              if (!auth().currentUser?.displayName) {
-                navigation.navigate('EnterPhone');
-              } else {
-                navigation.navigate('DeliveryListSelect');
+          <View style={{overflow: 'hidden', borderRadius: 10, marginTop: 13}}>
+            <Button
+              androidRippleColor={'lightgray'}
+              onPress={() =>
+                navigation.navigate('ChangeRestaraunt', {activeTab: 0})
               }
-            }}
-            containerStyle={{marginTop: 13 / 2}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {currentAddress && (
+              containerStyle={{}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{width: 10}} />
+
                 <Image
                   style={{width: 18, height: 18, marginRight: 18}}
-                  source={require('../../assets/delivery_icon.png')}
+                  source={require('../../assets/samovivoz.png')}
                 />
-              )}
-              {currentAddress ? (
                 <StyledText
                   numberOfLines={1}
                   ellipsizeMode={'tail'}
                   style={{
                     fontWeight: '400',
                     maxWidth: width / 2,
-
                     fontSize: 15,
                     color: 'black',
                   }}>
-                  {currentAddress.street +
-                    ' ' +
-                    currentAddress.house +
-                    ', ' +
-                    currentAddress.flat}
+                  {activeShop.name}
                 </StyledText>
-              ) : (
-                <StyledText
-                  numberOfLines={1}
-                  ellipsizeMode={'tail'}
+                <Image
                   style={{
-                    fontWeight: '400',
-                    fontSize: 15,
-                    color: '#28B3C6',
-                  }}>
-                  {'Укажите адрес доставки'}
-                </StyledText>
-              )}
-              <Image
-                style={{
-                  marginLeft: 10,
-                  tintColor: currentAddress ? 'black' : '#28B3C6',
-                  width: 12,
-                  height: 6,
-                  transform: [{rotate: '270deg'}],
-                }}
-                source={require('../../assets/droprdown.png')}
-              />
-            </View>
-          </Button>
+                    marginLeft: 10,
+                    tintColor: 'black',
+                    width: 12,
+                    height: 6,
+                    transform: [{rotate: '270deg'}],
+                  }}
+                  source={require('../../assets/droprdown.png')}
+                />
+                <View style={{width: 10}} />
+              </View>
+            </Button>
+          </View>
+        ) : (
+          <View style={{overflow: 'hidden', borderRadius: 10, marginTop: 13}}>
+            <Button
+              androidRippleColor={'lightgray'}
+              onPress={() => {
+                if (!auth().currentUser?.displayName) {
+                  navigation.navigate('EnterPhone');
+                } else {
+                  navigation.navigate('DeliveryListSelect');
+                }
+              }}
+              containerStyle={{}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{width: 10}} />
+                {currentAddress && (
+                  <Image
+                    style={{width: 18, height: 18, marginRight: 18}}
+                    source={require('../../assets/delivery_icon.png')}
+                  />
+                )}
+                {currentAddress ? (
+                  <StyledText
+                    numberOfLines={1}
+                    ellipsizeMode={'tail'}
+                    style={{
+                      fontWeight: '400',
+                      maxWidth: width / 2,
+
+                      fontSize: 15,
+                      color: 'black',
+                    }}>
+                    {currentAddress.street +
+                      ' ' +
+                      currentAddress.house +
+                      ', ' +
+                      currentAddress.flat}
+                  </StyledText>
+                ) : (
+                  <StyledText
+                    numberOfLines={1}
+                    ellipsizeMode={'tail'}
+                    style={{
+                      fontWeight: '400',
+                      fontSize: 15,
+                      color: '#28B3C6',
+                    }}>
+                    {'Укажите адрес доставки'}
+                  </StyledText>
+                )}
+                <Image
+                  style={{
+                    marginLeft: 10,
+                    tintColor: currentAddress ? 'black' : '#28B3C6',
+                    width: 12,
+                    height: 6,
+                    transform: [{rotate: '270deg'}],
+                  }}
+                  source={require('../../assets/droprdown.png')}
+                />
+                <View style={{width: 10}} />
+              </View>
+            </Button>
+          </View>
         )}
       </View>
     );
@@ -612,8 +628,8 @@ export default function MenuScreen({navigation}: Props) {
               width: 14,
               height: 14,
               position: 'absolute',
-              right: 12,
-              top: 10,
+              right: 14,
+              top: 0,
               tintColor: index === activeCategory ? '#850000' : '#606572',
             }}
             source={require('../../assets/Fire.png')}
@@ -628,11 +644,6 @@ export default function MenuScreen({navigation}: Props) {
       <Modal
         onSwipeComplete={() => {
           setModalVisible(false);
-          setIsSwiping(false);
-        }}
-        onSwipeStart={() => setIsSwiping(true)}
-        onSwipeCancel={() => {
-          setIsSwiping(false);
         }}
         swipeDirection={['down']}
         isVisible={modalVisible}
@@ -654,13 +665,14 @@ export default function MenuScreen({navigation}: Props) {
               width: 45,
               height: 15,
               marginVertical: 20,
-              transform: [{rotate: isSwiping ? '180deg' : '0deg'}],
+              transform: [{rotate: '180deg'}],
             }}
             source={require('../../assets/modal_arrow.png')}
           />
           <FirebaseImage
+            resizeMode={'contain'}
             innerUrl={modalStock.image}
-            imageStyle={{width: width - 60, height: 150, borderRadius: 15}}
+            imageStyle={{width: width - 60, height: 126, borderRadius: 15}}
           />
           <StyledText
             style={{

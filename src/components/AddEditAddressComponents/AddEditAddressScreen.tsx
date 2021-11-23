@@ -278,7 +278,6 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           showLabel={true}
           label={'Подъезд '}
           maxLength={2}
-          secondLabel={'(не обязательно)'}
           textContentType={'none'}
           onSubmitEditing={() => {
             floorRef.current?.focus();
@@ -300,7 +299,6 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           showLabel={true}
           maxLength={2}
           label={'Этаж '}
-          secondLabel={'(не обязательно)'}
           textContentType={'none'}
           onSubmitEditing={() => {
             codeRef.current?.focus();
@@ -322,7 +320,6 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           showLabel={true}
           label={'Код домофона '}
           maxLength={4}
-          secondLabel={'(не обязательно)'}
           onSubmitEditing={() => {
             nameRef.current?.focus();
           }}
@@ -345,7 +342,6 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           maxLength={10}
           returnKeyType={'next'}
           label={'Название '}
-          secondLabel={'(не обязательно)'}
           onSubmitEditing={() => {
             commentaryRef.current?.focus();
           }}
@@ -364,7 +360,6 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
           editable={true}
           placeholder={'Например, “Домофон не работает”'}
           showLabel={true}
-          secondLabel={'(не обязательно)'}
           label={'Комментарий к заказу '}
           maxLength={30}
           keyboardType={'default'}
