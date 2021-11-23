@@ -117,7 +117,7 @@ export default function MenuScreen({navigation}: Props) {
     state.products.productIds.map(it => productsMap[it]),
   );
 
-  console.log('products', products);
+  // console.log('products', products);
 
   const [modalStock, setModalStock] = useState<Stock>({
     id: '',
@@ -204,7 +204,10 @@ export default function MenuScreen({navigation}: Props) {
         dispatch(
           setProducts(
             prodList.sort(function (a, b) {
-              return a.productOrder - b.productOrder;
+              return (
+                (a.productOrder ? a.productOrder : 0) -
+                (b.productOrder ? b.productOrder : 0)
+              );
             }),
           ),
         );
