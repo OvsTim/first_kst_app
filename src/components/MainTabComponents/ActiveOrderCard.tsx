@@ -1,6 +1,5 @@
 import DropShadow from 'react-native-drop-shadow';
 import {
-  Alert,
   FlatList,
   Pressable,
   Text,
@@ -28,7 +27,7 @@ export default function ActiveOrderCard(props: Props) {
   return (
     <DropShadow
       style={{
-        marginVertical: 18,
+        marginVertical: 10,
         shadowColor: '#000',
         alignSelf: 'center',
 

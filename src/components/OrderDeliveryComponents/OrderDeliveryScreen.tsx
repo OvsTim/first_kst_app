@@ -18,7 +18,7 @@ import BaseButton from '../_CustomComponents/BaseButton';
 import * as Progress from 'react-native-progress';
 import Modal from 'react-native-modal';
 import AuthBaseInput from '../_CustomComponents/AuthBaseInput';
-import {TENGE_LETTER} from '../MainTabComponents/ProductItem';
+import {DELIVERY_COST, TENGE_LETTER} from '../MainTabComponents/ProductItem';
 import {
   Order,
   OrderDeliveryType,
@@ -27,20 +27,22 @@ import {
 } from '../../redux/ProductsDataSlice';
 import {BasketItem} from '../../redux/BasketDataReducer';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../redux';
+import {RootState, useAppDispatch} from '../../redux';
 import {Address, Restaraunt} from '../../API';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import dayjs from 'dayjs';
 import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {getWorkingNow} from '../../utils/workHourUtils';
+import {newOrderRequest} from '../../redux/thunks';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
 const StyledText = withFont(Text);
 export default function OrderDeliveryScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
-
+  const dispatch = useAppDispatch();
   const [paymentWay, setPaymentWay] = useState<OrderPaymentType>('CASH');
   const orderDeliveryType: OrderDeliveryType = useSelector(
     (state: RootState) => state.data.orderDeliveryType,
@@ -88,12 +90,49 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     } else if (getBasketPrice() >= 5000) {
       return getBasketPrice();
     } else {
-      return getBasketPrice() + 800;
+      return getBasketPrice() + DELIVERY_COST;
     }
   }
 
   function randomInteger(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function validateAll() {
+    if (
+      (orderDeliveryType === 'PICKUP' &&
+        getWorkingNow(activeShop.workHours) === 'Закрыто') ||
+      (orderDeliveryType === 'DELIVERY' &&
+        getWorkingNow(activeShop.delivery) === 'Закрыто')
+    ) {
+      Alert.alert(
+        'Ошибка',
+        orderDeliveryType === 'DELIVERY'
+          ? 'Данная доставка сейчас не работает. Выберите другой ресторан'
+          : 'Данный ресторан сейчас не работает. Выберите другой ресторан',
+      );
+      return;
+    }
+
+    console.log('blacklist', activeShop.outOfStock);
+    let names: Array<string> = [];
+
+    basket.forEach(it => {
+      if (activeShop.outOfStock.includes('Продукты/' + it.item.id)) {
+        names.push(it.item.name);
+      }
+    });
+    if (names.length > 0) {
+      Alert.alert(
+        'Ошибка',
+
+        names.join(' ') +
+          ' отсутствуют в данный момент. Удалите отсутствующие товары из корзины и повторите попытку',
+      );
+      return;
+    }
+
+    handlePayment();
   }
 
   function handlePayment() {
@@ -123,6 +162,9 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     }
 
     let order: Order = {
+      restaurant_id: activeShop.id,
+      user_name: auth().currentUser?.displayName || '',
+      user_phone: auth().currentUser?.phoneNumber || '',
       currentStatus: 'IS_NEW',
       active: true,
       sdacha: sdacha !== '' ? parseInt(sdacha) : 0,
@@ -139,7 +181,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
       price: getTotalPrice(),
       restaurant: activeShop.name,
       user_id: auth().currentUser?.uid ? auth().currentUser?.uid : '',
-      public_id: randomInteger(1, 10000000),
+      public_id: randomInteger(1, 999999),
       statuses: statusesArray,
     };
 
@@ -147,6 +189,8 @@ export default function OrderDeliveryScreen({navigation}: Props) {
       .collection('Заказы')
       .add({
         Date: new firestore.Timestamp(new Date()?.getTime() / 1000, 0),
+        Имя: order.user_name,
+        Телефон: order.user_phone,
         ДатаЗаказа: new firestore.Timestamp(new Date()?.getTime() / 1000, 0),
         ТекущийСтатус: order.currentStatus,
         Активен: true,
@@ -162,11 +206,26 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         Оценка: 0,
         Цена: order.price,
         Ресторан: order.restaurant,
+        РесторанИД: order.restaurant_id,
         ИДПользователя: auth().currentUser?.uid ? auth().currentUser?.uid : '',
         НомерЗаказа: order.public_id,
         Статусы: order.statuses,
       })
       .then(_ => {
+        dispatch(
+          newOrderRequest({
+            id: order.public_id,
+            type: order.delivery_type,
+            address:
+              order.delivery_type === 'PICKUP'
+                ? activeShop.name
+                : currentAddress?.street +
+                  ' ' +
+                  currentAddress?.house +
+                  ', ' +
+                  currentAddress?.flat,
+          }),
+        );
         navigation.navigate('OrderSuccess');
       })
       .catch(er => {
@@ -447,7 +506,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             </StyledText>
             <StyledText
               style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
-              {getBasketPrice() >= 5000 ? 'Бесплатно' : '800 ₸'}
+              {getBasketPrice() >= 5000 ? 'Бесплатно' : DELIVERY_COST + ' ₸'}
             </StyledText>
           </View>
         )}
@@ -486,8 +545,8 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         </StyledText>
         <View style={{height: 16}} />
         <BaseButton
-          containerStyle={{width: 148, height: 25}}
-          textStyle={{fontSize: 12, color: 'white'}}
+          containerStyle={{width: 148, height: 30}}
+          textStyle={{fontSize: 12, color: 'white', paddingVertical: 0}}
           text={'перейти в меню'}
           onPress={() => navigation.navigate('Menu')}
         />
@@ -525,7 +584,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             if (orderDeliveryType === 'DELIVERY' && paymentWay === 'CASH') {
               setModalVisible(true);
             } else {
-              handlePayment();
+              validateAll();
             }
           }}
         />
@@ -676,7 +735,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                   onPress={() => {
                     setModalVisible(false);
                     setTimeout(() => {
-                      handlePayment();
+                      validateAll();
                     }, 500);
                   }}
                 />

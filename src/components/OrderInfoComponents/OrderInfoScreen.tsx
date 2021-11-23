@@ -28,10 +28,11 @@ import {getDescByStatus} from '../../utils/ordersUtils';
 import BaseButton from '../_CustomComponents/BaseButton';
 import dayjs from 'dayjs';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../redux';
+import {RootState, useAppDispatch} from '../../redux';
 import {Restaraunt} from '../../API';
 // @ts-ignore
 import AnimatedColorView from 'react-native-animated-colors';
+import {newOrderCancelRequest} from '../../redux/thunks';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderInfo'>;
   route: RouteProp<AppStackParamList, 'OrderInfo'>;
@@ -39,6 +40,7 @@ type Props = {
 
 export default function OrderInfoScreen({route}: Props) {
   const StyledText = withFont(Text);
+  const dispatch = useAppDispatch();
   const [currentOrder, setCurrentOrder] = useState<Order>(route.params.order);
   const {width} = useWindowDimensions();
   const active: string = useSelector(
@@ -68,6 +70,9 @@ export default function OrderInfoScreen({route}: Props) {
       .doc(route.params.order.id)
       .onSnapshot(doc => {
         let order: Order = {
+          restaurant_id: '',
+          user_phone: '',
+          user_name: '',
           id: doc.id,
           public_id: doc.get<number>('НомерЗаказа'),
           currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
@@ -249,40 +254,40 @@ export default function OrderInfoScreen({route}: Props) {
           </View>
         )}
         <StyledText
-          onPress={() => {
-            if (item.time !== '') {
-              return;
-            }
-
-            let statuses = currentOrder.statuses;
-            let newStatuses = [];
-            for (let i = 0; i < statuses.length; i++) {
-              let status = currentOrder.statuses[i];
-              if (status.status === item.status) {
-                status.time = dayjs(new Date()).format().toString();
-              }
-
-              newStatuses.push(status);
-            }
-
-            firestore()
-              .collection('Заказы')
-              .doc(route.params.order.id)
-              .update({
-                Статусы: statuses,
-                ТекущийСтатус: item.status,
-                Активен: item.status !== 'SUCCESS',
-              })
-              .then(_ => {})
-              .catch(er => {
-                Alert.alert(
-                  'Ошибка',
-                  'Произошла ошибка с кодом ' +
-                    er.code +
-                    ', повторите попытку позже',
-                );
-              });
-          }}
+          // onPress={() => {
+          //   if (item.time !== '') {
+          //     return;
+          //   }
+          //
+          //   let statuses = currentOrder.statuses;
+          //   let newStatuses = [];
+          //   for (let i = 0; i < statuses.length; i++) {
+          //     let status = currentOrder.statuses[i];
+          //     if (status.status === item.status) {
+          //       status.time = dayjs(new Date()).format().toString();
+          //     }
+          //
+          //     newStatuses.push(status);
+          //   }
+          //
+          //   firestore()
+          //     .collection('Заказы')
+          //     .doc(route.params.order.id)
+          //     .update({
+          //       Статусы: statuses,
+          //       ТекущийСтатус: item.status,
+          //       Активен: item.status !== 'SUCCESS',
+          //     })
+          //     .then(_ => {})
+          //     .catch(er => {
+          //       Alert.alert(
+          //         'Ошибка',
+          //         'Произошла ошибка с кодом ' +
+          //           er.code +
+          //           ', повторите попытку позже',
+          //       );
+          //     });
+          // }}
           style={{
             fontWeight: '500',
             marginLeft: 14,
@@ -409,7 +414,6 @@ export default function OrderInfoScreen({route}: Props) {
           marginHorizontal: 21,
           width: width - 42,
           borderRadius: 15,
-          marginBottom: 32,
         }}
         style={{flex: 1}}
         keyExtractor={(_, index) => index.toString()}
@@ -508,35 +512,55 @@ export default function OrderInfoScreen({route}: Props) {
 
       {renderStatusList()}
       {renderProductList()}
-      <BaseButton
-        text={'Отменить заказ'}
-        onPress={() => {
-          let statuses = currentOrder.statuses;
-          statuses.push({
-            status: 'CANCELLED',
-            time: dayjs(new Date()).format().toString(),
-          });
-          firestore()
-            .collection('Заказы')
-            .doc(route.params.order.id)
-            .update({
-              Статусы: statuses,
-              Активен: false,
-              ТекущийСтатус: 'CANCELLED',
-            })
-            .then(_ => {})
-            .catch(er => {
-              Alert.alert(
-                'Ошибка',
-                'Произошла ошибка с кодом ' +
-                  er.code +
-                  ', повторите попытку позже',
-              );
-            });
-        }}
-        containerStyle={{backgroundColor: '#FFD0D0'}}
-        textStyle={{color: '#850000', fontSize: 18}}
-      />
+      {currentOrder.currentStatus === 'IS_NEW' && (
+        <>
+          <View style={{height: 32}} />
+          <BaseButton
+            text={'Отменить заказ'}
+            onPress={() => {
+              Alert.alert('Сообщение', 'Вы уверены?', [
+                {
+                  text: 'Да',
+                  onPress: () => {
+                    {
+                      let statuses = currentOrder.statuses;
+                      statuses.push({
+                        status: 'CANCELLED',
+                        time: dayjs(new Date()).format().toString(),
+                      });
+                      firestore()
+                        .collection('Заказы')
+                        .doc(route.params.order.id)
+                        .update({
+                          Статусы: statuses,
+                          Активен: false,
+                          ТекущийСтатус: 'CANCELLED',
+                        })
+                        .then(_ => {
+                          dispatch(
+                            newOrderCancelRequest(currentOrder.public_id),
+                          );
+                        })
+                        .catch(er => {
+                          Alert.alert(
+                            'Ошибка',
+                            'Произошла ошибка с кодом ' +
+                              er.code +
+                              ', повторите попытку позже',
+                          );
+                        });
+                    }
+                  },
+                  style: 'destructive',
+                },
+                {text: 'Нет'},
+              ]);
+            }}
+            containerStyle={{backgroundColor: '#FFD0D0'}}
+            textStyle={{color: '#850000', fontSize: 18}}
+          />
+        </>
+      )}
       {activeShop.phone && (
         <StyledText
           onPress={() => {

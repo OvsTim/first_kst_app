@@ -1,6 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
+  Linking,
+  Pressable,
   ScrollView,
   StatusBar,
   Text,
@@ -13,7 +15,7 @@ import {withFont} from '../_CustomComponents/HOC/withFont';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import Switch from 'react-native-switch-pro';
 import NewBaseInput, {InputRefType} from '../_CustomComponents/NewBaseInput';
-import auth, {firebase} from '@react-native-firebase/auth';
+import auth, {firebase, FirebaseAuthTypes} from '@react-native-firebase/auth';
 // @ts-ignore
 import firestore, {Timestamp} from '@react-native-firebase/firestore';
 import dayjs from 'dayjs';
@@ -33,11 +35,20 @@ export default function SettingsScreen({navigation}: Props) {
   const nameRef = useRef<InputRefType>(null);
   const emailRef = useRef<InputRefType>(null);
   const [loadingToolbar, setLoadingToolbar] = useState<boolean>(false);
+  const [IdTokenResult, setIdTokenResult] = useState<
+    FirebaseAuthTypes.IdTokenResult | undefined
+  >(undefined);
   const [oldEmail, setOldEmail] = useState<string>('');
   const [name, setName] = useState<string>('');
 
   useEffect(() => {
     dayjs.locale('ru');
+    auth()
+      .currentUser?.getIdTokenResult(true)
+      .then(res => {
+        setIdTokenResult(res);
+        console.log('res', res);
+      });
   }, []);
 
   React.useLayoutEffect(() => {
@@ -54,7 +65,7 @@ export default function SettingsScreen({navigation}: Props) {
             onPress={() => changeMailAndName()}
             containerStyle={{width: 81, height: 24}}>
             <StyledText
-              style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
+              style={{fontWeight: '700', color: '#28B3C6', fontSize: 15}}>
               Готово
             </StyledText>
           </Button>
@@ -66,13 +77,8 @@ export default function SettingsScreen({navigation}: Props) {
     firestore()
       .collection('Пользователи')
       .doc(auth().currentUser?.uid)
-
       .get()
       .then(res => {
-        console.log(
-          "res.get('ДеньРождения')",
-          res.get<Timestamp>('ДеньРождения').seconds.toString(),
-        );
         dateRef.current?.setValue(
           dayjs(res.get<Timestamp>('ДеньРождения').seconds * 1000).format(
             'D MMMM',
@@ -143,12 +149,119 @@ export default function SettingsScreen({navigation}: Props) {
       })
       .catch(er => {
         setLoadingToolbar(false);
-        console.log('erupdateProfile', er);
         Alert.alert(
           'Ошибка',
           'Произошла ошибка с кодом ' + er.code + ', повторите попытку позже',
         );
       });
+  }
+
+  async function massDeleteOrders() {
+    const usersQuerySnapshot = await firestore()
+      .collection('Заказы')
+      .where('ИДПользователя', '==', auth().currentUser?.uid)
+      .get();
+
+    const batch = firestore().batch();
+
+    usersQuerySnapshot.forEach(documentSnapshot => {
+      batch.delete(documentSnapshot.ref);
+    });
+
+    return batch.commit();
+  }
+
+  async function massDeleteAddresses() {
+    const usersQuerySnapshot = await firestore()
+      .collection('Пользователи')
+      .doc(auth().currentUser?.uid)
+      .collection('Адреса')
+      .get();
+
+    const batch = firestore().batch();
+
+    usersQuerySnapshot.forEach(documentSnapshot => {
+      batch.delete(documentSnapshot.ref);
+    });
+
+    return batch.commit();
+  }
+
+  function checkCanDelete() {
+    firestore()
+      .collection('Заказы')
+      .where('ИДПользователя', '==', auth().currentUser?.uid)
+      .where('Активен', '==', true)
+      .get()
+      .then(res => {
+        if (!res.empty) {
+          Alert.alert(
+            'Ошибка',
+            'Нельзя удалить пользователя, имея активные заказы',
+          );
+        } else {
+          auth()
+            .currentUser?.delete()
+            .then(_ => {
+              auth()
+                .signInAnonymously()
+                .then(_ => {
+                  massDeleteOrders()
+                    .then(_ =>
+                      massDeleteAddresses()
+                        .then(_ => {
+                          firestore()
+                            .collection('Пользователи')
+                            .doc(auth().currentUser?.uid)
+                            .delete()
+                            .then(_ => {
+                              navigation.goBack();
+                              dispatch(logout());
+                            });
+                        })
+                        .catch(er =>
+                          Alert.alert(
+                            'Ошибка',
+                            'Произошла ошибка с кодом ' +
+                              er.code +
+                              ', повторите попытку позже',
+                          ),
+                        ),
+                    )
+                    .catch(er =>
+                      Alert.alert(
+                        'Ошибка',
+                        'Произошла ошибка с кодом ' +
+                          er.code +
+                          ', повторите попытку позже',
+                      ),
+                    );
+                });
+            })
+            .catch(er => {
+              if (er.code === 'auth/requires-recent-login') {
+                Alert.alert(
+                  'Ошибка',
+                  'Требуется повторно авторизрваться в приложении',
+                );
+                return;
+              }
+
+              Alert.alert(
+                'Ошибка',
+                'Произошла ошибка с кодом ' +
+                  er.code +
+                  ', повторите попытку позже',
+              );
+            });
+        }
+      })
+      .catch(er =>
+        Alert.alert(
+          'Ошибка',
+          'Произошла ошибка с кодом ' + er.code + ', повторите попытку позже',
+        ),
+      );
   }
 
   function renderInputs() {
@@ -223,7 +336,9 @@ export default function SettingsScreen({navigation}: Props) {
           }}>
           Уведомления
         </StyledText>
-        <View
+
+        <Pressable
+          onPress={() => Linking.openSettings()}
           style={{
             flexDirection: 'row',
             marginTop: 33,
@@ -258,12 +373,14 @@ export default function SettingsScreen({navigation}: Props) {
             backgroundActive={'#65C466'}
             width={53}
             height={35}
+            value={true}
+            disabled={true}
             circleColorActive={'white'}
             circleColorInactive={'white'}
             style={{paddingHorizontal: 3}}
             circleStyle={{width: 27, height: 27}}
           />
-        </View>
+        </Pressable>
       </View>
     );
   }
@@ -295,7 +412,7 @@ export default function SettingsScreen({navigation}: Props) {
                         });
                     })
                     .catch(er => {
-                      console.log('er', er);
+                      // console.log('er', er);
                     });
                 },
               },
@@ -320,7 +437,11 @@ export default function SettingsScreen({navigation}: Props) {
               'Внимание! Данное действие приведет к удалению всей истории заказов',
               [
                 {style: 'cancel', text: 'Отменить'},
-                {style: 'destructive', text: 'Удалить'},
+                {
+                  style: 'destructive',
+                  text: 'Удалить',
+                  onPress: () => checkCanDelete(),
+                },
               ],
             )
           }

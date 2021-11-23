@@ -1,6 +1,5 @@
 import React, {useRef, useState} from 'react';
 import {
-  Animated,
   Dimensions,
   FlatList,
   Image,
@@ -19,6 +18,8 @@ import {useSelector} from 'react-redux';
 import {RootState, useAppDispatch} from '../../redux';
 import {Address, Restaraunt, Stock} from '../../API';
 import {useFocusEffect} from '@react-navigation/native';
+import SegmentedControl from 'rn-segmented-control';
+
 // @ts-ignore
 import firestore, {DocumentReference} from '@react-native-firebase/firestore';
 import {
@@ -38,7 +39,6 @@ import {
   setProducts,
 } from '../../redux/ProductsDataSlice';
 import {PRODUCT_ITEM_HEIGHT, ProductItem} from './ProductItem';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import auth from '@react-native-firebase/auth';
 import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -117,6 +117,8 @@ export default function MenuScreen({navigation}: Props) {
     state.products.productIds.map(it => productsMap[it]),
   );
 
+  // console.log('products', products);
+
   const [modalStock, setModalStock] = useState<Stock>({
     id: '',
     name: '',
@@ -163,6 +165,12 @@ export default function MenuScreen({navigation}: Props) {
       .then(res => {
         let prodList: Array<Product> = [];
         res.docs.forEach(doc => {
+          // console.log(
+          //   "doc.get<DocumentReference>('Категория')",
+          //   doc.id,
+          //   doc.get<DocumentReference>('Категория'),
+          // );
+
           prodList.push({
             id: doc.id,
             name: doc.get<string>('Название')
@@ -188,11 +196,23 @@ export default function MenuScreen({navigation}: Props) {
               doc.get<DocumentReference>('Категория').path,
               catList,
             ),
+            productOrder: doc.get<number>('Порядок')
+              ? doc.get<number>('Порядок')
+              : 0,
           });
         });
-        dispatch(setProducts(prodList));
+        dispatch(
+          setProducts(
+            prodList.sort(function (a, b) {
+              return (
+                (a.productOrder ? a.productOrder : 0) -
+                (b.productOrder ? b.productOrder : 0)
+              );
+            }),
+          ),
+        );
       })
-      .catch(er => console.log('er', er));
+      .catch(er => console.log('er123', er));
   }
 
   useFocusEffect(
@@ -250,7 +270,9 @@ export default function MenuScreen({navigation}: Props) {
               image: doc.get<string>('Картинка')
                 ? doc.get<string>('Картинка')
                 : '',
-              productId: doc.get<DocumentReference>('Продукт').path,
+              productId: doc.get<DocumentReference>('Продукт')
+                ? doc.get<DocumentReference>('Продукт').path
+                : '',
             });
           });
           dispatch(setStocks(stockList));
@@ -291,37 +313,49 @@ export default function MenuScreen({navigation}: Props) {
           style={{
             flexDirection: 'row',
             marginTop: 25,
+            marginBottom: 10,
+            alignItems: 'center',
             width,
-            backgroundColor: 'white',
-            height: 35,
+            height: 45,
           }}>
-          <View style={{width: 18}} />
-          <Button
-            androidRippleColor={'lightgray'}
-            onPress={() =>
-              navigation.navigate('ChangeRestaraunt', {activeTab: 0})
-            }
-            containerStyle={{}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <StyledText
-                style={{fontWeight: '500', fontSize: 15, color: 'black'}}>
-                {activeShop.name}
-              </StyledText>
-              <Image
+          <View style={{width: 8}} />
+          <View
+            style={{
+              overflow: 'hidden',
+              borderRadius: 15,
+              height: 25,
+              alignSelf: 'center',
+            }}>
+            <Button
+              androidRippleColor={'lightgray'}
+              onPress={() =>
+                navigation.navigate('ChangeRestaraunt', {activeTab: 0})
+              }
+              containerStyle={{height: 25}}>
+              <View
                 style={{
-                  width: 14,
-                  height: 7,
-                  marginLeft: 9,
-                  tintColor: 'black',
-                }}
-                source={require('../../assets/droprdown.png')}
-              />
-            </View>
-          </Button>
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View style={{width: 10}} />
+
+                <StyledText
+                  style={{fontWeight: '500', fontSize: 15, color: 'black'}}>
+                  {activeShop.name}
+                </StyledText>
+                <Image
+                  style={{
+                    width: 14,
+                    height: 7,
+                    marginLeft: 9,
+                    tintColor: 'black',
+                  }}
+                  source={require('../../assets/droprdown.png')}
+                />
+                <View style={{width: 10}} />
+              </View>
+            </Button>
+          </View>
           <View
             style={{
               position: 'absolute',
@@ -357,29 +391,35 @@ export default function MenuScreen({navigation}: Props) {
           marginTop: 15,
         }}>
         <SegmentedControl
-          style={{
+          paddingVertical={6}
+          width={width - 70}
+          theme={'LIGHT'}
+          currentIndex={orderDeliveryType === 'DELIVERY' ? 0 : 1}
+          containerStyle={{
             marginTop: 20,
-            width: width - 70,
             borderRadius: 9,
             zIndex: 999,
+            backgroundColor: '#7676801F',
           }}
-          fontStyle={{
+          tileStyle={{borderRadius: 9}}
+          activeTextColor={'black'}
+          textColor={'rgba(0, 0, 0, 0.8)'}
+          activeSegmentBackgroundColor={'white'}
+          segmentedControlBackgroundColor={'#DBDBDB'}
+          textStyle={{
             fontSize: 15,
-            fontWeight: '400',
             fontFamily: 'SFProDisplay-Regular',
           }}
-          tabStyle={{borderRadius: 9}}
-          backgroundColor={'#7676801F'}
-          selectedIndex={orderDeliveryType === 'DELIVERY' ? 0 : 1}
+          activeTextWeight={'500'}
           onChange={event => {
-            if (event.nativeEvent.selectedSegmentIndex === 0) {
+            if (event === 0) {
               dispatch(setOrderDeliveryType('DELIVERY'));
               dispatch(setCurrentAddress(undefined));
             } else {
               dispatch(setOrderDeliveryType('PICKUP'));
             }
           }}
-          values={['На доставку', 'Самовывоз']}
+          tabs={['На доставку', 'Самовывоз']}
         />
         <View
           style={{
@@ -390,97 +430,108 @@ export default function MenuScreen({navigation}: Props) {
           }}
         />
         {orderDeliveryType === 'PICKUP' ? (
-          <Button
-            androidRippleColor={'lightgray'}
-            onPress={() =>
-              navigation.navigate('ChangeRestaraunt', {activeTab: 0})
-            }
-            containerStyle={{marginTop: 13 / 2}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image
-                style={{width: 18, height: 18, marginRight: 18}}
-                source={require('../../assets/samovivoz.png')}
-              />
-              <StyledText
-                numberOfLines={1}
-                ellipsizeMode={'tail'}
-                style={{
-                  fontWeight: '400',
-                  width: width / 2,
-                  fontSize: 15,
-                  color: 'black',
-                }}>
-                {activeShop.name}
-              </StyledText>
-              <Image
-                style={{
-                  marginLeft: 10,
-                  tintColor: 'black',
-                  width: 12,
-                  height: 6,
-                  transform: [{rotate: '270deg'}],
-                }}
-                source={require('../../assets/droprdown.png')}
-              />
-            </View>
-          </Button>
-        ) : (
-          <Button
-            androidRippleColor={'lightgray'}
-            onPress={() => {
-              if (!auth().currentUser?.displayName) {
-                navigation.navigate('EnterPhone');
-              } else {
-                navigation.navigate('DeliveryListSelect');
+          <View style={{overflow: 'hidden', borderRadius: 10, marginTop: 13}}>
+            <Button
+              androidRippleColor={'lightgray'}
+              onPress={() =>
+                navigation.navigate('ChangeRestaraunt', {activeTab: 0})
               }
-            }}
-            containerStyle={{marginTop: 13 / 2}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {currentAddress && (
+              containerStyle={{}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{width: 10}} />
+
                 <Image
                   style={{width: 18, height: 18, marginRight: 18}}
-                  source={require('../../assets/delivery_icon.png')}
+                  source={require('../../assets/samovivoz.png')}
                 />
-              )}
-              {currentAddress ? (
                 <StyledText
                   numberOfLines={1}
                   ellipsizeMode={'tail'}
                   style={{
                     fontWeight: '400',
+                    maxWidth: width / 2,
                     fontSize: 15,
                     color: 'black',
                   }}>
-                  {currentAddress.street +
-                    ' ' +
-                    currentAddress.house +
-                    ', ' +
-                    currentAddress.flat}
+                  {activeShop.name}
                 </StyledText>
-              ) : (
-                <StyledText
-                  numberOfLines={1}
-                  ellipsizeMode={'tail'}
+                <Image
                   style={{
-                    fontWeight: '400',
-                    fontSize: 15,
-                    color: '#28B3C6',
-                  }}>
-                  {'Укажите адрес доставки'}
-                </StyledText>
-              )}
-              <Image
-                style={{
-                  marginLeft: 10,
-                  tintColor: currentAddress ? 'black' : '#28B3C6',
-                  width: 12,
-                  height: 6,
-                  transform: [{rotate: '270deg'}],
-                }}
-                source={require('../../assets/droprdown.png')}
-              />
-            </View>
-          </Button>
+                    marginLeft: 10,
+                    tintColor: 'black',
+                    width: 12,
+                    height: 6,
+                    transform: [{rotate: '270deg'}],
+                  }}
+                  source={require('../../assets/droprdown.png')}
+                />
+                <View style={{width: 10}} />
+              </View>
+            </Button>
+          </View>
+        ) : (
+          <View style={{overflow: 'hidden', borderRadius: 10, marginTop: 13}}>
+            <Button
+              androidRippleColor={'lightgray'}
+              onPress={() => {
+                if (!auth().currentUser?.displayName) {
+                  navigation.navigate('EnterPhone');
+                } else {
+                  navigation.navigate('DeliveryListSelect');
+                }
+              }}
+              containerStyle={{}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{width: 10}} />
+                {currentAddress && (
+                  <Image
+                    style={{width: 18, height: 18, marginRight: 18}}
+                    source={require('../../assets/delivery_icon.png')}
+                  />
+                )}
+                {currentAddress ? (
+                  <StyledText
+                    numberOfLines={1}
+                    ellipsizeMode={'tail'}
+                    style={{
+                      fontWeight: '400',
+                      maxWidth: width / 2,
+
+                      fontSize: 15,
+                      color: 'black',
+                    }}>
+                    {currentAddress.street +
+                      ' ' +
+                      currentAddress.house +
+                      ', ' +
+                      currentAddress.flat}
+                  </StyledText>
+                ) : (
+                  <StyledText
+                    numberOfLines={1}
+                    ellipsizeMode={'tail'}
+                    style={{
+                      fontWeight: '400',
+                      fontSize: 15,
+                      color: '#28B3C6',
+                    }}>
+                    {'Укажите адрес доставки'}
+                  </StyledText>
+                )}
+                <Image
+                  style={{
+                    marginLeft: 10,
+                    tintColor: currentAddress ? 'black' : '#28B3C6',
+                    width: 12,
+                    height: 6,
+                    transform: [{rotate: '270deg'}],
+                  }}
+                  source={require('../../assets/droprdown.png')}
+                />
+                <View style={{width: 10}} />
+              </View>
+            </Button>
+          </View>
         )}
       </View>
     );
@@ -492,15 +543,14 @@ export default function MenuScreen({navigation}: Props) {
         contentContainerStyle={{
           height: 150,
           alignItems: 'center',
-          marginVertical: 18,
         }}
         keyExtractor={(item, index) => index.toString()}
         showsHorizontalScrollIndicator={false}
         data={stocks}
         horizontal={true}
-        ItemSeparatorComponent={() => <View style={{width: 18}} />}
+        ItemSeparatorComponent={() => <View style={{width: 9}} />}
         ListFooterComponent={() => <View style={{width: 18}} />}
-        renderItem={({item}) => (
+        renderItem={({item, index}) => (
           <Pressable
             onPress={() => {
               if (!item.id) {
@@ -510,10 +560,10 @@ export default function MenuScreen({navigation}: Props) {
                 setModalVisible(true);
               }
             }}
-            style={{marginLeft: 18}}>
+            style={{marginLeft: index === 0 ? 18 : 9}}>
             <FirebaseImage
               innerUrl={item.image}
-              resizeMode={'contain'}
+              resizeMode={'cover'}
               imageStyle={{
                 borderRadius: 15,
                 width: width - 60,
@@ -592,8 +642,8 @@ export default function MenuScreen({navigation}: Props) {
               width: 14,
               height: 14,
               position: 'absolute',
-              right: 12,
-              top: 10,
+              right: 14,
+              top: 0,
               tintColor: index === activeCategory ? '#850000' : '#606572',
             }}
             source={require('../../assets/Fire.png')}
@@ -606,7 +656,9 @@ export default function MenuScreen({navigation}: Props) {
   function renderModal() {
     return (
       <Modal
-        onSwipeComplete={() => setModalVisible(false)}
+        onSwipeComplete={() => {
+          setModalVisible(false);
+        }}
         swipeDirection={['down']}
         isVisible={modalVisible}
         statusBarTranslucent={true}
@@ -622,18 +674,19 @@ export default function MenuScreen({navigation}: Props) {
             borderTopLeftRadius: 15,
             alignItems: 'center',
           }}>
-          <Image
+          <View
             style={{
-              width: 45,
-              height: 15,
               marginVertical: 20,
-              transform: [{rotate: '180deg'}],
+              backgroundColor: '#D9D9D9',
+              width: 42,
+              height: 6,
+              borderRadius: 3,
             }}
-            source={require('../../assets/modal_arrow.png')}
           />
           <FirebaseImage
+            resizeMode={'cover'}
             innerUrl={modalStock.image}
-            imageStyle={{width: width - 60, height: 150, borderRadius: 15}}
+            imageStyle={{borderRadius: 15, width: width - 60, height: 126}}
           />
           <StyledText
             style={{
@@ -659,9 +712,13 @@ export default function MenuScreen({navigation}: Props) {
             {modalStock.description}
           </StyledText>
           <BaseButton
-            text={'Показать'}
+            text={modalStock.productId === '' ? 'Закрыть' : 'Показать'}
             onPress={() => {
               setModalVisible(false);
+              if (modalStock.productId === '') {
+                return;
+              }
+
               if (
                 products.filter(
                   it => 'Продукты/' + it.id === modalStock.productId,
@@ -713,7 +770,7 @@ export default function MenuScreen({navigation}: Props) {
                   backgroundColor: 'white',
                   alignSelf: 'center',
                   paddingLeft: 18,
-                  height: 60,
+                  height: 40,
                 }}
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}
@@ -789,7 +846,10 @@ export default function MenuScreen({navigation}: Props) {
               elevation === 0
             ) {
               setElevation(3);
-            } else {
+            } else if (
+              r.nativeEvent.contentOffset.y <= HEADER_EXPANDED_HEIGHT - 40 &&
+              elevation === 3
+            ) {
               setElevation(0);
             }
           }}

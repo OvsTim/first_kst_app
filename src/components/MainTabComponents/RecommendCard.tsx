@@ -126,7 +126,7 @@ export function RecommendCard(props: Props) {
                 justifyContent: 'center',
               }}
               android_ripple={{
-                color: 'gray',
+                color: 'lightgray',
                 radius: 200,
               }}>
               <StyledText

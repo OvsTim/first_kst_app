@@ -3,7 +3,6 @@ import {
   FlatList,
   Image,
   Pressable,
-  ScrollView,
   Text,
   useWindowDimensions,
   View,
@@ -20,7 +19,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
-import {Address, Restaraunt} from '../../API';
+import {Restaraunt} from '../../API';
 import {
   Order,
   OrderDeliveryType,
@@ -101,6 +100,9 @@ export default function ProfileScreen({navigation}: Props) {
           console.log('snap.docs', snap.docs);
           snap.docs.forEach(doc => {
             let order: Order = {
+              restaurant_id: '',
+              user_name: '',
+              user_phone: '',
               id: doc.id,
               public_id: doc.get<number>('НомерЗаказа'),
               currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
@@ -186,33 +188,45 @@ export default function ProfileScreen({navigation}: Props) {
           barStyle="dark-content"
         />
         <View style={{height: 25}} />
-        <View style={{flexDirection: 'row'}}>
-          <View style={{width: 18}} />
-          <Button
-            onPress={() => {
-              navigation.navigate('ChangeRestaraunt', {activeTab: 0});
-            }}
-            containerStyle={{}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <StyledText
-                style={{fontWeight: '500', fontSize: 15, color: 'black'}}>
-                {activeShop.name}
-              </StyledText>
-              <Image
+        <View style={{flexDirection: 'row', marginTop: 5}}>
+          <View style={{width: 8}} />
+          <View
+            style={{
+              overflow: 'hidden',
+              borderRadius: 15,
+              height: 25,
+              alignSelf: 'center',
+            }}>
+            <Button
+              androidRippleColor={'lightgray'}
+              onPress={() =>
+                navigation.navigate('ChangeRestaraunt', {activeTab: 0})
+              }
+              containerStyle={{height: 25}}>
+              <View
                 style={{
-                  width: 14,
-                  height: 7,
-                  marginLeft: 9,
-                  tintColor: 'black',
-                }}
-                source={require('../../assets/droprdown.png')}
-              />
-            </View>
-          </Button>
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <View style={{width: 10}} />
+
+                <StyledText
+                  style={{fontWeight: '500', fontSize: 15, color: 'black'}}>
+                  {activeShop.name}
+                </StyledText>
+                <Image
+                  style={{
+                    width: 14,
+                    height: 7,
+                    marginLeft: 9,
+                    tintColor: 'black',
+                  }}
+                  source={require('../../assets/droprdown.png')}
+                />
+                <View style={{width: 10}} />
+              </View>
+            </Button>
+          </View>
         </View>
         <View
           style={{
@@ -344,6 +358,7 @@ export default function ProfileScreen({navigation}: Props) {
             />
           </View>
         </Pressable>
+        <View style={{height: 15}} />
       </>
     );
   }
@@ -351,7 +366,7 @@ export default function ProfileScreen({navigation}: Props) {
   function renderAuthorized() {
     return (
       <FlatList
-        style={{}}
+        style={{width, alignSelf: 'center'}}
         ListHeaderComponent={() => renderHeader()}
         data={orderList}
         renderItem={({item}) => (

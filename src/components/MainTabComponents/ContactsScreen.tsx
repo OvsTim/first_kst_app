@@ -200,7 +200,7 @@ export default function ContactsScreen({navigation}: Props) {
             borderBottomWidth: 1,
             borderBottomColor: '#F2F2F6',
           }}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('Agreement')}
           android_ripple={{color: 'lightgrey', radius: 200}}>
           <View
             style={{

@@ -107,9 +107,17 @@ export default function EnterBirthdayScreen({navigation}: Props) {
               .collection('Пользователи')
               .doc(auth().currentUser?.uid)
               .set({
-                ДеньРождения: new firestore.Timestamp(
-                  date?.getTime() / 1000,
-                  0,
+                // @ts-ignore
+                ДеньРождения: new firestore.Timestamp.fromDate(
+                  new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    12,
+                    0,
+                    0,
+                    0,
+                  ),
                 ),
                 ИД: auth().currentUser?.uid,
                 Токен: firebase_token,

@@ -119,6 +119,7 @@ export default function ProductScreen({navigation, route}: Props) {
             marginTop: 37,
             paddingBottom: 34,
             borderBottomWidth: 1,
+            marginBottom: product.description?.toString() !== '' ? 0 : 10,
             borderBottomColor: '#DCDCEB',
             marginHorizontal: 40,
           }}>
@@ -132,7 +133,7 @@ export default function ProductScreen({navigation, route}: Props) {
             }}>
             {product.name}
           </StyledText>
-          <View style={{width: width / 3 - 40}}>
+          <View style={{width: width / 3 - 20}}>
             <StyledText
               style={{
                 fontWeight: '700',
@@ -248,6 +249,7 @@ export default function ProductScreen({navigation, route}: Props) {
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
+          alignItems: 'center',
           marginTop: 12,
           paddingBottom: 21,
           width: width - 80,

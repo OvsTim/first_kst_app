@@ -1,6 +1,5 @@
 import axios from 'axios';
-import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
-import DocumentReference = FirebaseFirestoreTypes.DocumentReference;
+import {OrderDeliveryType} from '../redux/ProductsDataSlice';
 
 export interface Image {
   id: number;
@@ -46,4 +45,14 @@ export function getImages(url: string) {
       'Content-Type': 'application/json',
     },
   });
+}
+
+const BASE_URL = 'https://blooming-reef-09797.herokuapp.com/api';
+
+export function newOrder(id: number, type: OrderDeliveryType, address: string) {
+  return axios.post(BASE_URL + '/newOrder', {id, type, address});
+}
+
+export function newOrderCancel(id: number) {
+  return axios.delete(BASE_URL + '/newOrder', {data: {id}});
 }

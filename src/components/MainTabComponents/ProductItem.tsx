@@ -18,6 +18,7 @@ type Props = {
 
 export const PRODUCT_ITEM_HEIGHT = 150;
 export const TENGE_LETTER = '₸';
+export const DELIVERY_COST = 700;
 const StyledText = withFont(Text);
 export function ProductItem(props: Props) {
   const {width} = useWindowDimensions();
@@ -88,7 +89,7 @@ export function ProductItem(props: Props) {
             style={{
               position: 'absolute',
               top: 20,
-              left: width / 2 - 100,
+              right: width / 2 + 10,
               borderRadius: 5,
               height: 18,
             }}>

@@ -27,6 +27,9 @@ import auth, {
 } from '@react-native-firebase/auth';
 // @ts-ignore
 import {useSmsUserConsent} from '@eabdullazyanov/react-native-sms-user-consent';
+import firestore from '@react-native-firebase/firestore';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EnterCode'>;
@@ -34,10 +37,15 @@ type Props = {
 };
 const StyledText = withFont(Text);
 export default function EnterCodeScreen({navigation, route}: Props) {
+  const firebase_token = useSelector(
+    (state: RootState) => state.data.firebase_token,
+  );
+
   const [code, setCode] = useState<string>('');
   const shakeAnimation = new Animated.Value(0);
   const [confirm, setConfirm] = useState<ConfirmationResult>(null);
   const [isActive, setIsActive] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const count = 60;
   const codeRef: RefObject<TextInput> = createRef();
@@ -113,10 +121,18 @@ export default function EnterCodeScreen({navigation, route}: Props) {
     if (user && !user.displayName) {
       navigation.navigate('EnterName');
     } else {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Home'}],
-      });
+      firestore()
+        .collection('Пользователи')
+        .doc(auth().currentUser?.uid)
+        .update({
+          Токен: firebase_token,
+        })
+        .then(_ => {
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Home'}],
+          });
+        });
     }
   }
 
@@ -140,8 +156,16 @@ export default function EnterCodeScreen({navigation, route}: Props) {
           }
         })
         .catch((er: {code: any}) => {
+          console.log('er', er);
           if (er.code === 'auth/invalid-verification-code') {
-            startShake();
+            Vibration.vibrate();
+            setIsError(true);
+            setTimeout(() => {
+              setIsError(false);
+              setCode('');
+            }, 1000);
+
+            // startShake();
           } else if (er.code === 'auth/too-many-requests') {
             Alert.alert(
               'Ошибка',
@@ -237,7 +261,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
                 position: 'absolute',
                 left: 40,
               }}>
@@ -260,7 +284,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 80,
               }}>
@@ -284,7 +309,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 120,
               }}>
@@ -308,7 +334,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 160,
               }}>
@@ -332,7 +359,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 200,
               }}>
@@ -356,7 +384,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               style={{
                 fontWeight: '700',
                 fontSize: 25,
-                color: '#000000CC',
+                color: isError ? 'red' : '#000000CC',
+
                 position: 'absolute',
                 left: 240,
               }}>

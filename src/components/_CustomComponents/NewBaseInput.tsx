@@ -41,6 +41,7 @@ type Props = {
   showLabel: boolean;
   label: string;
   secondLabel?: string;
+  secondLabelColor?: string;
   labelStyle: TextStyle;
   textContentType?:
     | 'none'
@@ -93,6 +94,7 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
     labelStyle,
     styleInput,
     secondLabel,
+    secondLabelColor,
     showLabel,
     styleContainer,
     textContentType,
@@ -133,7 +135,10 @@ const InputFieldView: ForwardRefRenderFunction<InputRefType, Props> = (
         ]}>
         {label}
         {secondLabel && (
-          <StyledText style={{color: '#00000033'}}>{secondLabel}</StyledText>
+          <StyledText
+            style={{color: secondLabelColor ? secondLabelColor : '#00000033'}}>
+            {secondLabel}
+          </StyledText>
         )}
       </StyledText>
     );

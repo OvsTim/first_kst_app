@@ -14,6 +14,7 @@ export interface Product {
   description?: string;
   price: number;
   categoryOrder: number;
+  productOrder?: number;
 }
 
 export interface Category {
@@ -46,6 +47,7 @@ export interface Order {
   active: boolean; //является ли этот заказ активным (выводить его в профиле)
   address?: Address; //адрес доставки (если OrderDeliveryType === DELIVERY)
   restaurant: string; //как то поформатированный адрес ресторана
+  restaurant_id: string; //ИдРесторана
   sdacha?: number; //сдача (если OrderPaymentType === CASH)
   statuses: Array<{status: OrderStatus; time: string}>;
   //история статусов,грубо говоря список статусов и времени. если что то не произошло,
@@ -54,6 +56,8 @@ export interface Order {
   commentary: string; //комментарий
   user_id?: string; //ид юзера, который заказал
   price: number; //Итоговая цена
+  user_name: string;
+  user_phone: string;
 }
 
 interface ProductsData {
