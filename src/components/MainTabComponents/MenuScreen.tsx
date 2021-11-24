@@ -49,7 +49,7 @@ const StyledText = withFont(Text);
 const Button = withPressable(View);
 
 export default function MenuScreen({navigation}: Props) {
-  const HEADER_EXPANDED_HEIGHT = 350;
+  const HEADER_EXPANDED_HEIGHT = 290;
   const netInfo = useNetInfo();
   const onViewRef = useRef((info: {viewableItems: Array<ViewToken>}) => {
     if (info.viewableItems.length > 0) {
@@ -785,6 +785,7 @@ export default function MenuScreen({navigation}: Props) {
           <FlatList
             onViewableItemsChanged={onViewRef.current}
             viewabilityConfig={viewConfigRef.current}
+            maxToRenderPerBatch={20}
             scrollEventThrottle={16}
             ref={flatlistref}
             getItemLayout={(data, index) => ({

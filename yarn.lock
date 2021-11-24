@@ -1479,6 +1479,13 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
+"@types/react-native@^0.63.27":
+  version "0.63.57"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.63.57.tgz#b908373257ceaebe3e3daaebc9efcae68b006822"
+  integrity sha512-FD4do3uthGHddy9e2HVsitMPRfR2wgm2C6k0KAiWaeKhEuiX+5rvtmAdH+0LkqzcDYIGRemEgbQl6iN/9CsZ1A==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-native@^0.63.51":
   version "0.63.51"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.63.51.tgz#2fc45ab934801770cdbbcdc6ae5cd85c0e2a2a02"
@@ -6053,6 +6060,11 @@ react-native-drop-shadow@^0.0.2:
   dependencies:
     logkitty "^0.7.1"
 
+react-native-fast-image@^8.5.11:
+  version "8.5.11"
+  resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.5.11.tgz#e3dc969d0e4e8df026646bf18194465aa55cbc2b"
+  integrity sha512-cNW4bIJg3nvKaheG8vGMfqCt5LMWX9MS5+wMudgKIHbGO51spRr4sgnlhVgwHLcZ5aeNOVJ8CPRxDIWKRq/0QA==
+
 react-native-geolocation-service@^5.3.0-beta.3:
   version "5.3.0-beta.3"
   resolved "https://registry.yarnpkg.com/react-native-geolocation-service/-/react-native-geolocation-service-5.3.0-beta.3.tgz#6afd291e886ecb5fdf8c096ea0a694ccb0975330"
@@ -6176,10 +6188,15 @@ react-native-text-input-mask@^3.1.3:
   resolved "https://registry.yarnpkg.com/react-native-text-input-mask/-/react-native-text-input-mask-3.1.4.tgz#9b09d97a910ce8c24024d6187256b07c73e173ac"
   integrity sha512-XhTPL1/Pv0kyuH8TMJGaxfnq5su9e+4G2PLngiismZ4xbP8+W/1ZEH4KQJQV+QkE2I5Oi+lPJXB2E47s60/OBA==
 
-react-native-yamap@^1.0.20:
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/react-native-yamap/-/react-native-yamap-1.0.20.tgz#0bda9b942136c534adaeca98bd5b907e74112122"
-  integrity sha512-RXCEA6Fv2Leya9Vi0CHQ7xzEgYVHK41+Fy8n3OwU8/wU4Tkumld7h+nsQkQqFMX1SIVJ0XFr94H07RhC9/M4Ow==
+react-native-view-pdf@^0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/react-native-view-pdf/-/react-native-view-pdf-0.12.2.tgz#b6a90b8b29f6d77555339a9cc88f252e65a8edc3"
+  integrity sha512-rjyJmdlPUZytPLYF884Mb/x5mDsC4Ibcp5thzOmfFy0QjFGh4yItBZngpAZ2HIsC8Sd9TOSrlgJmq3H1pGJicQ==
+
+react-native-yamap@^4.0.0:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-yamap/-/react-native-yamap-4.0.2.tgz#51b68b33b454db7ad8e7d11a5cf48f6733eab700"
+  integrity sha512-Kn07Sq37BZihf0rMOyTjDdGtNNM5gAHn/j6cVz8+mHvTY13aeM0nOBfmT8Bhtzm+5wbRa9UQQJ3gJ4nl45AcqQ==
 
 react-native@0.64.0:
   version "0.64.0"
@@ -6554,6 +6571,15 @@ rn-color-matrices@^4.1.0:
   integrity sha512-a8++z3Zi4GhA0oWwKS3etdrVuVQ2q/ByTMh6lMxo+vaSv3SRSSg5SzpZk65GS0NCAqMhFT8WSvgSgNhO/F+xag==
   dependencies:
     clamp "^1.0.1"
+
+rn-segmented-control@^0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/rn-segmented-control/-/rn-segmented-control-0.2.8.tgz#dbf0b17d387248b947a76de9f4dc2f012b7534e0"
+  integrity sha512-aufQcuDfdGgG2Os7wbqBTzr4OcBv7fsM02rO31HCa/XC0W4xRfxR9XyiBPRkZLhO35+Br5Y9/Oln2YT/dYCw6A==
+  dependencies:
+    "@types/react-native" "^0.63.27"
+    prop-types "^15.7.2"
+    typescript next
 
 rsvp@^4.8.4:
   version "4.8.5"
@@ -7377,6 +7403,11 @@ typescript@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.3.tgz#39062d8019912d43726298f09493d598048c1ce3"
   integrity sha512-qOcYwxaByStAWrBf4x0fibwZvMRG+r4cQoTjbPtUlrWjBHbmCAww1i448U0GJ+3cNNEtebDteo/cHOR3xJ4wEw==
+
+typescript@next:
+  version "4.6.0-dev.20211124"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.0-dev.20211124.tgz#0637ae150cf299f6a809a4b1b27624ceea047de2"
+  integrity sha512-ETq0nFVLXolwFIBJZgcxc2IxVI/fwqe1LIcKgWAlmnlwQ3f7EMljl0Y2Zt45P+hhB9Rh3bfR10R49mvS1LtW8w==
 
 ua-parser-js@^0.7.18:
   version "0.7.24"

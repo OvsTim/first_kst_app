@@ -40,7 +40,7 @@ export interface Order {
   dateTimestamp?: number; //дата создания заказа, по факту совпадает с первой из статуса но нужна в виде таймстампа
   id: string; //внутренний идшник для базы
   currentStatus: OrderStatus;
-  public_id: number; //внешний идшник для пользователя
+  public_id: string; //внешний идшник для пользователя
   payment_type: OrderPaymentType; //тип оплаты
   products: Array<BasketItem>; //список продуктов(внутри объект продукта и количество)
   delivery_type: OrderDeliveryType; //тип доставки

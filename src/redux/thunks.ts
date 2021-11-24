@@ -22,7 +22,7 @@ export const fetchImages = createAsyncThunk(
 export const newOrderRequest = createAsyncThunk(
   'users/newOrderRequest',
   async (
-    arg: {id: number; type: OrderDeliveryType; address: string},
+    arg: {id: string; type: OrderDeliveryType; address: string},
     {rejectWithValue},
   ) => {
     try {

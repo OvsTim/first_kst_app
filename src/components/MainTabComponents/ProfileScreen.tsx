@@ -104,7 +104,7 @@ export default function ProfileScreen({navigation}: Props) {
               user_name: '',
               user_phone: '',
               id: doc.id,
-              public_id: doc.get<number>('НомерЗаказа'),
+              public_id: doc.get<string>('НомерЗаказа'),
               currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
               user_id: auth().currentUser?.uid,
               price: doc.get<number>('Цена'),

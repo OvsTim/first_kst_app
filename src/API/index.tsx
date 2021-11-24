@@ -49,7 +49,7 @@ export function getImages(url: string) {
 
 const BASE_URL = 'https://blooming-reef-09797.herokuapp.com/api';
 
-export function newOrder(id: number, type: OrderDeliveryType, address: string) {
+export function newOrder(id: string, type: OrderDeliveryType, address: string) {
   return axios.post(BASE_URL + '/newOrder', {id, type, address});
 }
 

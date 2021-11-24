@@ -1,4 +1,3 @@
-import {Image, ImageResizeMode, ImageStyle} from 'react-native';
 import storage from '@react-native-firebase/storage';
 import {useEffect, useState} from 'react';
 import React from 'react';
@@ -8,12 +7,12 @@ import ShimmerPlaceholder, {
 } from 'react-native-shimmer-placeholder';
 import {useAppDispatch, useSelector} from '../../redux';
 import {ImageMap, setImageUrl} from '../../redux/UserDataSlice';
-
+import FastImage, {ImageStyle, ResizeMode} from 'react-native-fast-image';
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 type Props = {
   innerUrl: string;
   imageStyle: ImageStyle;
-  resizeMode?: ImageResizeMode;
+  resizeMode?: ResizeMode;
 };
 
 export default function FirebaseImage(props: Props) {
@@ -50,7 +49,7 @@ export default function FirebaseImage(props: Props) {
       ref={imageRef}
       style={[{height: 200, width: 200}, props.imageStyle]}
       visible={isFetched}>
-      <Image
+      <FastImage
         resizeMode={props.resizeMode}
         source={url !== '' ? {uri: url} : require('../../assets/img_ph.png')}
         style={[{height: 200, width: 200}, props.imageStyle]}
