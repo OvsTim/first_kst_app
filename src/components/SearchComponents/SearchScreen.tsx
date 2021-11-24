@@ -71,20 +71,22 @@ export default function SearchScreen({navigation}: Props) {
             setSearchTerm(term);
           }}
         />
-        <Pressable
-          onPress={() => navigation.goBack()}
-          android_ripple={{color: 'lightgrey', radius: 200}}
-          style={{
-            width: 80,
-            height: 40,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <StyledText
-            style={{color: '#28B3C6', fontSize: 17, fontWeight: '400'}}>
-            Отмена
-          </StyledText>
-        </Pressable>
+        <View style={{borderRadius: 15, overflow: 'hidden'}}>
+          <Pressable
+            onPress={() => navigation.goBack()}
+            android_ripple={{color: 'lightgrey', radius: 200}}
+            style={{
+              width: 80,
+              height: 40,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <StyledText
+              style={{color: '#28B3C6', fontSize: 17, fontWeight: '400'}}>
+              Отмена
+            </StyledText>
+          </Pressable>
+        </View>
       </View>
       <FlatList
         keyboardShouldPersistTaps={'always'}

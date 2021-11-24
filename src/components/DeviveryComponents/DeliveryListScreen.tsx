@@ -100,7 +100,7 @@ export default function DeliveryListScreen({navigation, route}: Props) {
 
   function renderEmpty() {
     return (
-      <>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <Image
           style={{width: vScale(375), height: hScale(279)}}
           source={require('../../assets/ph_delivery.png')}
@@ -141,7 +141,7 @@ export default function DeliveryListScreen({navigation, route}: Props) {
             }
           }}
         />
-      </>
+      </View>
     );
   }
 
@@ -234,52 +234,60 @@ export default function DeliveryListScreen({navigation, route}: Props) {
         backgroundColor={'#f2f2f2'}
         barStyle="dark-content"
       />
-      <SwipeListView
-        contentContainerStyle={{alignItems: 'center', justifyContent: 'center'}}
-        ListEmptyComponent={() => renderEmpty()}
-        data={addressList}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={false}
-        closeOnRowOpen={true}
-        closeOnRowPress={true}
-        bounces={false}
-        renderHiddenItem={(data, rowMap) => (
-          <Pressable
-            disabled={data.item.street === '' ? true : null}
-            android_ripple={{color: 'lightgrey', radius: 200}}
-            onPress={() => {
-              Alert.alert('Сообщение', 'Вы уверены?', [
-                {style: 'default', text: 'Нет'},
-                {
-                  style: 'destructive',
-                  text: 'Да',
-                  onPress: () => {
-                    rowMap[addressList.indexOf(data.item)].closeRow();
-                    deleteAddress(data.item.id);
-                    dispatch(setCurrentAddress(undefined));
+      {addressList.length === 0 ? (
+        renderEmpty()
+      ) : (
+        <SwipeListView
+          contentContainerStyle={{
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          // ListEmptyComponent={() => renderEmpty()}
+          data={addressList}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+          closeOnRowOpen={true}
+          closeOnRowPress={true}
+          bounces={false}
+          renderHiddenItem={(data, rowMap) => (
+            <Pressable
+              disabled={data.item.street === '' ? true : null}
+              android_ripple={{color: 'lightgrey', radius: 200}}
+              onPress={() => {
+                Alert.alert('Сообщение', 'Вы уверены?', [
+                  {style: 'default', text: 'Нет'},
+                  {
+                    style: 'destructive',
+                    text: 'Да',
+                    onPress: () => {
+                      rowMap[addressList.indexOf(data.item)].closeRow();
+                      deleteAddress(data.item.id);
+                      dispatch(setCurrentAddress(undefined));
+                    },
                   },
-                },
-              ]);
-            }}
-            style={{
-              backgroundColor: 'red',
-              width: 70,
-              height: 60,
-              position: 'absolute',
-              right: 0,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <StyledText
-              style={{color: 'white', fontSize: 12, fontWeight: '700'}}>
-              Удалить
-            </StyledText>
-          </Pressable>
-        )}
-        rightOpenValue={-70}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => renderAddress(item)}
-      />
+                ]);
+              }}
+              style={{
+                backgroundColor: 'red',
+                width: 70,
+                height: 60,
+                position: 'absolute',
+                right: 0,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <StyledText
+                style={{color: 'white', fontSize: 12, fontWeight: '700'}}>
+                Удалить
+              </StyledText>
+            </Pressable>
+          )}
+          rightOpenValue={-70}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => renderAddress(item)}
+        />
+      )}
+
       {addressList.length > 0 && (
         <>
           <BaseButton

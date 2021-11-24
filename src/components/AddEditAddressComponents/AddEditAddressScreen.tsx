@@ -47,30 +47,32 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
             color={['gray', '#28B3C6']}
           />
         ) : (
-          <Pressable
-            onPress={() => {
-              if (route.params.type === 'add') {
-                addAddress();
-              } else {
-                updateAddress();
-              }
-            }}
-            android_ripple={{color: 'lightgrey', radius: 200}}
-            style={{
-              width: 80,
-              height: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <StyledText
+          <View style={{borderRadius: 15, overflow: 'hidden'}}>
+            <Pressable
+              onPress={() => {
+                if (route.params.type === 'add') {
+                  addAddress();
+                } else {
+                  updateAddress();
+                }
+              }}
+              android_ripple={{color: 'lightgrey', radius: 200}}
               style={{
-                fontSize: 14,
-                fontWeight: '700',
-                color: '#28B3C6',
+                width: 80,
+                height: 20,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
-              Готово
-            </StyledText>
-          </Pressable>
+              <StyledText
+                style={{
+                  fontSize: 14,
+                  fontWeight: '700',
+                  color: '#28B3C6',
+                }}>
+                Готово
+              </StyledText>
+            </Pressable>
+          </View>
         ),
     });
   }, [navigation, loadingToolbar, route.params.type]);

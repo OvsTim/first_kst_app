@@ -573,7 +573,12 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           width={width - 68}
           containerStyle={{alignSelf: 'center'}}
           text={
-            'Итого к оплате ' + getTotalPrice().toString() + ' ' + TENGE_LETTER
+            orderDeliveryType === 'PICKUP'
+              ? 'Оформить заказ'
+              : 'Итого к оплате ' +
+                getTotalPrice().toString() +
+                ' ' +
+                TENGE_LETTER
           }
           onPress={() => {
             if (orderDeliveryType === 'DELIVERY' && !currentAddress) {
