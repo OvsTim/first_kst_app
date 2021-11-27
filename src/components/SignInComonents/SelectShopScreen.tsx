@@ -247,7 +247,7 @@ export default function SelectShopScreen({navigation, route}: Props) {
             onMapPress={() => console.log('onMapPress')}>
             {list.map((rest, index) => (
               <Marker
-                scale={0.3}
+                scale={Platform.OS !== 'ios' ? 0.3 : 1}
                 key={index}
                 point={{lat: rest.coords.lat, lon: rest.coords.lan}}
                 onPress={() => {
