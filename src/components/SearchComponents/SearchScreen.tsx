@@ -16,6 +16,7 @@ import {Product} from '../../redux/ProductsDataSlice';
 import {RootState} from '../../redux';
 import Fuse from 'fuse.js';
 import {ProductItem} from '../MainTabComponents/ProductItem';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Search'>;
 };
@@ -24,6 +25,8 @@ const StyledText = withFont(Text);
 export default function SearchScreen({navigation}: Props) {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const {width} = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
   const productsMap: Record<string, Product> = useSelector(
     (state: RootState) => state.products.products,
   );
@@ -57,7 +60,7 @@ export default function SearchScreen({navigation}: Props) {
         flex: 1,
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
-        paddingTop: 25,
+        paddingTop: 25 + insets.top,
       }}>
       <StatusBar
         translucent={false}

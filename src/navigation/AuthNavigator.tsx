@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 import * as React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import SearchShop from '../components/SignInComonents/SelectShopScreen';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export type AuthStackParamList = {
   SearchShop: undefined;
@@ -10,6 +11,7 @@ export type AuthStackParamList = {
 const Stack = createStackNavigator<AuthStackParamList>();
 
 export default function AuthNavigator() {
+  const insets = useSafeAreaInsets();
   return (
     <>
       <Stack.Screen
@@ -17,7 +19,7 @@ export default function AuthNavigator() {
         component={SearchShop}
         options={{
           headerStyle: {
-            height: 50,
+            height: 50 + insets.top,
             backgroundColor: '#F2F2F2',
           },
           headerTitle: 'Рестораны',

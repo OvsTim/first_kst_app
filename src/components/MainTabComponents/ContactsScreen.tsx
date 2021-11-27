@@ -16,12 +16,14 @@ import {withFont} from '../_CustomComponents/HOC/withFont';
 import firestore from '@react-native-firebase/firestore';
 import {openWhatsApp} from '../../utils/linkingUtils';
 import {FocusAwareStatusBar} from '../../navigation/FocusAwareStatusBar';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Contacts'>;
 };
 const StyledText = withFont(Text);
 export default function ContactsScreen({navigation}: Props) {
   const [contactsData, setContactsData] = useState<Record<string, string>>({});
+  const insets = useSafeAreaInsets();
 
   React.useEffect(() => {
     firestore()
@@ -55,7 +57,7 @@ export default function ContactsScreen({navigation}: Props) {
           style={{
             width: width - 160,
             height: width - 160,
-            marginTop: 37,
+            marginTop: 37 + insets.top,
             alignItems: 'center',
             justifyContent: 'flex-end',
           }}

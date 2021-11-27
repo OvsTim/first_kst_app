@@ -11,7 +11,7 @@ import MenuScreen from '../components/MainTabComponents/MenuScreen';
 import ProfileScreen from '../components/MainTabComponents/ProfileScreen';
 import ContactsScreen from '../components/MainTabComponents/ContactsScreen';
 import BasketScreen from '../components/MainTabComponents/BasketScreen';
-import {Image, Text, View} from 'react-native';
+import {Image, Platform, Text, View} from 'react-native';
 import {withFont} from '../components/_CustomComponents/HOC/withFont';
 import AboutScreen from '../components/AboutComponents/AboutScreen';
 import HistoryScreen from '../components/HistoryComponents/HistoryScreen';
@@ -36,6 +36,7 @@ import SearchScreen from '../components/SearchComponents/SearchScreen';
 import OrderSuccessScreen from '../components/OrderSuccessComponents/OrderSuccessScreen';
 import OrderInfoScreen from '../components/OrderInfoComponents/OrderInfoScreen';
 import AgreementScreen from '../components/AgreementComponents/AgreementScreen';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export type AppStackParamList = {
   Agreement: undefined;
@@ -99,7 +100,7 @@ const options: StackNavigationOptions = {
   },
   headerBackImage: _ => (
     <Image
-      style={{width: 12, height: 21, marginRight: 8}}
+      style={{width: 12, height: 21, marginHorizontal: 8}}
       source={require('../assets/back.png')}
     />
   ),
@@ -112,6 +113,8 @@ const options: StackNavigationOptions = {
 const StyledText = withFont(Text);
 
 function MenuTab() {
+  const insets = useSafeAreaInsets();
+
   return (
     <MenuStack.Navigator screenOptions={options}>
       <MenuStack.Screen
@@ -127,60 +130,98 @@ function MenuTab() {
       <MenuStack.Screen
         name="DeliveryListSelect"
         component={DeliveryListScreen}
-        options={{title: 'Адреса доставки', headerBackTitle: 'Отменв'}}
+        options={{
+          title: 'Адреса доставки',
+          headerBackTitle: 'Отменв',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <MenuStack.Screen
         name="AddEditAddressSelect"
         component={AddEditAddressScreen}
-        options={{title: 'Адрес доставки', headerBackTitle: 'Назад'}}
+        options={{
+          title: 'Адрес доставки',
+          headerBackTitle: 'Назад',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
     </MenuStack.Navigator>
   );
 }
 
 function ProfileTab() {
+  const insets = useSafeAreaInsets();
   return (
     <ProfileStack.Navigator screenOptions={options}>
       <ProfileStack.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{title: 'Профиль'}}
+        options={{
+          title: 'Профиль',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <ProfileStack.Screen
         name="DeliveryList"
         component={DeliveryListScreen}
-        options={{title: 'Адреса доставки', headerBackTitle: 'Профиль'}}
+        options={{
+          title: 'Адреса доставки',
+          headerBackTitle: 'Профиль',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <ProfileStack.Screen
         name="History"
         component={HistoryScreen}
-        options={{title: 'История заказов', headerBackTitle: 'Профиль'}}
+        options={{
+          title: 'История заказов',
+          headerBackTitle: 'Профиль',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <ProfileStack.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{title: 'Настройки', headerBackTitle: 'Профиль'}}
+        options={{
+          title: 'Настройки',
+          headerBackTitle: 'Профиль',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <ProfileStack.Screen
         name="BonucesStocks"
         component={BonucesStocksScreen}
-        options={{title: 'Бонусы и акции', headerBackTitle: 'Профиль'}}
+        options={{
+          title: 'Бонусы и акции',
+          headerBackTitle: 'Профиль',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <ProfileStack.Screen
         name="AddEditAddress"
         component={AddEditAddressScreen}
-        options={{title: 'Адрес доставки', headerBackTitle: 'Назад'}}
+        options={{
+          title: 'Адрес доставки',
+          headerBackTitle: 'Назад',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <ProfileStack.Screen
         name="OrderInfo"
         component={OrderInfoScreen}
-        options={{title: 'Информация о заказе', headerBackTitle: 'Назад'}}
+        options={{
+          title: 'Информация о заказе',
+          headerBackTitle: 'Назад',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
     </ProfileStack.Navigator>
   );
 }
 
 function ContactsTab() {
+  const insets = useSafeAreaInsets();
+
   return (
     <ContactsStack.Navigator screenOptions={options}>
       <ContactsStack.Screen
@@ -191,7 +232,11 @@ function ContactsTab() {
       <ContactsStack.Screen
         name="About"
         component={AboutScreen}
-        options={{title: 'О приложении', headerBackTitle: 'Контакты'}}
+        options={{
+          title: 'О приложении',
+          headerBackTitle: 'Контакты',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <ContactsStack.Screen
         name="Map"
@@ -206,27 +251,45 @@ function BasketTab() {
   const basket: Array<BasketItem> = useSelector(
     (state: RootState) => state.basket.basket,
   );
+  const insets = useSafeAreaInsets();
+
   return (
     <BasketStack.Navigator screenOptions={options}>
       <BasketStack.Screen
         name="Basket"
         component={BasketScreen}
-        options={() => ({title: 'Корзина', headerShown: basket.length === 0})}
+        options={() => ({
+          title: 'Корзина',
+          headerShown: basket.length === 0,
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        })}
       />
       <BasketStack.Screen
         name={'OrderDelivery'}
         component={OrderDeliveryScreen}
-        options={() => ({title: '', headerLeft: () => <View />})}
+        options={() => ({
+          title: '',
+          headerLeft: () => <View />,
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        })}
       />
       <BasketStack.Screen
         name="DeliveryListBasket"
         component={DeliveryListScreen}
-        options={{title: 'Адреса доставки', headerBackTitle: 'Отменв'}}
+        options={{
+          title: 'Адреса доставки',
+          headerBackTitle: 'Отменв',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
       <BasketStack.Screen
         name="AddEditAddressBasket"
         component={AddEditAddressScreen}
-        options={{title: 'Адрес доставки', headerBackTitle: 'Назад'}}
+        options={{
+          title: 'Адрес доставки',
+          headerBackTitle: 'Назад',
+          headerStyle: {height: 50 + insets.top, backgroundColor: '#F2F2F2'},
+        }}
       />
     </BasketStack.Navigator>
   );
@@ -236,13 +299,14 @@ function Home() {
   const basket: Array<BasketItem> = useSelector(
     (state: RootState) => state.basket.basket,
   );
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
       tabBarOptions={{
         keyboardHidesTabBar: true,
         inactiveTintColor: 'gray',
         style: {
-          height: 80,
+          height: 80 + insets.bottom,
           backgroundColor: '#F7F7F7',
         },
       }}>
@@ -396,6 +460,8 @@ function Home() {
 }
 
 export default function AppNavigator() {
+  const insets = useSafeAreaInsets();
+
   return (
     <>
       <Stack.Screen
@@ -430,7 +496,8 @@ export default function AppNavigator() {
           headerBackTitleStyle: {
             color: '#28B3C6',
             fontSize: 14,
-            marginLeft: 4,
+            marginHorizontal: 8,
+
             fontFamily: 'SFProDisplay-Regular',
           },
           headerBackTitle: 'Отмена',
@@ -442,7 +509,7 @@ export default function AppNavigator() {
             fontSize: 17,
             fontFamily: 'SFProDisplay-Bold',
           },
-          headerStyle: {backgroundColor: '#F7F7F7'},
+          headerStyle: {backgroundColor: '#F7F7F7', paddingTop: insets.top},
         }}
       />
       <Stack.Screen
@@ -451,7 +518,7 @@ export default function AppNavigator() {
         options={{
           headerBackImage: _ => (
             <Image
-              style={{width: 12, height: 21, marginRight: 8}}
+              style={{width: 12, height: 21, marginHorizontal: 8}}
               source={require('../assets/back.png')}
             />
           ),
@@ -472,7 +539,7 @@ export default function AppNavigator() {
             fontSize: 17,
             fontFamily: 'SFProDisplay-Bold',
           },
-          headerStyle: {backgroundColor: '#F7F7F7'},
+          headerStyle: {backgroundColor: '#F7F7F7', paddingTop: insets.top},
         }}
       />
       <Stack.Screen
@@ -482,7 +549,10 @@ export default function AppNavigator() {
           ...TransitionPresets.ModalSlideFromBottomIOS,
           headerBackTitleVisible: false,
           headerTitle: '',
-          headerStyle: {backgroundColor: 'white'},
+          headerStyle: {
+            backgroundColor: 'white',
+            height: 50 + insets.top,
+          },
         }}
       />
       <Stack.Screen
@@ -491,7 +561,7 @@ export default function AppNavigator() {
         options={{
           headerBackImage: _ => (
             <Image
-              style={{width: 12, height: 21, marginRight: 8}}
+              style={{width: 12, height: 21, marginHorizontal: 8}}
               source={require('../assets/back.png')}
             />
           ),
@@ -506,7 +576,10 @@ export default function AppNavigator() {
           },
           headerBackTitle: 'Телефон',
           headerTitle: '',
-          headerStyle: {backgroundColor: 'white'},
+          headerStyle: {
+            backgroundColor: 'white',
+            height: 50 + insets.top,
+          },
         }}
       />
       <Stack.Screen
@@ -515,7 +588,7 @@ export default function AppNavigator() {
         options={{
           headerBackImage: _ => (
             <Image
-              style={{width: 12, height: 21, marginRight: 8}}
+              style={{width: 12, height: 21, marginHorizontal: 8}}
               source={require('../assets/back.png')}
             />
           ),
@@ -529,7 +602,10 @@ export default function AppNavigator() {
             fontFamily: 'SFProDisplay-Regular',
           },
           headerTitle: '',
-          headerStyle: {backgroundColor: 'white'},
+          headerStyle: {
+            backgroundColor: 'white',
+            height: 50 + insets.top,
+          },
         }}
       />
       <Stack.Screen
@@ -538,7 +614,7 @@ export default function AppNavigator() {
         options={{
           headerBackImage: _ => (
             <Image
-              style={{width: 12, height: 21, marginRight: 8}}
+              style={{width: 12, height: 21, marginHorizontal: 8}}
               source={require('../assets/back.png')}
             />
           ),
@@ -552,79 +628,12 @@ export default function AppNavigator() {
             fontFamily: 'SFProDisplay-Regular',
           },
           headerTitle: '',
-          headerStyle: {backgroundColor: 'white'},
+          headerStyle: {
+            backgroundColor: 'white',
+            height: 50 + insets.top,
+          },
         }}
       />
-      {/*<Stack.Screen*/}
-      {/*  name="EditProfile"*/}
-      {/*  component={EditProfileScreen}*/}
-      {/*  options={({navigation}) => ({*/}
-      {/*    ...TransitionPresets.SlideFromRightIOS,*/}
-      {/*    headerTitle: 'Редактирование профиля',*/}
-      {/*    headerLeft: () => renderCloseButton(navigation),*/}
-      {/*  })}*/}
-      {/*/>*/}
-      {/*<Stack.Screen*/}
-      {/*  name="CodeEnter"*/}
-      {/*  component={CodeEnterScreen}*/}
-      {/*  options={{*/}
-      {/*    ...TransitionPresets.DefaultTransition,*/}
-      {/*    headerShown: false,*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<Stack.Screen*/}
-      {/*  name="Health"*/}
-      {/*  component={HealthScreen}*/}
-      {/*  options={({navigation}) => ({*/}
-      {/*    ...TransitionPresets.SlideFromRightIOS,*/}
-      {/*    headerTitle: 'Сведения о здоровье',*/}
-      {/*    headerLeft: () => renderCloseButton(navigation),*/}
-      {/*  })}*/}
-      {/*/>*/}
-      {/*<Stack.Screen*/}
-      {/*  name="Injury"*/}
-      {/*  component={InjuryScreen}*/}
-      {/*  options={({navigation}) => ({*/}
-      {/*    ...TransitionPresets.SlideFromRightIOS,*/}
-      {/*    headerTitle: 'Сведения о травмах',*/}
-      {/*    headerLeft: () => renderCloseButton(navigation),*/}
-      {/*  })}*/}
-      {/*/>*/}
-      {/*<Stack.Screen*/}
-      {/*  name="QRCode"*/}
-      {/*  component={QRCodeScreen}*/}
-      {/*  options={{*/}
-      {/*    ...TransitionPresets.SlideFromRightIOS,*/}
-      {/*    headerShown: false,*/}
-      {/*  }}*/}
-      {/*/>*/}
-      {/*<Stack.Screen*/}
-      {/*  name="Pool"*/}
-      {/*  component={PoolScreen}*/}
-      {/*  options={({navigation}) => ({*/}
-      {/*    ...TransitionPresets.SlideFromRightIOS,*/}
-      {/*    headerTitle: 'Опрос',*/}
-      {/*    headerLeft: () => renderCloseButton(navigation),*/}
-      {/*  })}*/}
-      {/*/>*/}
-      {/*<Stack.Screen*/}
-      {/*  name="SubmitError"*/}
-      {/*  component={SubmitErrorScreen}*/}
-      {/*  options={() => ({*/}
-      {/*    ...TransitionPresets.SlideFromRightIOS,*/}
-      {/*    headerTitle: 'Сообщить об ошибке',*/}
-      {/*    headerLeft: () => <BackButton />,*/}
-      {/*  })}*/}
-      {/*/>*/}
-      {/*<Stack.Screen*/}
-      {/*  name="Help"*/}
-      {/*  component={HelpScreen}*/}
-      {/*  options={() => ({*/}
-      {/*    ...TransitionPresets.SlideFromRightIOS,*/}
-      {/*    headerTitle: 'Справка',*/}
-      {/*    headerLeft: () => <BackButton />,*/}
-      {/*  })}*/}
-      {/*/>*/}
     </>
   );
 }

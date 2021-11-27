@@ -24,6 +24,7 @@ import {isOutOfStock} from '../../utils/productUtils';
 import {ProductCountButton} from '../MainTabComponents/ProductCountButton';
 import {BasketItem, plusProduct} from '../../redux/BasketDataReducer';
 import GestureRecognizer from 'react-native-swipe-gestures';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Product'>;
   route: RouteProp<AppStackParamList, 'Product'>;
@@ -64,6 +65,8 @@ export default function ProductScreen({navigation, route}: Props) {
   const productsMap: Record<string, Product> = useSelector(
     (state: RootState) => state.products.products,
   );
+  const insets = useSafeAreaInsets();
+
   function renderTopImage() {
     return (
       <>
@@ -338,6 +341,8 @@ export default function ProductScreen({navigation, route}: Props) {
         ref={scrollViewRef}
         contentContainerStyle={{
           flexGrow: 0,
+          marginTop: insets.top,
+
           alignItems: 'center',
           paddingBottom: 150,
           justifyContent: 'flex-start',

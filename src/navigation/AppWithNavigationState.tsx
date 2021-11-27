@@ -31,6 +31,7 @@ import BaseButton from '../components/_CustomComponents/BaseButton';
 import {withFont} from '../components/_CustomComponents/HOC/withFont';
 import {withPressable} from '../components/_CustomComponents/HOC/withPressable';
 import {Product} from '../redux/ProductsDataSlice';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -53,7 +54,6 @@ export default function AppWithNavigationState() {
     YaMap.init('5f991160-3890-4d3c-acc4-59203f61edd3');
   }, []);
   const {width} = useWindowDimensions();
-
   const [initializing, setInitializing] = useState(true);
   const [visible, setVisible] = useState<boolean>(false);
   const [mark, setMark] = useState<number>(0);
@@ -62,7 +62,7 @@ export default function AppWithNavigationState() {
   const [textVisible, setTextVisible] = useState<boolean>(false);
   const routeNameRef = React.useRef<string | undefined>('');
   const navigationRef = React.useRef<NavigationContainerRef>(null);
-
+  const insets = useSafeAreaInsets();
   useEffect(() => {
     dayjs.locale('ru');
   }, []);
@@ -457,11 +457,6 @@ export default function AppWithNavigationState() {
 
         routeNameRef.current = currentRouteName;
       }}>
-      <StatusBar
-        translucent={false}
-        backgroundColor={'white'}
-        barStyle="dark-content"
-      />
       <MainNavigator />
       {renderMarkDialog()}
     </NavigationContainer>

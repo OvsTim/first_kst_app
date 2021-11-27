@@ -42,6 +42,7 @@ import {PRODUCT_ITEM_HEIGHT, ProductItem} from './ProductItem';
 import auth from '@react-native-firebase/auth';
 import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Menu'>;
 };
@@ -49,7 +50,9 @@ const StyledText = withFont(Text);
 const Button = withPressable(View);
 
 export default function MenuScreen({navigation}: Props) {
-  const HEADER_EXPANDED_HEIGHT = 290;
+  const insets = useSafeAreaInsets();
+
+  const HEADER_EXPANDED_HEIGHT = 290+insets.top;
   const netInfo = useNetInfo();
   const onViewRef = useRef((info: {viewableItems: Array<ViewToken>}) => {
     if (info.viewableItems.length > 0) {
@@ -312,7 +315,7 @@ export default function MenuScreen({navigation}: Props) {
         <View
           style={{
             flexDirection: 'row',
-            marginTop: 25,
+            marginTop: 25+insets.top,
             marginBottom: 10,
             alignItems: 'center',
             width,

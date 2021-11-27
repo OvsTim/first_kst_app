@@ -6,6 +6,7 @@ import store from './src/redux';
 import {enableScreens} from 'react-native-screens';
 import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 enableScreens();
 
@@ -15,7 +16,9 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <AppWithNavigationState />
+        <SafeAreaProvider>
+          <AppWithNavigationState />
+        </SafeAreaProvider>
       </PersistGate>
     </Provider>
   );
