@@ -126,6 +126,9 @@ export default function HistoryScreen({navigation}: Props) {
         .get()
         .then(res => {
           let list: Array<Order> = [];
+          if (res.size === 0) {
+            return;
+          }
 
           res.docs.forEach(doc => {
             let order: Order = {
