@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
   FlatList,
   Image,
   Pressable,
@@ -64,8 +63,9 @@ export default function HistoryScreen({navigation}: Props) {
     requestPage(1);
   }, []);
 
-  function requestPage(page: number) {
-    if (page === 1) {
+  function requestPage(pageForRequest: number) {
+    if (pageForRequest === 1) {
+      console.log('requestPage', pageForRequest);
       firestore()
         .collection('Заказы')
         .where('ИДПользователя', '==', auth().currentUser?.uid)
@@ -76,6 +76,9 @@ export default function HistoryScreen({navigation}: Props) {
         .get()
         .then(res => {
           let list: Array<Order> = [];
+          if (res.size === 0) {
+            return;
+          }
 
           res.docs.forEach(doc => {
             let order: Order = {
@@ -116,6 +119,10 @@ export default function HistoryScreen({navigation}: Props) {
         })
         .catch(er => console.log('er', er));
     } else {
+      if (!lastDoc) {
+        return;
+      }
+
       firestore()
         .collection('Заказы')
         .where('ИДПользователя', '==', auth().currentUser?.uid)
