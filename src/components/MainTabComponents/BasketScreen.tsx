@@ -27,6 +27,7 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {getWorkingNow} from '../../utils/workHourUtils';
 import {OrderDeliveryType} from '../../redux/ProductsDataSlice';
+import FastImage from 'react-native-fast-image';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -149,7 +150,7 @@ export default function BasketScreen({navigation}: Props) {
       <View style={{width, height: 190, backgroundColor: 'white'}}>
         <View style={{flexDirection: 'row'}}>
           <View style={{width: 36}} />
-          <Image
+          <FastImage
             source={
               imagesMap[basketItem.item.picture_url]
                 ? {uri: imagesMap[basketItem.item.picture_url]}

@@ -81,8 +81,15 @@ export function ProductCountButton(props: Props) {
     return (
       <Pressable
         onPress={() => {
-          //todo:перекостылить с боевыми данными
-          if (product.category !== 'Категории/Сеты') {
+          if (
+            product.category !== 'Категории/Сеты' &&
+            product.category !== 'Категории/Запеченые роллы' &&
+            product.category !== 'Категории/Футамаки' &&
+            product.category !== 'Категории/Сложные роллы' &&
+            product.category !== 'Категории/Фрай маки' &&
+            product.category !== 'Категории/Wok' &&
+            product.category !== 'Категории/Хосомаки'
+          ) {
             dispatch(plusProduct(product));
           } else {
             dispatch(plusProduct(product));
