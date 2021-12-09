@@ -28,15 +28,17 @@ import {
 } from '../../redux/ProductsDataSlice';
 import {getIndexByStatus} from '../../utils/ordersUtils';
 import {hScale, vScale} from '../../utils/scaling';
-
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Profile'>;
 };
 
 const Button = withPressable(View);
+
 export default function ProfileScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
+const insets = useSafeAreaInsets();
   const active: string = useSelector(
     (state: RootState) => state.data.activeShop,
   );
@@ -187,7 +189,7 @@ export default function ProfileScreen({navigation}: Props) {
           backgroundColor={'white'}
           barStyle="dark-content"
         />
-        <View style={{height: 25}} />
+        <View style={{height: 25 + insets.top}} />
         <View style={{flexDirection: 'row', marginTop: 5}}>
           <View style={{width: 8}} />
           <View
