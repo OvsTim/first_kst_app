@@ -25,8 +25,6 @@ import auth, {
   // @ts-ignore
   User,
 } from '@react-native-firebase/auth';
-// @ts-ignore
-import {useSmsUserConsent} from '@eabdullazyanov/react-native-sms-user-consent';
 import firestore from '@react-native-firebase/firestore';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
@@ -50,7 +48,6 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   const count = 60;
   const codeRef: RefObject<TextInput> = createRef();
   const {width} = useWindowDimensions();
-  const retrievedCode = useSmsUserConsent();
   const [counter, setCounter] = useState(count);
 
   useEffect(() => {
@@ -105,12 +102,6 @@ export default function EnterCodeScreen({navigation, route}: Props) {
       hideSubscription.remove();
     };
   }, []);
-
-  useEffect(() => {
-    if (retrievedCode) {
-      setCode(retrievedCode);
-    }
-  }, [retrievedCode]);
 
   function onAuthStateChanged(user: User | null) {
     console.log('useronAuthStateChanged', user);

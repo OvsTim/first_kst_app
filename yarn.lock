@@ -733,11 +733,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@eabdullazyanov/react-native-sms-user-consent@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@eabdullazyanov/react-native-sms-user-consent/-/react-native-sms-user-consent-1.0.10.tgz#98d237df799fc651c2a0dc332b8d6b5b8ba1fb7f"
-  integrity sha512-2z/rVmKERVIbeJucxACKTjgfuPfrHfZS48sxIMCsn1I3yO5FMzUNi+zJhK7rYW+Acj8XNIXQ4KQ79+vulhM10Q==
-
 "@egjs/hammerjs@^2.0.17":
   version "2.0.17"
   resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
@@ -6193,10 +6188,10 @@ react-native-view-pdf@^0.12.2:
   resolved "https://registry.yarnpkg.com/react-native-view-pdf/-/react-native-view-pdf-0.12.2.tgz#b6a90b8b29f6d77555339a9cc88f252e65a8edc3"
   integrity sha512-rjyJmdlPUZytPLYF884Mb/x5mDsC4Ibcp5thzOmfFy0QjFGh4yItBZngpAZ2HIsC8Sd9TOSrlgJmq3H1pGJicQ==
 
-react-native-yamap@^4.0.0:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-yamap/-/react-native-yamap-4.0.2.tgz#51b68b33b454db7ad8e7d11a5cf48f6733eab700"
-  integrity sha512-Kn07Sq37BZihf0rMOyTjDdGtNNM5gAHn/j6cVz8+mHvTY13aeM0nOBfmT8Bhtzm+5wbRa9UQQJ3gJ4nl45AcqQ==
+react-native-yamap@^1.0.20:
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/react-native-yamap/-/react-native-yamap-1.0.20.tgz#0bda9b942136c534adaeca98bd5b907e74112122"
+  integrity sha512-RXCEA6Fv2Leya9Vi0CHQ7xzEgYVHK41+Fy8n3OwU8/wU4Tkumld7h+nsQkQqFMX1SIVJ0XFr94H07RhC9/M4Ow==
 
 react-native@0.64.0:
   version "0.64.0"
