@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:164585661216:android:af28cc680cad1634302d45",
+        "android_client_info": {
+          "package_name": "first.admin.kst"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164585661216-na7nq6lop7pqs59ps1jlfpsv41qb1j6v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApyoZSOS7Skk-AGKz8_gjSkHS-kvMJsEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164585661216-na7nq6lop7pqs59ps1jlfpsv41qb1j6v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "164585661216-bvcikedafokqqqaan779dd86auevdfqq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "first.kst"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:164585661216:android:48d1b673486d7e1c302d45",
         "android_client_info": {
           "package_name": "first.kst"
@@ -22,11 +58,27 @@
           }
         },
         {
+          "client_id": "164585661216-5ib205o1ic6kqqnp84bvd3v18k93e7ib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "first.kst",
+            "certificate_hash": "48ce81e76f5904c5a349bc384bb74a023e9748f9"
+          }
+        },
+        {
           "client_id": "164585661216-9q8f2pkbr6s74ismkputqhrqu0chi6vg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "first.kst",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "164585661216-p7l2trsutdjeee27ou02ftr0immfqmqv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "first.kst",
+            "certificate_hash": "6de2d7aa15ecf46f80e812a7985d72900a8c1234"
           }
         },
         {
@@ -45,6 +97,13 @@
             {
               "client_id": "164585661216-na7nq6lop7pqs59ps1jlfpsv41qb1j6v.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "164585661216-bvcikedafokqqqaan779dd86auevdfqq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "first.kst"
+              }
             }
           ]
         }
