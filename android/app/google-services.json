@@ -74,6 +74,14 @@
           }
         },
         {
+          "client_id": "164585661216-mflkslr6n267oe0u5j0qjclohbcsohna.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "first.kst",
+            "certificate_hash": "db956f05a37a0eb4fda3fa891d2585d2d772014d"
+          }
+        },
+        {
           "client_id": "164585661216-p7l2trsutdjeee27ou02ftr0immfqmqv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
