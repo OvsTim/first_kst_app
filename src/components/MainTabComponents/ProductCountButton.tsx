@@ -134,7 +134,7 @@ export function ProductCountButton(props: Props) {
         <View style={{borderRadius: 30, overflow: 'hidden'}}>
           <Pressable
             onPress={() => dispatch(minusProduct(product))}
-            android_ripple={{color: 'lightgray', radius: 200}}
+            android_ripple={{color: '#F3F2F8', radius: 200}}
             style={{
               height: 26,
               width: 26,
@@ -161,7 +161,7 @@ export function ProductCountButton(props: Props) {
         <View style={{borderRadius: 30, overflow: 'hidden'}}>
           <Pressable
             onPress={() => dispatch(plusProduct(product))}
-            android_ripple={{color: 'lightgray', radius: 200}}
+            android_ripple={{color: '#F3F2F8', radius: 200}}
             style={{
               height: 26,
               width: 26,

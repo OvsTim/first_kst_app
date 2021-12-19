@@ -43,7 +43,10 @@ export function withPressable<T extends Props>(
               alignItems: 'center',
               justifyContent: 'center',
             },
-            Platform.OS === 'ios' && pressed && {backgroundColor: 'grey'},
+            Platform.OS === 'ios' &&
+              pressed && {
+                backgroundColor: props.androidRippleColor ?? 'gray',
+              },
           ]}
           onPress={() => {
             props.onPress();

@@ -336,7 +336,7 @@ export default function BasketScreen({navigation}: Props) {
           closeOnRowPress={true}
           renderHiddenItem={(data, rowMap) => (
             <Pressable
-              android_ripple={{color: 'lightgrey', radius: 200}}
+              android_ripple={{color: '#F3F2F8', radius: 200}}
               onPress={() => {
                 rowMap[basket.indexOf(data.item)].closeRow();
                 dispatch(deleteProduct(data.item.item));

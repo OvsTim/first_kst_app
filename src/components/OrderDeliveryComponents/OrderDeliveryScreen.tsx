@@ -301,7 +301,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               <View style={{overflow: 'hidden', borderRadius: 15}}>
                 <Pressable
                   onPress={() => navigation.navigate('DeliveryListBasket')}
-                  android_ripple={{color: 'lightgrey', radius: 200}}
+                  android_ripple={{color: '#F3F2F8', radius: 200}}
                   style={{paddingVertical: 15, width: width - 68}}>
                   <StyledText
                     style={{
@@ -335,7 +335,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                   onPress={() =>
                     navigation.navigate('ChangeRestaraunt', {activeTab: 0})
                   }
-                  android_ripple={{color: 'lightgrey', radius: 200}}
+                  android_ripple={{color: '#F3F2F8', radius: 200}}
                   style={{paddingVertical: 15, width: width - 68}}>
                   <StyledText
                     style={{
@@ -385,7 +385,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             }}>
             <Pressable
               onPress={() => setPaymentWay('CASH')}
-              android_ripple={{color: 'lightgrey', radius: 200}}
+              android_ripple={{color: '#F3F2F8', radius: 200}}
               style={{
                 paddingVertical: 12,
                 width: width - 68,
@@ -420,7 +420,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             }}>
             <Pressable
               onPress={() => setPaymentWay('CARD')}
-              android_ripple={{color: 'lightgrey', radius: 200}}
+              android_ripple={{color: '#F3F2F8', radius: 200}}
               style={{
                 paddingVertical: 12,
                 width: width - 68,
@@ -449,7 +449,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           <View style={{overflow: 'hidden', borderRadius: 15}}>
             <Pressable
               onPress={() => setPaymentWay('KASPI')}
-              android_ripple={{color: 'lightgrey', radius: 200}}
+              android_ripple={{color: '#F3F2F8', radius: 200}}
               style={{
                 paddingVertical: 12,
                 width: width - 68,
@@ -690,7 +690,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                 width,
               }}>
               <Pressable
-                android_ripple={{color: 'lightgrey', radius: 200}}
+                android_ripple={{color: '#F3F2F8', radius: 200}}
                 style={{
                   width: 90,
                   height: 50,

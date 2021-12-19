@@ -361,6 +361,7 @@ export default function HistoryScreen({navigation}: Props) {
           <View style={{height: 10}} />
           <View style={{borderRadius: 15, overflow: 'hidden'}}>
             <Button
+              androidRippleColor={'#F2F3F8'}
               onPress={() => {
                 let prevProdItems: Array<BasketItem> = order.products;
                 let newBasket: Array<BasketItem> = [];

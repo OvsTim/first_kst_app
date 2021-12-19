@@ -149,7 +149,7 @@ export default function ContactsScreen({navigation}: Props) {
               onPress={() => {
                 Linking.openURL(contactsData.instagram);
               }}
-              android_ripple={{color: 'lightgrey', radius: 200}}>
+              android_ripple={{color: '#F3F2F8', radius: 200}}>
               <Image
                 style={{width: 48, height: 48}}
                 source={require('../../assets/inst.png')}
@@ -163,7 +163,7 @@ export default function ContactsScreen({navigation}: Props) {
             <View style={{overflow: 'hidden', borderRadius: 24}}>
               <Pressable
                 onPress={() => Linking.openURL(contactsData.vk)}
-                android_ripple={{color: 'lightgrey', radius: 200}}>
+                android_ripple={{color: '#F3F2F8', radius: 200}}>
                 <Image
                   style={{width: 48, height: 48}}
                   source={require('../../assets/vk.png')}
@@ -178,7 +178,7 @@ export default function ContactsScreen({navigation}: Props) {
             <View style={{overflow: 'hidden', borderRadius: 24}}>
               <Pressable
                 onPress={() => Linking.openURL(contactsData.youtube)}
-                android_ripple={{color: 'lightgrey', radius: 200}}>
+                android_ripple={{color: '#F3F2F8', radius: 200}}>
                 <Image
                   style={{width: 48, height: 48}}
                   source={require('../../assets/youtube.png')}
@@ -203,7 +203,7 @@ export default function ContactsScreen({navigation}: Props) {
             borderBottomColor: '#F2F2F6',
           }}
           onPress={() => navigation.navigate('Agreement')}
-          android_ripple={{color: 'lightgrey', radius: 200}}>
+          android_ripple={{color: '#F3F2F8', radius: 200}}>
           <View
             style={{
               flexDirection: 'row',
@@ -230,7 +230,7 @@ export default function ContactsScreen({navigation}: Props) {
             borderBottomColor: '#F2F2F6',
           }}
           onPress={() => navigation.navigate('About')}
-          android_ripple={{color: 'lightgrey', radius: 200}}>
+          android_ripple={{color: '#F3F2F8', radius: 200}}>
           <View
             style={{
               flexDirection: 'row',

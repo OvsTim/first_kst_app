@@ -56,7 +56,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
                   updateAddress();
                 }
               }}
-              android_ripple={{color: 'lightgrey', radius: 200}}
+              android_ripple={{color: '#F3F2F8', radius: 200}}
               style={{
                 width: 80,
                 height: 20,
@@ -384,7 +384,7 @@ export default function AddEditAddressScreen({navigation, route}: Props) {
                 },
               ])
             }
-            android_ripple={{color: 'lightgrey', radius: 200}}
+            android_ripple={{color: '#F3F2F8', radius: 200}}
             style={{
               width: 80,
               height: 30,

@@ -95,7 +95,7 @@ export default function ProductScreen({navigation, route}: Props) {
           <Pressable
             pressRetentionOffset={20}
             onPress={() => navigation.goBack()}
-            android_ripple={{color: 'lightgrey', radius: 200}}>
+            android_ripple={{color: '#F3F2F8', radius: 200}}>
             <Image
               style={{width: 20, height: 20}}
               source={require('../../assets/product_close.png')}
@@ -231,7 +231,7 @@ export default function ProductScreen({navigation, route}: Props) {
               width: 20,
               height: 20,
             }}
-            android_ripple={{color: 'lightgrey', radius: 200}}>
+            android_ripple={{color: '#F3F2F8', radius: 200}}>
             <Image
               style={{
                 height: 5,

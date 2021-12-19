@@ -168,7 +168,7 @@ export default function DeliveryListScreen({navigation, route}: Props) {
             navigation.goBack();
           }
         }}
-        android_ripple={{color: 'lightgrey', radius: 200}}>
+        android_ripple={{color: '#F3F2F8', radius: 200}}>
         <ShimmerPlaceHolder
           style={{width: width - 120}}
           visible={item.street !== ''}>
@@ -252,7 +252,7 @@ export default function DeliveryListScreen({navigation, route}: Props) {
           renderHiddenItem={(data, rowMap) => (
             <Pressable
               disabled={data.item.street === '' ? true : null}
-              android_ripple={{color: 'lightgrey', radius: 200}}
+              android_ripple={{color: '#F3F2F8', radius: 200}}
               onPress={() => {
                 Alert.alert('Сообщение', 'Вы уверены?', [
                   {style: 'default', text: 'Нет'},

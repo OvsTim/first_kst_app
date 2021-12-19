@@ -330,7 +330,7 @@ export default function MenuScreen({navigation}: Props) {
               alignSelf: 'center',
             }}>
             <Button
-              androidRippleColor={'lightgray'}
+              androidRippleColor={'#F3F2F8'}
               onPress={() =>
                 navigation.navigate('ChangeRestaraunt', {activeTab: 0})
               }
@@ -367,7 +367,7 @@ export default function MenuScreen({navigation}: Props) {
               overflow: 'hidden',
             }}>
             <Button
-              androidRippleColor={'lightgray'}
+              androidRippleColor={'#F3F2F8'}
               onPress={() => navigation.navigate('Search')}
               containerStyle={{width: 30, height: 30}}>
               <Image
@@ -435,7 +435,7 @@ export default function MenuScreen({navigation}: Props) {
         {orderDeliveryType === 'PICKUP' ? (
           <View style={{overflow: 'hidden', borderRadius: 10, marginTop: 13}}>
             <Button
-              androidRippleColor={'lightgray'}
+              androidRippleColor={'#F3F2F8'}
               onPress={() =>
                 navigation.navigate('ChangeRestaraunt', {activeTab: 0})
               }
@@ -475,7 +475,7 @@ export default function MenuScreen({navigation}: Props) {
         ) : (
           <View style={{overflow: 'hidden', borderRadius: 10, marginTop: 13}}>
             <Button
-              androidRippleColor={'lightgray'}
+              androidRippleColor={'#F3F2F8'}
               onPress={() => {
                 if (!auth().currentUser?.displayName) {
                   navigation.navigate('EnterPhone');

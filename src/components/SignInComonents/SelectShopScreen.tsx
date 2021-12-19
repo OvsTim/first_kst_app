@@ -142,7 +142,7 @@ export default function SelectShopScreen({navigation, route}: Props) {
             navigation.goBack();
           }
         }}
-        android_ripple={{color: 'lightgrey', radius: 200}}>
+        android_ripple={{color: '#F3F2F8', radius: 200}}>
         <View
           style={{
             width,
@@ -361,7 +361,7 @@ export default function SelectShopScreen({navigation, route}: Props) {
                     Телефон
                   </StyledText>
                   <Pressable
-                    android_ripple={{color: 'lightgrey', radius: 200}}
+                    android_ripple={{color: '#F3F2F8', radius: 200}}
                     onPress={() =>
                       Linking.openURL('tel:' + list[shopIndex].phone)
                     }>

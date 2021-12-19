@@ -38,7 +38,7 @@ const Button = withPressable(View);
 export default function ProfileScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const StyledText = withFont(Text);
-const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
   const active: string = useSelector(
     (state: RootState) => state.data.activeShop,
   );
@@ -200,7 +200,7 @@ const insets = useSafeAreaInsets();
               alignSelf: 'center',
             }}>
             <Button
-              androidRippleColor={'lightgray'}
+              androidRippleColor={'#F3F2F8'}
               onPress={() =>
                 navigation.navigate('ChangeRestaraunt', {activeTab: 0})
               }
@@ -276,7 +276,7 @@ const insets = useSafeAreaInsets();
             borderBottomColor: '#F2F2F6',
           }}
           onPress={() => navigation.navigate('BonucesStocks')}
-          android_ripple={{color: 'lightgrey', radius: 200}}>
+          android_ripple={{color: '#F3F2F8', radius: 200}}>
           <View
             style={{
               flexDirection: 'row',
@@ -303,7 +303,7 @@ const insets = useSafeAreaInsets();
             borderBottomColor: '#F2F2F6',
           }}
           onPress={() => navigation.navigate('DeliveryList')}
-          android_ripple={{color: 'lightgrey', radius: 200}}>
+          android_ripple={{color: '#F3F2F8', radius: 200}}>
           <View
             style={{
               flexDirection: 'row',
@@ -342,7 +342,7 @@ const insets = useSafeAreaInsets();
             borderBottomColor: '#F2F2F6',
           }}
           onPress={() => navigation.navigate('History')}
-          android_ripple={{color: 'lightgrey', radius: 200}}>
+          android_ripple={{color: '#F3F2F8', radius: 200}}>
           <View
             style={{
               flexDirection: 'row',

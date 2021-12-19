@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Linking,
+  Platform,
   Pressable,
   ScrollView,
   StatusBar,
@@ -23,6 +24,7 @@ import 'dayjs/locale/ru';
 import * as Progress from 'react-native-progress';
 import {useAppDispatch} from '../../redux';
 import {logout} from '../../redux/UserDataSlice';
+import messaging from '@react-native-firebase/messaging';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Settings'>;
 };
@@ -63,7 +65,7 @@ export default function SettingsScreen({navigation}: Props) {
         ) : (
           <Button
             onPress={() => changeMailAndName()}
-            containerStyle={{width: 81, height: 24}}>
+            containerStyle={{width: 100, height: 24}}>
             <StyledText
               style={{fontWeight: '700', color: '#28B3C6', fontSize: 15}}>
               Готово
@@ -338,7 +340,13 @@ export default function SettingsScreen({navigation}: Props) {
         </StyledText>
 
         <Pressable
-          onPress={() => Linking.openSettings()}
+          onPress={() => {
+            if (Platform.OS === 'android') {
+              Linking.openSettings();
+            } else {
+              messaging().requestPermission();
+            }
+          }}
           style={{
             flexDirection: 'row',
             marginTop: 33,
@@ -373,11 +381,11 @@ export default function SettingsScreen({navigation}: Props) {
             backgroundActive={'#65C466'}
             width={53}
             height={35}
-            value={true}
+            value={messaging().isDeviceRegisteredForRemoteMessages}
             disabled={true}
             circleColorActive={'white'}
             circleColorInactive={'white'}
-            style={{paddingHorizontal: 3}}
+            style={{paddingHorizontal: 3, overflow: 'hidden', zIndex: -1}}
             circleStyle={{width: 27, height: 27}}
           />
         </Pressable>
