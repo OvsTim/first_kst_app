@@ -119,7 +119,7 @@ export function ProductItem(props: Props) {
           {product.description?.toString() !== '' && (
             <StyledText
               style={{
-                width: width / 2 - 18,
+                width: width / 2 - 18 - 20,
                 marginTop: 5,
                 color: isOutOfStock(activeShop, product)
                   ? '#0000004D'
