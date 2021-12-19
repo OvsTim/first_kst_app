@@ -95,12 +95,12 @@ const options: StackNavigationOptions = {
   headerBackTitleStyle: {
     color: '#28B3C6',
     fontSize: 14,
-    marginLeft: 4,
+    marginLeft: 8,
     fontFamily: 'SFProDisplay-Regular',
   },
   headerBackImage: _ => (
     <Image
-      style={{width: 12, height: 21, marginLeft: 12, marginRight: 8}}
+      style={{width: 12, height: 21, marginHorizontal: 6}}
       source={require('../assets/back.png')}
     />
   ),

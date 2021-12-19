@@ -20,6 +20,7 @@ import {
   OrderDeliveryType,
   OrderPaymentType,
   OrderStatus,
+  Product,
 } from '../../redux/ProductsDataSlice';
 import auth from '@react-native-firebase/auth';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
@@ -33,16 +34,21 @@ import {Restaraunt} from '../../API';
 // @ts-ignore
 import AnimatedColorView from 'react-native-animated-colors';
 import {newOrderCancelRequest} from '../../redux/thunks';
+import {openWhatsApp} from '../../utils/linkingUtils';
+import {BasketItem, setBasket} from '../../redux/BasketDataReducer';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderInfo'>;
   route: RouteProp<AppStackParamList, 'OrderInfo'>;
 };
 
-export default function OrderInfoScreen({route}: Props) {
+export default function OrderInfoScreen({route, navigation}: Props) {
   const StyledText = withFont(Text);
   const dispatch = useAppDispatch();
   const [currentOrder, setCurrentOrder] = useState<Order>(route.params.order);
   const {width} = useWindowDimensions();
+  const productsMap: Record<string, Product> = useSelector(
+    (state: RootState) => state.products.products,
+  );
   const active: string = useSelector(
     (state: RootState) => state.data.activeShop,
   );
@@ -82,7 +88,9 @@ export default function OrderInfoScreen({route}: Props) {
           commentary: '',
           sdacha: doc.get<number>('Сдача'),
           restaurant: doc.get<string>('Ресторан'),
-          active: true,
+          active: doc.get<boolean>('Активен')
+            ? doc.get<boolean>('Активен')
+            : false,
           payment_type: doc.get<OrderPaymentType>('ТипОплаты'),
           delivery_type: doc.get<OrderDeliveryType>('ТипПолучения'),
           address: undefined,
@@ -561,7 +569,7 @@ export default function OrderInfoScreen({route}: Props) {
           />
         </>
       )}
-      {activeShop.phone && (
+      {activeShop.phone && currentOrder.active ? (
         <StyledText
           onPress={() => {
             Linking.openURL('tel:' + activeShop.phone);
@@ -579,6 +587,34 @@ export default function OrderInfoScreen({route}: Props) {
           }
           <StyledText style={{color: '#28B3C6'}}>{activeShop.phone}</StyledText>
         </StyledText>
+      ) : (
+        <>
+          <View style={{height: 32}} />
+          <BaseButton
+            textStyle={{color: '#046674', fontSize: 18}}
+            containerStyle={{
+              backgroundColor: '#BEE8EE',
+              width: width - 80,
+            }}
+            text={'Повторить заказ'}
+            onPress={() => {
+              let prevProdItems: Array<BasketItem> = currentOrder.products;
+              let newBasket: Array<BasketItem> = [];
+              prevProdItems.forEach(it => {
+                if (productsMap[it.item.id]) {
+                  newBasket.push({
+                    item: productsMap[it.item.id],
+                    count: it.count,
+                  });
+                } else {
+                }
+              });
+              dispatch(setBasket(newBasket));
+              navigation.navigate('Basket');
+            }}
+          />
+          <View style={{height: 16}} />
+        </>
       )}
     </ScrollView>
   );

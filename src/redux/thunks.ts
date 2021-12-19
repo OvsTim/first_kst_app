@@ -37,7 +37,7 @@ export const newOrderRequest = createAsyncThunk(
 
 export const newOrderCancelRequest = createAsyncThunk(
   'users/newOrderCancelRequest',
-  async (id: number, {rejectWithValue}) => {
+  async (id: string, {rejectWithValue}) => {
     try {
       const response = await API.newOrderCancel(id);
       return response.data;

@@ -53,6 +53,6 @@ export function newOrder(id: string, type: OrderDeliveryType, address: string) {
   return axios.post(BASE_URL + '/newOrder', {id, type, address});
 }
 
-export function newOrderCancel(id: number) {
+export function newOrderCancel(id: string) {
   return axios.delete(BASE_URL + '/newOrder', {data: {id}});
 }
