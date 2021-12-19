@@ -93,9 +93,8 @@ export default function EnterBirthdayScreen({navigation}: Props) {
               fontWeight: '400',
               fontSize: 25,
               paddingHorizontal: 20,
-
               width: width - 80,
-              alignItems: 'center',
+              textAlign: 'center',
               letterSpacing: 10,
             }}>
             {date ? dayjs(date).format('DD/MM/YYYY') : ''}
