@@ -548,7 +548,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         <Progress.Bar
           style={{backgroundColor: '#F2F2F6', marginTop: 9}}
           progress={getBasketPrice() / 5000}
-          borderColor={'transparent'}
+          borderColor={'white'}
           borderRadius={3}
           animated={true}
           width={width - 68}

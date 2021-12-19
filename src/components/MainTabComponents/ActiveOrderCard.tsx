@@ -83,7 +83,7 @@ export default function ActiveOrderCard(props: Props) {
             showsHorizontalScrollIndicator={false}
             renderItem={({item, index}) => (
               <Progress.Bar
-                borderColor={'transparent'}
+                borderColor={'white'}
                 style={{height: 6, marginRight: 3, backgroundColor: '#E2E2E8'}}
                 progress={index < props.index ? 1 : 0}
                 indeterminate={index === props.index}
