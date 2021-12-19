@@ -40,6 +40,7 @@ export default function EnterNameScreen({navigation}: Props) {
           borderWidth: 1,
           borderRadius: 10,
           width: width - 90,
+          height: 53,
           paddingHorizontal: 16,
           fontSize: 24,
           marginTop: 30,

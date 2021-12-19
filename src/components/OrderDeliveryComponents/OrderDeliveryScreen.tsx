@@ -36,6 +36,7 @@ import {hScale, vScale} from '../../utils/scaling';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {getWorkingNow} from '../../utils/workHourUtils';
 import {newOrderRequest} from '../../redux/thunks';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderDelivery'>;
 };
@@ -61,6 +62,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
   const shops: Array<Restaraunt> = useSelector(
     (state: RootState) => state.data.shops,
   );
+  const insets = useSafeAreaInsets();
   const netInfo = useNetInfo();
   const activeShop: Restaraunt =
     shops.filter(value => value.id === active).length > 0
@@ -92,10 +94,6 @@ export default function OrderDeliveryScreen({navigation}: Props) {
     } else {
       return getBasketPrice() + DELIVERY_COST;
     }
-  }
-
-  function randomInteger(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   function validateAll() {
@@ -740,6 +738,8 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                   width: width - 34,
                   backgroundColor: 'white',
                   marginTop: 27,
+                  height: 62,
+                  justifyContent: 'center',
                 }}
                 editable={true}
                 placeholder={''}
@@ -753,7 +753,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                 style={{
                   width,
                   position: 'absolute',
-                  bottom: 18,
+                  bottom: 18 + insets.bottom,
                   alignItems: 'center',
                 }}>
                 <BaseButton

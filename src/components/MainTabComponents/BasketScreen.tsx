@@ -28,6 +28,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import {getWorkingNow} from '../../utils/workHourUtils';
 import {OrderDeliveryType} from '../../redux/ProductsDataSlice';
 import FastImage from 'react-native-fast-image';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'Basket'>;
@@ -69,6 +70,7 @@ export default function BasketScreen({navigation}: Props) {
         };
 
   const [isVisible, setVisible] = useState<boolean>(true);
+  const insets = useSafeAreaInsets();
 
   // useEffect(() => {
   //   if (basket.length > 0) {
@@ -312,7 +314,7 @@ export default function BasketScreen({navigation}: Props) {
               style={{
                 color: 'black',
                 width: width - 50,
-                marginTop: 25,
+                marginTop: 25 + insets.top,
                 marginBottom: 11,
                 marginHorizontal: 25,
                 fontWeight: '700',

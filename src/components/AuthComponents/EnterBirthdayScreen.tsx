@@ -77,20 +77,30 @@ export default function EnterBirthdayScreen({navigation}: Props) {
       </StyledText>
 
       <Pressable onPress={() => showDatePicker()}>
-        <StyledText
+        <View
           style={{
-            fontWeight: '400',
-            fontSize: 25,
+            minHeight: 53,
             borderRadius: 10,
             borderWidth: 1,
             borderColor: '#0000001A',
             width: width - 80,
             marginTop: 30,
-            paddingHorizontal: 20,
-            letterSpacing: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          {date ? dayjs(date).format('DD/MM/YYYY') : ''}
-        </StyledText>
+          <StyledText
+            style={{
+              fontWeight: '400',
+              fontSize: 25,
+              paddingHorizontal: 20,
+
+              width: width - 80,
+              alignItems: 'center',
+              letterSpacing: 10,
+            }}>
+            {date ? dayjs(date).format('DD/MM/YYYY') : ''}
+          </StyledText>
+        </View>
       </Pressable>
       <View style={{height: 50}} />
       <BaseButton

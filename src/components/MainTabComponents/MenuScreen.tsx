@@ -386,7 +386,7 @@ export default function MenuScreen({navigation}: Props) {
       <View
         style={{
           borderRadius: 15,
-          backgroundColor: '#F5F5F8',
+          backgroundColor: '#F5F5F7',
           width: width - 36,
           height: 120,
           alignSelf: 'center',
@@ -408,7 +408,7 @@ export default function MenuScreen({navigation}: Props) {
           activeTextColor={'black'}
           textColor={'rgba(0, 0, 0, 0.8)'}
           activeSegmentBackgroundColor={'white'}
-          segmentedControlBackgroundColor={'#DBDBDB'}
+          segmentedControlBackgroundColor={'#E2E3E8'}
           textStyle={{
             fontSize: 15,
             fontFamily: 'SFProDisplay-Regular',
@@ -601,7 +601,9 @@ export default function MenuScreen({navigation}: Props) {
               if (pr_index !== -1) {
                 mainflatlistRef.current?.scrollToOffset({
                   offset:
-                    pr_index * PRODUCT_ITEM_HEIGHT + HEADER_EXPANDED_HEIGHT,
+                    pr_index * PRODUCT_ITEM_HEIGHT +
+                    HEADER_EXPANDED_HEIGHT -
+                    insets.top,
                   animated: true,
                 });
               } else {
@@ -622,7 +624,7 @@ export default function MenuScreen({navigation}: Props) {
                   ? '#FFD0D0'
                   : index === activeCategory && !item.fire
                   ? '#BEE8EE'
-                  : '#F3F3F7',
+                  : '#F3F2F8',
             }}>
             <StyledText
               style={{
@@ -646,7 +648,7 @@ export default function MenuScreen({navigation}: Props) {
               height: 14,
               position: 'absolute',
               right: 14,
-              top: 0,
+              top: 10,
               tintColor: index === activeCategory ? '#850000' : '#606572',
             }}
             source={require('../../assets/Fire.png')}
@@ -773,7 +775,7 @@ export default function MenuScreen({navigation}: Props) {
                   backgroundColor: 'white',
                   alignSelf: 'center',
                   paddingLeft: 18,
-                  height: 40,
+                  height: 60,
                 }}
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}

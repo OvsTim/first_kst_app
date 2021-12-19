@@ -137,6 +137,7 @@ export default function SelectShopScreen({navigation, route}: Props) {
           }
 
           dispatch(setActiveShop(item.id));
+          dispatch(setActiveShop(item.id));
           if (navigation.canGoBack()) {
             navigation.goBack();
           }
@@ -147,7 +148,7 @@ export default function SelectShopScreen({navigation, route}: Props) {
             width,
             height: 75,
             borderBottomWidth: 0.5,
-            borderBottomColor: '#9E989B',
+            borderBottomColor: '#F2F2F6',
             paddingTop: 13,
           }}>
           <ShimmerPlaceHolder
@@ -411,7 +412,7 @@ export default function SelectShopScreen({navigation, route}: Props) {
           bottom: 0,
           borderTopColor: '#9E989B',
           borderTopWidth: 0.5,
-          backgroundColor: '#F6F6F9',
+          backgroundColor: '#F5F5F7',
           paddingTop: 14,
           width,
           alignItems: 'center',
@@ -430,7 +431,7 @@ export default function SelectShopScreen({navigation, route}: Props) {
           activeTextColor={'black'}
           textColor={'rgba(0, 0, 0, 0.8)'}
           activeSegmentBackgroundColor={'white'}
-          segmentedControlBackgroundColor={'#DBDBDB'}
+          segmentedControlBackgroundColor={'#E2E3E8'}
           textStyle={{
             fontSize: 15,
             fontFamily: 'SFProDisplay-Regular',

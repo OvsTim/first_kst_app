@@ -303,7 +303,7 @@ export default function DeliveryListScreen({navigation, route}: Props) {
               }
             }}
           />
-          <View style={{height: 60}} />
+          <View style={{height: 35}} />
         </>
       )}
     </View>

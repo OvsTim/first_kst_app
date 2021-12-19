@@ -94,6 +94,7 @@ export default function EnterPhoneScreen({navigation}: Props) {
           width: width - 90,
           textAlign: 'center',
           fontSize: 24,
+          height: 53,
           marginTop: 30,
           fontFamily: getFontName('700'),
         }}

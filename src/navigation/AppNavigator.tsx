@@ -100,7 +100,7 @@ const options: StackNavigationOptions = {
   },
   headerBackImage: _ => (
     <Image
-      style={{width: 12, height: 21, marginHorizontal: 8}}
+      style={{width: 12, height: 21, marginLeft: 12, marginRight: 8}}
       source={require('../assets/back.png')}
     />
   ),
@@ -496,7 +496,7 @@ export default function AppNavigator() {
           headerBackTitleStyle: {
             color: '#28B3C6',
             fontSize: 14,
-            marginHorizontal: 8,
+            marginLeft: 16,
 
             fontFamily: 'SFProDisplay-Regular',
           },
