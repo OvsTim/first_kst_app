@@ -65,7 +65,7 @@ export function RecommendCard(props: Props) {
             innerUrl={product.picture_url}
             imageStyle={{
               height: 94,
-              width: width / 2 - 18,
+              width: width / 4 - 18,
               marginRight: 18,
               borderRadius: 11,
               marginBottom: 18,
