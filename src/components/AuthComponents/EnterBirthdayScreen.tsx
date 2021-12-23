@@ -130,6 +130,7 @@ export default function EnterBirthdayScreen({navigation}: Props) {
                 ),
                 ИД: auth().currentUser?.uid,
                 Токен: firebase_token,
+                КолВоЗаказов: 0,
                 Почта: '',
               })
               .then(_ => {

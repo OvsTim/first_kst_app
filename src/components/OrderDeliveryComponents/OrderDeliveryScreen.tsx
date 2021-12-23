@@ -88,7 +88,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
 
   function getTotalPrice() {
     if (orderDeliveryType === 'PICKUP') {
-      return getBasketPrice();
+      return getBasketPrice() * 0.9;
     } else if (getBasketPrice() >= 5000) {
       return getBasketPrice();
     } else {
@@ -505,7 +505,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             {getBasketPrice() + ' ' + TENGE_LETTER}
           </StyledText>
         </View>
-        {orderDeliveryType === 'DELIVERY' && (
+        {orderDeliveryType === 'DELIVERY' ? (
           <View
             style={{
               flexDirection: 'row',
@@ -528,6 +528,53 @@ export default function OrderDeliveryScreen({navigation}: Props) {
               {getBasketPrice() >= 5000 ? 'Бесплатно' : DELIVERY_COST + ' ₸'}
             </StyledText>
           </View>
+        ) : (
+          <>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: width - 68,
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: 5,
+              }}>
+              <StyledText
+                style={{
+                  fontWeight: '500',
+                  color: 'black',
+                  fontSize: 15,
+                  lineHeight: 23,
+                }}>
+                Скидка на самовывоз (10%)
+              </StyledText>
+              <StyledText
+                style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
+                {(-1 * getBasketPrice() * 0.1).toFixed(0) + ' ' + TENGE_LETTER}
+              </StyledText>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: width - 68,
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: 5,
+              }}>
+              <StyledText
+                style={{
+                  fontWeight: '500',
+                  color: 'black',
+                  fontSize: 15,
+                  lineHeight: 23,
+                }}>
+                Итого
+              </StyledText>
+              <StyledText
+                style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
+                {getTotalPrice() + ' ' + TENGE_LETTER}
+              </StyledText>
+            </View>
+          </>
         )}
       </>
     );
