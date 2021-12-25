@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@invertase/react-native-apple-authentication": "^2.1.5",
     "@react-native-async-storage/async-storage": "^1.14.1",
     "@react-native-community/art": "^1.2.0",
     "@react-native-community/datetimepicker": "^3.5.2",
@@ -23,6 +24,7 @@
     "@react-native-firebase/firestore": "^12.9.1",
     "@react-native-firebase/messaging": "^12.9.1",
     "@react-native-firebase/storage": "^12.9.1",
+    "@react-native-google-signin/google-signin": "^7.0.4",
     "@react-native-segmented-control/segmented-control": "^2.4.0",
     "@react-navigation/bottom-tabs": "^5.11.8",
     "@react-navigation/native": "^5.9.3",

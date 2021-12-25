@@ -28,6 +28,11 @@ import auth, {
 import firestore from '@react-native-firebase/firestore';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
+import {AppleButton} from '@invertase/react-native-apple-authentication';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EnterCode'>;
@@ -43,6 +48,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   const shakeAnimation = new Animated.Value(0);
   const [confirm, setConfirm] = useState<ConfirmationResult>(null);
   const [isActive, setIsActive] = useState<boolean>(true);
+  const [isSigninInProgress, setIsSigninInProgress] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [getLoading, setGetLoading] = useState<boolean>(false);
   const count = 60;
@@ -102,6 +108,17 @@ export default function EnterCodeScreen({navigation, route}: Props) {
       hideSubscription.remove();
     };
   }, []);
+
+  async function onGoogleButtonPress() {
+    // Get the users ID token
+    const {idToken, user} = await GoogleSignin.signIn();
+
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    Alert.alert('USER', JSON.stringify(user));
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(googleCredential);
+  }
 
   function onAuthStateChanged(user: User | null) {
     console.log('useronAuthStateChanged', user);
@@ -420,6 +437,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
           ? 'Если код не придет, можно получить новый через ' + counter + ' сек'
           : ''}
       </StyledText>
+
       <BaseButton
         containerStyle={{
           backgroundColor: isActive ? '#00000026' : '#28B3C6',
@@ -451,6 +469,34 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               );
             });
         }}
+      />
+
+      <StyledText
+        numberOfLines={2}
+        style={{
+          marginVertical: 25,
+          color: '#000000CC',
+          fontWeight: '400',
+          fontSize: 12,
+          width: width - 140,
+          textAlign: 'center',
+        }}>
+        {'Не получается войти? Попробуйте'}
+      </StyledText>
+      <GoogleSigninButton
+        style={{width: width - 60, height: 50}}
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Light}
+        onPress={() => {
+          onGoogleButtonPress().then(() => {});
+        }}
+        disabled={isSigninInProgress}
+      />
+      <AppleButton
+        buttonStyle={AppleButton.Style.WHITE_OUTLINE}
+        buttonType={AppleButton.Type.DEFAULT}
+        style={{width: width - 65, height: 50, marginTop: 12}}
+        onPress={() => {}}
       />
     </View>
   );

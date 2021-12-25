@@ -31,7 +31,8 @@ import BaseButton from '../components/_CustomComponents/BaseButton';
 import {withFont} from '../components/_CustomComponents/HOC/withFont';
 import {withPressable} from '../components/_CustomComponents/HOC/withPressable';
 import {Product} from '../redux/ProductsDataSlice';
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -52,6 +53,10 @@ export default function AppWithNavigationState() {
     console.log('useEffect splash');
     SplashScreen.hide();
     YaMap.init('5f991160-3890-4d3c-acc4-59203f61edd3');
+    GoogleSignin.configure({
+      webClientId:
+        '164585661216-na7nq6lop7pqs59ps1jlfpsv41qb1j6v.apps.googleusercontent.com',
+    });
   }, []);
   const {width} = useWindowDimensions();
   const [initializing, setInitializing] = useState(true);
@@ -63,6 +68,7 @@ export default function AppWithNavigationState() {
   const routeNameRef = React.useRef<string | undefined>('');
   const navigationRef = React.useRef<NavigationContainerRef>(null);
   const insets = useSafeAreaInsets();
+
   useEffect(() => {
     dayjs.locale('ru');
   }, []);
