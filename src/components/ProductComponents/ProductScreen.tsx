@@ -285,7 +285,7 @@ export default function ProductScreen({navigation, route}: Props) {
       <View
         style={{
           width,
-          height: 110,
+          height: 110 + insets.bottom,
           backgroundColor: '#28B3C6',
           alignItems: 'center',
           justifyContent: 'center',

@@ -859,26 +859,16 @@ PODS:
     - React-Core
   - RNSVG (12.1.1):
     - React
-  - RNYamap (1.0.20):
+  - RNYamap (4.0.2):
     - React
-    - YandexMapKit
-    - YandexMapKitDirections
-    - YandexMapKitTransport
+    - YandexMapsMobile (= 4.0.0-full)
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
   - SDWebImageWebPCoder (0.8.4):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - YandexMapKit (3.5.0):
-    - YandexRuntime (= 3.5.0)
-  - YandexMapKitDirections (3.5.0):
-    - YandexMapKit (= 3.5.0)
-    - YandexRuntime (= 3.5.0)
-  - YandexMapKitTransport (3.5.0):
-    - YandexMapKit (= 3.5.0)
-    - YandexRuntime (= 3.5.0)
-  - YandexRuntime (3.5.0)
+  - YandexMapsMobile (4.0.0-full)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -969,10 +959,7 @@ SPEC REPOS:
     - PromisesObjC
     - SDWebImage
     - SDWebImageWebPCoder
-    - YandexMapKit
-    - YandexMapKitDirections
-    - YandexMapKitTransport
-    - YandexRuntime
+    - YandexMapsMobile
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -1167,13 +1154,10 @@ SPEC CHECKSUMS:
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
-  RNYamap: a6ef390aeb814dfd995f8be1b538ee579d8433b9
+  RNYamap: 3c0901536a427ca93a11e22b2757ec18be2acf55
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
-  YandexMapKit: ecd4b78de34a35df63d066ac299e6fd0fe46d1ba
-  YandexMapKitDirections: 4298725d34df043ec127dd6e76f457e24f378188
-  YandexMapKitTransport: 52f64fdc16bc83f8849b47e4143a698b6be24c49
-  YandexRuntime: 2d55244d06267106cf9b00c25a1e63f72a73b6fd
+  YandexMapsMobile: 0f3d8c92fad685dc33d07f83eed4eb0166089743
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
 
 PODFILE CHECKSUM: 3ca077930e230337b1718ccd17832a8a3dc8a270
