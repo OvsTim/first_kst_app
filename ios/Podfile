@@ -12,6 +12,7 @@ target 'first' do
     :hermes_enabled => false
   )
 pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text', :modular_headers => true
+pod 'GoogleSignIn', '~> 6.0.2'
 
   target 'firstTests' do
     inherit! :complete
