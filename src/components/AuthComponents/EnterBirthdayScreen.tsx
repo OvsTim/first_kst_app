@@ -16,11 +16,13 @@ import dayjs from 'dayjs';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useSelector} from '../../redux';
+import {RouteProp} from '@react-navigation/native';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EnterBirthday'>;
+  route: RouteProp<AppStackParamList, 'EnterBirthday'>;
 };
 const StyledText = withFont(Text);
-export default function EnterBirthdayScreen({navigation}: Props) {
+export default function EnterBirthdayScreen({navigation, route}: Props) {
   const {width} = useWindowDimensions();
   const firebase_token: string = useSelector(
     state => state.data.firebase_token,
@@ -131,7 +133,10 @@ export default function EnterBirthdayScreen({navigation}: Props) {
                 ИД: auth().currentUser?.uid,
                 Токен: firebase_token,
                 КолВоЗаказов: 0,
-                Почта: '',
+                Почта: auth().currentUser?.email
+                  ? auth().currentUser?.email
+                  : '',
+                Телефон: route.params.phone,
               })
               .then(_ => {
                 firestore()

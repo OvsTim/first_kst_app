@@ -31,7 +31,6 @@ import BaseButton from '../components/_CustomComponents/BaseButton';
 import {withFont} from '../components/_CustomComponents/HOC/withFont';
 import {withPressable} from '../components/_CustomComponents/HOC/withPressable';
 import {Product} from '../redux/ProductsDataSlice';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 async function requestUserPermission() {
@@ -67,7 +66,6 @@ export default function AppWithNavigationState() {
   const [textVisible, setTextVisible] = useState<boolean>(false);
   const routeNameRef = React.useRef<string | undefined>('');
   const navigationRef = React.useRef<NavigationContainerRef>(null);
-  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     dayjs.locale('ru');

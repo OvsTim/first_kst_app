@@ -11,7 +11,7 @@ import MenuScreen from '../components/MainTabComponents/MenuScreen';
 import ProfileScreen from '../components/MainTabComponents/ProfileScreen';
 import ContactsScreen from '../components/MainTabComponents/ContactsScreen';
 import BasketScreen from '../components/MainTabComponents/BasketScreen';
-import {Image, Platform, Text, View} from 'react-native';
+import {Image, Text, View} from 'react-native';
 import {withFont} from '../components/_CustomComponents/HOC/withFont';
 import AboutScreen from '../components/AboutComponents/AboutScreen';
 import HistoryScreen from '../components/HistoryComponents/HistoryScreen';
@@ -37,6 +37,8 @@ import OrderSuccessScreen from '../components/OrderSuccessComponents/OrderSucces
 import OrderInfoScreen from '../components/OrderInfoComponents/OrderInfoScreen';
 import AgreementScreen from '../components/AgreementComponents/AgreementScreen';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import CheckPhoneScreen from '../components/AuthComponents/CheckPhoneScreen';
+import EditPhoneScreen from '../components/AuthComponents/EditPhoneScreen';
 
 export type AppStackParamList = {
   Agreement: undefined;
@@ -55,8 +57,9 @@ export type AppStackParamList = {
   BonucesStocks: undefined;
   EnterPhone: undefined;
   EnterCode: {phone: string; formattedPhone: string};
-  EnterName: undefined;
-  EnterBirthday: undefined;
+  EnterName: {phone: string; tempName: string};
+  EnterBirthday: {phone: string};
+  EditPhone: {phone: string; tempName: string};
   ChangeRestaraunt: {activeTab: number};
   OrderSuccess: undefined;
   AddEditAddress: {
@@ -75,6 +78,7 @@ export type AppStackParamList = {
   DeliveryListBasket: undefined;
   Search: undefined;
   OrderInfo: {order: Order};
+  CheckPhone: {phone: string; formattedPhone: string; tempName: string};
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -585,6 +589,58 @@ export default function AppNavigator() {
       <Stack.Screen
         name={'EnterName'}
         component={EnterNameScreen}
+        options={{
+          headerBackImage: _ => (
+            <Image
+              style={{width: 12, height: 21, marginHorizontal: 8}}
+              source={require('../assets/back.png')}
+            />
+          ),
+          headerPressColorAndroid: 'transparent',
+          headerTitleAlign: 'center',
+          headerBackTitleVisible: false,
+          headerBackTitleStyle: {
+            color: '#28B3C6',
+            fontSize: 14,
+            marginLeft: 4,
+            fontFamily: 'SFProDisplay-Regular',
+          },
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: 'white',
+            height: 50 + insets.top,
+          },
+        }}
+      />
+      <Stack.Screen
+        name={'CheckPhone'}
+        component={CheckPhoneScreen}
+        options={{
+          headerBackImage: _ => (
+            <Image
+              style={{width: 12, height: 21, marginHorizontal: 8}}
+              source={require('../assets/back.png')}
+            />
+          ),
+          headerPressColorAndroid: 'transparent',
+          headerTitleAlign: 'center',
+          headerBackTitleVisible: false,
+          headerBackTitleStyle: {
+            color: '#28B3C6',
+            fontSize: 14,
+            marginLeft: 4,
+            fontFamily: 'SFProDisplay-Regular',
+          },
+          headerTitle: '',
+          headerStyle: {
+            backgroundColor: 'white',
+            height: 50 + insets.top,
+          },
+        }}
+      />
+      <Stack.Screen
+        name={'EditPhone'}
+        component={EditPhoneScreen}
         options={{
           headerBackImage: _ => (
             <Image

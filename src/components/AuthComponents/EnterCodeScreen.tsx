@@ -10,6 +10,7 @@ import {
   Vibration,
   View,
   Animated,
+  Platform,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
@@ -32,8 +33,13 @@ import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
-import {AppleButton} from '@invertase/react-native-apple-authentication';
-
+import {
+  appleAuth,
+  appleAuthAndroid,
+  AppleButton,
+} from '@invertase/react-native-apple-authentication';
+import 'react-native-get-random-values';
+import {v4 as uuid} from 'uuid';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EnterCode'>;
   route: RouteProp<AppStackParamList, 'EnterCode'>;
@@ -110,24 +116,123 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   }, []);
 
   async function onGoogleButtonPress() {
+    setIsSigninInProgress(true);
     // Get the users ID token
-    const {idToken, user} = await GoogleSignin.signIn();
-
+    const {idToken} = await GoogleSignin.signIn();
     // Create a Google credential with the token
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    Alert.alert('USER', JSON.stringify(user));
+
     // Sign-in the user with the credential
     return auth().signInWithCredential(googleCredential);
   }
 
+  async function onAppleButtonPress() {
+    // Start the sign-in request
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: appleAuth.Operation.LOGIN,
+      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+    });
+
+    // Ensure Apple returned a user identityToken
+    if (!appleAuthRequestResponse.identityToken) {
+      throw 'Apple Sign-In failed - no identify token returned';
+    }
+
+    // Create a Firebase credential from the response
+    const {identityToken, nonce} = appleAuthRequestResponse;
+    const appleCredential = auth.AppleAuthProvider.credential(
+      identityToken,
+      nonce,
+    );
+
+    // Sign the user in with the credential
+    return auth().signInWithCredential(appleCredential);
+  }
+
+  async function onAppleButtonPressAndroid() {
+    const rawNonce = uuid();
+    appleAuthAndroid.configure({
+      // The Service ID you registered with Apple
+      clientId: 'com.example.client-android',
+
+      // Return URL added to your Apple dev console. We intercept this redirect, but it must still match
+      // the URL you provided to Apple. It can be an empty route on your backend as it's never called.
+      redirectUri: 'https://firstkst.firebaseapp.com/__/auth/handler',
+
+      // [OPTIONAL]
+      // Scope.ALL (DEFAULT) = 'email name'
+      // Scope.Email = 'email';
+      // Scope.Name = 'name';
+      scope: appleAuthAndroid.Scope.ALL,
+
+      // [OPTIONAL]
+      // ResponseType.ALL (DEFAULT) = 'code id_token';
+      // ResponseType.CODE = 'code';
+      // ResponseType.ID_TOKEN = 'id_token';
+      responseType: appleAuthAndroid.ResponseType.ALL,
+
+      // [OPTIONAL]
+      // A String value used to associate a client session with an ID token and mitigate replay attacks.
+      // This value will be SHA256 hashed by the library before being sent to Apple.
+      // This is required if you intend to use Firebase to sign in with this credential.
+      // Supply the response.id_token and rawNonce to Firebase OAuthProvider
+      nonce: rawNonce,
+    });
+    const response = await appleAuthAndroid.signIn();
+    if (response && response.id_token) {
+      const appleCredential = auth.AppleAuthProvider.credential(
+        response.id_token,
+        response.nonce,
+      );
+      return auth().signInWithCredential(appleCredential);
+    }
+  }
+
   function onAuthStateChanged(user: User | null) {
     console.log('useronAuthStateChanged', user);
-    if (user && user.phoneNumber === null) {
+    if (user && user.isAnonymous) {
       return;
     }
 
+    if (user && user.email) {
+      //пользователь зашел через соцсети
+      firestore()
+        .collection('Пользователи')
+        .doc(auth().currentUser?.uid)
+        .get()
+        .then(doc => {
+          if (doc.exists) {
+            firestore()
+              .collection('Пользователи')
+              .doc(auth().currentUser?.uid)
+              .update({
+                Токен: firebase_token,
+              })
+              .then(_ => {
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'Home'}],
+                });
+              });
+          } else {
+            navigation.navigate('CheckPhone', {
+              phone: route.params.phone,
+              formattedPhone: route.params.formattedPhone,
+              tempName:
+                (auth().currentUser?.displayName &&
+                  auth().currentUser?.displayName?.includes(' ') &&
+                  auth().currentUser?.displayName?.split(' ') &&
+                  auth().currentUser?.displayName?.split(' ')[0] !==
+                    undefined &&
+                  auth().currentUser?.displayName?.split(' ')[0]) ||
+                '',
+            });
+          }
+        });
+    }
+
     if (user && !user.displayName) {
-      navigation.navigate('EnterName');
+      navigation.navigate('EnterName', user.phoneNumber);
     } else {
       firestore()
         .collection('Пользователи')
@@ -155,7 +260,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
         .confirm(code)
         .then((res: UserCredential) => {
           if (res.additionalUserInfo?.isNewUser || !res.user.displayName) {
-            navigation.navigate('EnterName');
+            navigation.navigate('EnterName', res.user.phone);
           } else {
             navigation.reset({
               index: 0,
@@ -191,34 +296,34 @@ export default function EnterCodeScreen({navigation, route}: Props) {
     }
   }, [code, confirm]);
 
-  function startShake() {
-    // Vibration.vibrate(400);
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(shakeAnimation, {
-          toValue: 10,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: -10,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: 10,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: 0,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-      ]),
-      {iterations: 4},
-    ).start();
-  }
+  // function startShake() {
+  //   // Vibration.vibrate(400);
+  //   Animated.loop(
+  //     Animated.sequence([
+  //       Animated.timing(shakeAnimation, {
+  //         toValue: 10,
+  //         duration: 100,
+  //         useNativeDriver: true,
+  //       }),
+  //       Animated.timing(shakeAnimation, {
+  //         toValue: -10,
+  //         duration: 100,
+  //         useNativeDriver: true,
+  //       }),
+  //       Animated.timing(shakeAnimation, {
+  //         toValue: 10,
+  //         duration: 100,
+  //         useNativeDriver: true,
+  //       }),
+  //       Animated.timing(shakeAnimation, {
+  //         toValue: 0,
+  //         duration: 100,
+  //         useNativeDriver: true,
+  //       }),
+  //     ]),
+  //     {iterations: 4},
+  //   ).start();
+  // }
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
@@ -488,16 +593,34 @@ export default function EnterCodeScreen({navigation, route}: Props) {
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Light}
         onPress={() => {
-          onGoogleButtonPress().then(() => {});
+          onGoogleButtonPress()
+            .then(() => {
+              setIsSigninInProgress(false);
+            })
+            .catch(_ => {
+              setIsSigninInProgress(false);
+            });
         }}
         disabled={isSigninInProgress}
       />
-      <AppleButton
-        buttonStyle={AppleButton.Style.WHITE_OUTLINE}
-        buttonType={AppleButton.Type.DEFAULT}
-        style={{width: width - 65, height: 50, marginTop: 12}}
-        onPress={() => {}}
-      />
+      {(appleAuthAndroid.isSupported || appleAuth.isSupported) && (
+        <AppleButton
+          buttonStyle={AppleButton.Style.WHITE_OUTLINE}
+          buttonType={AppleButton.Type.SIGN_IN}
+          style={{width: width - 65, height: 50, marginTop: 12}}
+          onPress={() => {
+            if (Platform.OS === 'ios') {
+              onAppleButtonPress().then(() =>
+                console.log('Apple sign-in complete!'),
+              );
+            } else {
+              onAppleButtonPressAndroid().then(() =>
+                console.log('Apple sign-in complete!'),
+              );
+            }
+          }}
+        />
+      )}
     </View>
   );
 }

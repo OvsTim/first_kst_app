@@ -12,15 +12,18 @@ import {AppStackParamList} from '../../navigation/AppNavigator';
 import {getFontName, withFont} from '../_CustomComponents/HOC/withFont';
 import BaseButton from '../_CustomComponents/BaseButton';
 import auth from '@react-native-firebase/auth';
+import {RouteProp} from '@react-navigation/native';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EnterName'>;
+  route: RouteProp<AppStackParamList, 'EnterName'>;
 };
 const StyledText = withFont(Text);
-export default function EnterNameScreen({navigation}: Props) {
+export default function EnterNameScreen({navigation, route}: Props) {
   const {width} = useWindowDimensions();
 
-  const [name, setName] = useState<string>('');
+  const [name, setName] = useState<string>(route.params.tempName);
+
   const [loading, setLoading] = useState<boolean>(false);
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
@@ -69,7 +72,9 @@ export default function EnterNameScreen({navigation}: Props) {
               .currentUser?.updateProfile({displayName: name.trim()})
               .then(_ => {
                 setLoading(false);
-                navigation.navigate('EnterBirthday');
+                navigation.navigate('EnterBirthday', {
+                  phone: route.params.phone,
+                });
               })
               .catch(er => {
                 setLoading(false);
