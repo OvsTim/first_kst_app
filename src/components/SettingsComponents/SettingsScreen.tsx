@@ -35,6 +35,7 @@ export default function SettingsScreen({navigation}: Props) {
   const dispatch = useAppDispatch();
   const dateRef = useRef<InputRefType>(null);
   const nameRef = useRef<InputRefType>(null);
+  const phoneRef = useRef<InputRefType>(null);
   const emailRef = useRef<InputRefType>(null);
   const [loadingToolbar, setLoadingToolbar] = useState<boolean>(false);
   const [IdTokenResult, setIdTokenResult] = useState<
@@ -87,6 +88,7 @@ export default function SettingsScreen({navigation}: Props) {
           ),
         );
         emailRef.current?.setValue(res.get<string>('Почта'));
+        phoneRef.current?.setValue(res.get<string>('Телефон'));
         setOldEmail(res.get<string>('Почта'));
       })
       .catch(er => {
@@ -289,7 +291,7 @@ export default function SettingsScreen({navigation}: Props) {
           labelStyle={{}}
         />
         <NewBaseInput
-          value={auth().currentUser?.phoneNumber || ''}
+          ref={phoneRef}
           styleInput={{}}
           styleContainer={{}}
           editable={false}
@@ -302,7 +304,7 @@ export default function SettingsScreen({navigation}: Props) {
           ref={emailRef}
           styleInput={{}}
           styleContainer={{}}
-          editable={true}
+          editable={!auth().currentUser?.email}
           placeholder={'Не указано'}
           showLabel={true}
           label={'Email'}

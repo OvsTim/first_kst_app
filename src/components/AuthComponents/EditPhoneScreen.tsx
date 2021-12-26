@@ -16,6 +16,7 @@ import {RouteProp} from '@react-navigation/native';
 import {window} from '../../utils/scaling';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TextInputMask from 'react-native-text-input-mask';
+import firestore from '@react-native-firebase/firestore';
 
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'EditPhone'>;
@@ -26,6 +27,34 @@ export default function EditPhoneScreen({navigation, route}: Props) {
   const [phone, setPhone] = useState<string>('');
   const [formattedPhone, setFormattedPhone] = useState<string>('');
   const {width} = useWindowDimensions();
+
+  function onPress() {
+    firestore()
+      .collection('Пользователи')
+      .where('Телефон', '==', '+7' + phone)
+      .get()
+      .then(res => {
+        console.log('res', res);
+        if (!res.empty) {
+          Alert.alert(
+            'Ошибка',
+            'Пользователь с этим номером уже зарегистрирован',
+          );
+        } else {
+          navigation.navigate('EnterName', {
+            phone: route.params.phone,
+            tempName: route.params.tempName,
+          });
+        }
+      })
+      .catch(er => {
+        Alert.alert(
+          'Ошибка',
+          'Произошла ошибка с кодом ' + er.code + ', повторите попытку позже',
+        );
+      });
+  }
+
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
       <StatusBar
@@ -82,6 +111,7 @@ export default function EditPhoneScreen({navigation, route}: Props) {
         text={'Продолжить'}
         onPress={() => {
           if (phone.length === 10) {
+            onPress();
           }
         }}
       />

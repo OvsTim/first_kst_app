@@ -11,6 +11,8 @@ import {
   View,
   Animated,
   Platform,
+  Linking,
+  Image,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
@@ -95,7 +97,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
     }
 
     signInWithPhoneNumber().then(_ => {});
-  }, []);
+  }, [route.params.phone]);
 
   useEffect(() => {
     setTimeout(() => codeRef.current?.focus(), 150);
@@ -345,7 +347,6 @@ export default function EnterCodeScreen({navigation, route}: Props) {
         }}>
         {'Код отправили на номер\n' + route.params.formattedPhone}
       </StyledText>
-
       <Pressable
         onPress={() => {
           console.log('onPress', codeRef.current);
@@ -542,7 +543,6 @@ export default function EnterCodeScreen({navigation, route}: Props) {
           ? 'Если код не придет, можно получить новый через ' + counter + ' сек'
           : ''}
       </StyledText>
-
       <BaseButton
         containerStyle={{
           backgroundColor: isActive ? '#00000026' : '#28B3C6',
@@ -575,11 +575,10 @@ export default function EnterCodeScreen({navigation, route}: Props) {
             });
         }}
       />
-
       <StyledText
         numberOfLines={2}
         style={{
-          marginVertical: 25,
+          marginTop: 25,
           color: '#000000CC',
           fontWeight: '400',
           fontSize: 12,
@@ -588,39 +587,85 @@ export default function EnterCodeScreen({navigation, route}: Props) {
         }}>
         {'Не получается войти? Попробуйте'}
       </StyledText>
-      <GoogleSigninButton
-        style={{width: width - 60, height: 50}}
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Light}
-        onPress={() => {
-          onGoogleButtonPress()
-            .then(() => {
-              setIsSigninInProgress(false);
-            })
-            .catch(_ => {
-              setIsSigninInProgress(false);
-            });
-        }}
-        disabled={isSigninInProgress}
-      />
-      {(appleAuthAndroid.isSupported || appleAuth.isSupported) && (
-        <AppleButton
-          buttonStyle={AppleButton.Style.WHITE_OUTLINE}
-          buttonType={AppleButton.Type.SIGN_IN}
-          style={{width: width - 65, height: 50, marginTop: 12}}
+      <View
+        style={{
+          flexDirection: 'row',
+          width,
+          justifyContent: 'center',
+          marginTop: 10,
+        }}>
+        <Pressable
           onPress={() => {
-            if (Platform.OS === 'ios') {
-              onAppleButtonPress().then(() =>
-                console.log('Apple sign-in complete!'),
-              );
-            } else {
-              onAppleButtonPressAndroid().then(() =>
-                console.log('Apple sign-in complete!'),
-              );
-            }
+            onGoogleButtonPress()
+              .then(() => {
+                setIsSigninInProgress(false);
+              })
+              .catch(_ => {
+                setIsSigninInProgress(false);
+              });
           }}
-        />
-      )}
+          android_ripple={{color: '#F3F2F8', radius: 200}}>
+          <Image
+            style={{
+              width: 48,
+              height: 48,
+            }}
+            source={require('../../assets/google.png')}
+          />
+        </Pressable>
+        {(appleAuthAndroid.isSupported || appleAuth.isSupported) && (
+          <>
+            <View style={{width: 10}} />
+
+            <Pressable
+              onPress={() => {
+                if (Platform.OS === 'ios') {
+                  onAppleButtonPress().then(() =>
+                    console.log('Apple sign-in complete!'),
+                  );
+                } else {
+                  onAppleButtonPressAndroid().then(() =>
+                    console.log('Apple sign-in complete!'),
+                  );
+                }
+              }}
+              android_ripple={{color: '#F3F2F8', radius: 200}}>
+              <Image
+                style={{
+                  width: 48,
+                  height: 48,
+                }}
+                source={require('../../assets/apple.png')}
+              />
+            </Pressable>
+          </>
+        )}
+      </View>
+      {/*<GoogleSigninButton*/}
+      {/*  style={{width: width - 60, height: 50}}*/}
+      {/*  size={GoogleSigninButton.Size.Wide}*/}
+      {/*  color={GoogleSigninButton.Color.Light}*/}
+      {/*  onPress={() => {*/}
+      {/*    onGoogleButtonPress()*/}
+      {/*      .then(() => {*/}
+      {/*        setIsSigninInProgress(false);*/}
+      {/*      })*/}
+      {/*      .catch(_ => {*/}
+      {/*        setIsSigninInProgress(false);*/}
+      {/*      });*/}
+      {/*  }}*/}
+      {/*  disabled={isSigninInProgress}*/}
+      {/*/>*/}
+      {/*{(appleAuthAndroid.isSupported || appleAuth.isSupported) && (*/}
+      {/*  <AppleButton*/}
+      {/*    buttonStyle={AppleButton.Style.WHITE_OUTLINE}*/}
+      {/*    buttonType={AppleButton.Type.SIGN_IN}*/}
+      {/*    style={{width: width - 65, height: 50, marginTop: 12}}*/}
+      {/*    onPress={() => {*/}
+      {/*     */}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*)}*/}
     </View>
   );
 }

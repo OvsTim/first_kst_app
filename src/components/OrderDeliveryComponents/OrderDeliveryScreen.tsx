@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -50,6 +50,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
   );
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [sdacha, setSdacha] = useState<string>('');
+  const [userPhone, setUserPhone] = useState<string>('');
   const currentAddress: Address | undefined = useSelector(
     (state: RootState) => state.data.currentAddress,
   );
@@ -64,6 +65,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
   );
   const insets = useSafeAreaInsets();
   const netInfo = useNetInfo();
+
   const activeShop: Restaraunt =
     shops.filter(value => value.id === active).length > 0
       ? shops.filter(value => value.id === active)[0]
@@ -78,6 +80,22 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           recommendations: [],
           delivery: {},
         };
+
+  useEffect(() => {
+    firestore()
+      .collection('Пользователи')
+      .doc(auth().currentUser?.uid)
+      .get()
+      .then(res => {
+        setUserPhone(res.get<string>('Телефон'));
+      })
+      .catch(er => {
+        Alert.alert(
+          'Ошибка',
+          'Произошла ошибка с кодом ' + er.code + ', повторите попытку позже',
+        );
+      });
+  }, []);
   function getBasketPrice() {
     let price = 0;
     basket.forEach(it => {
@@ -168,7 +186,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
         let order: Order = {
           restaurant_id: activeShop.id,
           user_name: auth().currentUser?.displayName || '',
-          user_phone: auth().currentUser?.phoneNumber || '',
+          user_phone: userPhone || '',
           currentStatus: 'IS_NEW',
           active: true,
           sdacha: sdacha !== '' ? parseInt(sdacha) : 0,

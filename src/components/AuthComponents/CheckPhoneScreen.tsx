@@ -31,17 +31,17 @@ export default function CheckPhoneScreen({navigation, route}: Props) {
       .where('Телефон', '==', route.params.phone)
       .get()
       .then(res => {
-        // if (!res.empty) {
-        //   Alert.alert(
-        //     'Ошибка',
-        //     'Пользователь с этим номером уже зарегистрирован',
-        //   );
-        // } else {
-        navigation.navigate('EnterName', {
-          phone: route.params.phone,
-          tempName: route.params.tempName,
-        });
-        // }
+        if (!res.empty) {
+          Alert.alert(
+            'Ошибка',
+            'Пользователь с этим номером уже зарегистрирован',
+          );
+        } else {
+          navigation.navigate('EnterName', {
+            phone: route.params.phone,
+            tempName: route.params.tempName,
+          });
+        }
       })
       .catch(er => {
         Alert.alert(
