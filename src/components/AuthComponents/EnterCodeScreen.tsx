@@ -11,7 +11,6 @@ import {
   View,
   Animated,
   Platform,
-  Linking,
   Image,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -31,14 +30,10 @@ import auth, {
 import firestore from '@react-native-firebase/firestore';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {
   appleAuth,
   appleAuthAndroid,
-  AppleButton,
 } from '@invertase/react-native-apple-authentication';
 import 'react-native-get-random-values';
 import {v4 as uuid} from 'uuid';
@@ -155,7 +150,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
     const rawNonce = uuid();
     appleAuthAndroid.configure({
       // The Service ID you registered with Apple
-      clientId: 'com.example.client-android',
+      clientId: 'firstkst.firebaseapp.com',
 
       // Return URL added to your Apple dev console. We intercept this redirect, but it must still match
       // the URL you provided to Apple. It can be an empty route on your backend as it's never called.
@@ -182,6 +177,8 @@ export default function EnterCodeScreen({navigation, route}: Props) {
     });
     const response = await appleAuthAndroid.signIn();
     if (response && response.id_token) {
+      console.log('response', response);
+
       const appleCredential = auth.AppleAuthProvider.credential(
         response.id_token,
         response.nonce,
@@ -193,6 +190,10 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   function onAuthStateChanged(user: User | null) {
     console.log('useronAuthStateChanged', user);
     if (user && user.isAnonymous) {
+      return;
+    }
+
+    if (user && !user.isAnonymous && !user.email) {
       return;
     }
 
@@ -220,17 +221,13 @@ export default function EnterCodeScreen({navigation, route}: Props) {
             navigation.navigate('CheckPhone', {
               phone: route.params.phone,
               formattedPhone: route.params.formattedPhone,
-              tempName:
-                (auth().currentUser?.displayName &&
-                  auth().currentUser?.displayName?.includes(' ') &&
-                  auth().currentUser?.displayName?.split(' ') &&
-                  auth().currentUser?.displayName?.split(' ')[0] !==
-                    undefined &&
-                  auth().currentUser?.displayName?.split(' ')[0]) ||
-                '',
+              tempName: auth().currentUser?.displayName
+                ? auth().currentUser?.displayName?.split(' ')[0]
+                : '',
             });
           }
         });
+      return;
     }
 
     if (user && !user.displayName) {

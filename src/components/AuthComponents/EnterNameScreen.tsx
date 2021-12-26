@@ -22,7 +22,9 @@ const StyledText = withFont(Text);
 export default function EnterNameScreen({navigation, route}: Props) {
   const {width} = useWindowDimensions();
 
-  const [name, setName] = useState<string>(route.params.tempName);
+  const [name, setName] = useState<string>(
+    route.params && route.params.tempName ? route.params.tempName : '',
+  );
 
   const [loading, setLoading] = useState<boolean>(false);
   return (
