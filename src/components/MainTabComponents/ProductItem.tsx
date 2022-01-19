@@ -112,7 +112,7 @@ export function ProductItem(props: Props) {
               color: isOutOfStock(activeShop, product) ? '#00000080' : 'black',
               fontWeight: '400',
               fontSize: 15,
-              width: width / 2 - 18,
+              width: width / 2 - 18 - 20,
             }}>
             {product.name}
           </StyledText>

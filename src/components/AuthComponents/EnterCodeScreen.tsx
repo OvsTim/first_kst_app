@@ -231,7 +231,11 @@ export default function EnterCodeScreen({navigation, route}: Props) {
     }
 
     if (user && !user.displayName) {
-      navigation.navigate('EnterName', user.phoneNumber);
+      console.log('EnterName', user);
+      navigation.navigate('EnterName', {
+        phone: route.params.phone,
+        tempName: '',
+      });
     } else {
       firestore()
         .collection('Пользователи')
@@ -251,7 +255,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
-  }, []);
+  }, [route.params.phone]);
 
   useEffect(() => {
     if (code.length === 6 && confirm) {
@@ -259,7 +263,10 @@ export default function EnterCodeScreen({navigation, route}: Props) {
         .confirm(code)
         .then((res: UserCredential) => {
           if (res.additionalUserInfo?.isNewUser || !res.user.displayName) {
-            navigation.navigate('EnterName', res.user.phone);
+            navigation.navigate('EnterName', {
+              phone: route.params.phone,
+              tempName: '',
+            });
           } else {
             navigation.reset({
               index: 0,
@@ -293,7 +300,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
           }
         });
     }
-  }, [code, confirm]);
+  }, [code, confirm, route.params.phone]);
 
   // function startShake() {
   //   // Vibration.vibrate(400);
