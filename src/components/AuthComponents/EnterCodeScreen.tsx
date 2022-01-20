@@ -242,6 +242,7 @@ export default function EnterCodeScreen({navigation, route}: Props) {
         .doc(auth().currentUser?.uid)
         .update({
           Токен: firebase_token,
+          Телефон: auth().currentUser?.phoneNumber,
         })
         .then(_ => {
           navigation.reset({
@@ -268,10 +269,19 @@ export default function EnterCodeScreen({navigation, route}: Props) {
               tempName: '',
             });
           } else {
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'Home'}],
-            });
+            firestore()
+              .collection('Пользователи')
+              .doc(auth().currentUser?.uid)
+              .update({
+                Токен: firebase_token,
+                Телефон: auth().currentUser?.phoneNumber,
+              })
+              .then(_ => {
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'Home'}],
+                });
+              });
           }
         })
         .catch((er: {code: any}) => {

@@ -82,7 +82,7 @@ export default function MenuScreen({navigation}: Props) {
 
   const viewConfigRef = useRef({
     itemVisiblePercentThreshold: 100,
-    minimumViewTime: 200,
+    minimumViewTime: 1,
     waitForInteraction: true,
   });
   const {width} = useWindowDimensions();
