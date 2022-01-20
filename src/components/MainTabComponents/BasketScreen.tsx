@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
+  FlatList,
   Image,
   Pressable,
   StatusBar,
@@ -26,7 +27,7 @@ import {hScale, vScale} from '../../utils/scaling';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {getWorkingNow} from '../../utils/workHourUtils';
-import {OrderDeliveryType} from '../../redux/ProductsDataSlice';
+import {Category, OrderDeliveryType} from '../../redux/ProductsDataSlice';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -69,16 +70,45 @@ export default function BasketScreen({navigation}: Props) {
           delivery: {},
         };
 
-  const [isVisible, setVisible] = useState<boolean>(true);
+  const categoriesMap: Record<string, Category> = useSelector(
+    (state: RootState) => state.products.categories,
+  );
+  const [recommends, setRecommends] = useState<Array<string>>([]);
   const insets = useSafeAreaInsets();
 
-  // useEffect(() => {
-  //   if (basket.length > 0) {
-  //     StatusBar.setBackgroundColor('white');
-  //   } else {
-  //     StatusBar.setBackgroundColor('#f2f2f2');
-  //   }
-  // }, [basket]);
+  useEffect(() => {
+    let usedList: Array<string> = [];
+    let resRecommendations: Array<string> = [];
+    basket.forEach(it => {
+      console.log('it.item.category', it.item.category);
+      let curCat = it.item.category.replace('Категории/', '');
+      console.log('categoriesMap[curCat]', categoriesMap[curCat]);
+      console.log(
+        'categoriesMap[curCat].recommendations',
+        categoriesMap[curCat].recommendations,
+      );
+
+      if (
+        categoriesMap[curCat] &&
+        categoriesMap[curCat].recommendations &&
+        !usedList.includes(it.item.category)
+      ) {
+        usedList.push(it.item.category);
+        let recs = categoriesMap[curCat].recommendations;
+        if (recs.length > 0) {
+          resRecommendations.push(
+            recs[Math.floor(Math.random() * recs.length)],
+          );
+        }
+      }
+    });
+    setRecommends(resRecommendations);
+    console.log('setRecommends', resRecommendations);
+  }, [basket, categoriesMap]);
+
+  useEffect(() => {
+    console.log('recommends', recommends);
+  }, [recommends]);
 
   function getNumberOfCounts() {
     return basket.reduce((a, b) => +a + +b.count, 0);
@@ -223,6 +253,76 @@ export default function BasketScreen({navigation}: Props) {
     );
   }
 
+  function renderBasketList() {
+    return (
+      <SwipeListView
+        ListHeaderComponent={() => (
+          <StyledText
+            style={{
+              color: 'black',
+              width: width - 50,
+              marginTop: 25 + insets.top,
+              marginBottom: 11,
+              marginHorizontal: 25,
+              fontWeight: '700',
+              fontSize: 25,
+            }}>
+            {getNumberOfCounts() +
+              ' ' +
+              num_word(getNumberOfCounts(), ['товар', 'товара', 'товаров']) +
+              '\nна сумму ' +
+              getTotalPrice() +
+              ' ' +
+              TENGE_LETTER}
+          </StyledText>
+        )}
+        contentContainerStyle={{paddingBottom: 150}}
+        // ListEmptyComponent={() => renderEmpty()}
+        data={basket}
+        scrollEnabled={false}
+        closeOnRowOpen={true}
+        closeOnRowPress={true}
+        renderHiddenItem={(data, rowMap) => (
+          <Pressable
+            android_ripple={{color: '#F3F2F8', radius: 200}}
+            onPress={() => {
+              rowMap[basket.indexOf(data.item)].closeRow();
+              dispatch(deleteProduct(data.item.item));
+            }}
+            style={{
+              backgroundColor: 'red',
+              width: 70,
+              height: '100%',
+              position: 'absolute',
+              right: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <StyledText
+              style={{color: 'white', fontSize: 12, fontWeight: '700'}}>
+              Удалить
+            </StyledText>
+          </Pressable>
+        )}
+        rightOpenValue={-70}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => renderBasketItem(item)}
+      />
+    );
+  }
+
+  function renderRecommendsList() {
+    return (
+      <FlatList
+        contentContainerStyle={{}}
+        keyExtractor={(item, index) => index.toString()}
+        data={recommends}
+        renderItem={({item}) => <RecommendCard recommend={item} />}
+        ListFooterComponent={() => <View style={{height: 150}} />}
+      />
+    );
+  }
+
   if (!netinfo.isConnected) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -307,75 +407,15 @@ export default function BasketScreen({navigation}: Props) {
           backgroundColor={'#f2f2f2'}
           barStyle="dark-content"
         />
-
-        <SwipeListView
-          ListHeaderComponent={() => (
-            <StyledText
-              style={{
-                color: 'black',
-                width: width - 50,
-                marginTop: 25 + insets.top,
-                marginBottom: 11,
-                marginHorizontal: 25,
-                fontWeight: '700',
-                fontSize: 25,
-              }}>
-              {getNumberOfCounts() +
-                ' ' +
-                num_word(getNumberOfCounts(), ['товар', 'товара', 'товаров']) +
-                '\nна сумму ' +
-                getTotalPrice() +
-                ' ' +
-                TENGE_LETTER}
-            </StyledText>
-          )}
-          contentContainerStyle={{paddingBottom: 150}}
-          // ListEmptyComponent={() => renderEmpty()}
-          data={basket}
-          closeOnRowOpen={true}
-          closeOnRowPress={true}
-          renderHiddenItem={(data, rowMap) => (
-            <Pressable
-              android_ripple={{color: '#F3F2F8', radius: 200}}
-              onPress={() => {
-                rowMap[basket.indexOf(data.item)].closeRow();
-                dispatch(deleteProduct(data.item.item));
-              }}
-              style={{
-                backgroundColor: 'red',
-                width: 70,
-                height: '100%',
-                position: 'absolute',
-                right: 0,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <StyledText
-                style={{color: 'white', fontSize: 12, fontWeight: '700'}}>
-                Удалить
-              </StyledText>
-            </Pressable>
-          )}
-          rightOpenValue={-70}
-          ListFooterComponent={() =>
-            activeShop.recommendations.length > 0 ? (
-              <RecommendCard
-                visible={isVisible}
-                onClose={() => setVisible(false)}
-                recommend={
-                  activeShop.recommendations[
-                    Math.floor(
-                      Math.random() * activeShop.recommendations.length,
-                    )
-                  ]
-                }
-              />
-            ) : (
-              <View />
-            )
-          }
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => renderBasketItem(item)}
+        <FlatList
+          data={[1, 2]}
+          renderItem={({item, index}) => {
+            if (index === 0) {
+              return renderBasketList();
+            } else {
+              return renderRecommendsList();
+            }
+          }}
         />
         <View
           style={{

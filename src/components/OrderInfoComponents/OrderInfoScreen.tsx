@@ -34,7 +34,6 @@ import {Restaraunt} from '../../API';
 // @ts-ignore
 import AnimatedColorView from 'react-native-animated-colors';
 import {newOrderCancelRequest} from '../../redux/thunks';
-import {openWhatsApp} from '../../utils/linkingUtils';
 import {BasketItem, setBasket} from '../../redux/BasketDataReducer';
 type Props = {
   navigation: StackNavigationProp<AppStackParamList, 'OrderInfo'>;
@@ -80,7 +79,7 @@ export default function OrderInfoScreen({route, navigation}: Props) {
           user_phone: '',
           user_name: '',
           id: doc.id,
-          public_id: doc.get<number>('НомерЗаказа'),
+          public_id: doc.get<number>('НомерЗаказа').toString(),
           currentStatus: doc.get<OrderStatus>('ТекущийСтатус'),
           user_id: auth().currentUser?.uid,
           price: doc.get<number>('Цена'),

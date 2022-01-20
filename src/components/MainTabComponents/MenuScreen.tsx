@@ -300,6 +300,11 @@ export default function MenuScreen({navigation}: Props) {
               order: doc.get<number>('Порядок')
                 ? doc.get<number>('Порядок')
                 : 0,
+              recommendations: doc.get<Array<DocumentReference>>('Рекомендации')
+                ? doc
+                    .get<Array<DocumentReference>>('Рекомендации')
+                    .map(it => it.path)
+                : [],
             });
           });
           dispatch(setCategories(catList));

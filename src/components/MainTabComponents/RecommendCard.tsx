@@ -3,15 +3,13 @@ import {useSelector} from 'react-redux';
 import {RootState, useAppDispatch} from '../../redux';
 import {withFont} from '../_CustomComponents/HOC/withFont';
 import {Pressable, Text, useWindowDimensions, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import DropShadow from 'react-native-drop-shadow';
 import FirebaseImage from '../_CustomComponents/FirebaseImage';
 import {TENGE_LETTER} from './ProductItem';
 import {plusProduct} from '../../redux/BasketDataReducer';
 
 type Props = {
-  visible: boolean;
-  onClose: () => void;
   recommend: string;
 };
 export function RecommendCard(props: Props) {
@@ -21,10 +19,12 @@ export function RecommendCard(props: Props) {
   const productsMap: Record<string, Product> = useSelector(
     (state: RootState) => state.products.products,
   );
+  console.log('props', props);
   const product: Product =
     productsMap[props.recommend.replace('Продукты/', '')];
+  const [isVisible, setVisible] = useState<boolean>(true);
 
-  if (!props.visible) {
+  if (!isVisible) {
     return <View />;
   }
 
@@ -116,7 +116,7 @@ export function RecommendCard(props: Props) {
             <Pressable
               onPress={() => {
                 dispatch(plusProduct(product));
-                props.onClose();
+                setVisible(false);
               }}
               style={{
                 backgroundColor: '#28B3C6',
@@ -144,7 +144,7 @@ export function RecommendCard(props: Props) {
               borderWidth: 1,
             }}>
             <Pressable
-              onPress={() => props.onClose()}
+              onPress={() => setVisible(false)}
               style={{
                 width: 78,
                 height: 24,

@@ -22,6 +22,7 @@ export interface Category {
   name: string;
   fire: boolean;
   order: number;
+  recommendations: Array<string>;
 }
 
 export type OrderPaymentType = 'CASH' | 'CARD' | 'KASPI';
