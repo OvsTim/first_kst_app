@@ -75,7 +75,7 @@ export function RecommendCard(props: Props) {
             <StyledText
               style={{
                 fontSize: 10,
-                width: width / 3,
+                width: width / 4,
                 fontWeight: '500',
                 color: 'black',
               }}>
