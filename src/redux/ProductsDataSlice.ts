@@ -1,6 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {BasketItem} from './BasketDataReducer';
 import {Address} from '../API';
+import {MigrationManifest, PersistedState} from 'redux-persist/es/types';
+import {RootState} from './index';
 
 export interface Product {
   id: string;
@@ -67,7 +69,7 @@ interface ProductsData {
   categoryIds: Array<string>;
   productIds: Array<string>;
 }
-const initialState = {
+export const productsInitialState = {
   categories: {},
   products: {},
   categoryIds: [],
@@ -76,7 +78,7 @@ const initialState = {
 
 const productsDataSlice = createSlice({
   name: 'products',
-  initialState,
+  initialState: productsInitialState,
   reducers: {
     setCategories(state, action: PayloadAction<Array<Category>>) {
       state.categories = {};
@@ -98,7 +100,7 @@ const productsDataSlice = createSlice({
       state.productIds = sorted.map(it => it.id);
     },
     resetAction() {
-      return initialState;
+      return productsInitialState;
     },
   },
 });

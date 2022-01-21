@@ -2,20 +2,23 @@ import {combineReducers} from 'redux';
 import dataSlice from './UserDataSlice';
 import productsDataSlice from './ProductsDataSlice';
 import basketDataSlice from './BasketDataReducer';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {persistReducer, createMigrate} from 'redux-persist';
 import {configureStore} from '@reduxjs/toolkit';
 import {createSelectorHook, useDispatch} from 'react-redux';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import migrations from './migrations';
 const dataPersistConfig = {
   key: 'data',
   storage: AsyncStorage,
 };
 const productsPersistConfig = {
   key: 'products',
+  version: 1,
   storage: AsyncStorage,
+  migrate: createMigrate(migrations, {
+    debug: false,
+  }),
 };
 
 const basketPersistConfig = {
