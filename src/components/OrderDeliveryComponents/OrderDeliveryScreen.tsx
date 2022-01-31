@@ -107,9 +107,12 @@ export default function OrderDeliveryScreen({navigation}: Props) {
   function getTotalPrice() {
     if (orderDeliveryType === 'PICKUP') {
       return getBasketPrice() * 0.9;
-    } else if (getBasketPrice() >= 5000) {
-      return getBasketPrice();
-    } else {
+    }
+
+    // else if (getBasketPrice() >= 5000) {
+    //   return getBasketPrice();
+    // }
+    else {
       return getBasketPrice() + DELIVERY_COST;
     }
   }
@@ -489,7 +492,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
                   color: paymentWay === 'KASPI' ? '#28B3C6' : 'black',
                   fontWeight: '400',
                 }}>
-                Kaspi Gold (перевод)
+                Kaspi Pay
               </StyledText>
             </Pressable>
           </View>
@@ -543,7 +546,8 @@ export default function OrderDeliveryScreen({navigation}: Props) {
             </StyledText>
             <StyledText
               style={{fontWeight: '700', color: '#28B3C6', fontSize: 18}}>
-              {getBasketPrice() >= 5000 ? 'Бесплатно' : DELIVERY_COST + ' ₸'}
+              {/*{getBasketPrice() >= 5000 ? 'Бесплатно' : DELIVERY_COST + ' ₸'}*/}
+              {DELIVERY_COST + ' ' + TENGE_LETTER}
             </StyledText>
           </View>
         ) : (
@@ -727,7 +731,7 @@ export default function OrderDeliveryScreen({navigation}: Props) {
           {renderHeaderAndAddress()}
           {orderDeliveryType === 'DELIVERY' && renderPaymentWays()}
           {renderCostAndDelivery()}
-          {orderDeliveryType === 'DELIVERY' && renderFreeDeliveryAndMenu()}
+          {/*{orderDeliveryType === 'DELIVERY' && renderFreeDeliveryAndMenu()}*/}
         </ScrollView>
         {renderBottomButton()}
         <Modal

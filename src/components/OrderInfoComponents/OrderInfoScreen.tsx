@@ -374,7 +374,7 @@ export default function OrderInfoScreen({route, navigation}: Props) {
                   <StyledText
                     style={{fontWeight: '400', color: '#28B3C6', fontSize: 15}}>
                     {currentOrder.payment_type === 'KASPI'
-                      ? 'Kaspi Gold (перевод)'
+                      ? 'Kaspi Pay'
                       : currentOrder.payment_type === 'CARD'
                       ? 'Картой курьеру'
                       : 'Наличными курьеру'}
