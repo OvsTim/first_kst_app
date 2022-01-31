@@ -11,7 +11,10 @@ buildscript {
     }
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+         maven {
+                url ("https://jcenter.bintray.com")
+             }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.1' // <--- use this version or newer
@@ -33,9 +36,12 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
+         maven {
+                url ("https://jcenter.bintray.com")
+             }
 
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://www.jitpack.io' }
     }
 }
